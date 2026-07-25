@@ -1,0 +1,2810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PortPilot — Let's Get Started</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --blue-50:  #eff6ff;
+      --blue-100: #dbeafe;
+      --blue-200: #bfdbfe;
+      --blue-400: #60a5fa;
+      --blue-500: #3b82f6;
+      --blue-600: #2563eb;
+      --blue-700: #1d4ed8;
+      --blue-800: #1e40af;
+      --gray-50:  #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+      --white: #ffffff;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+      --shadow-md: 0 4px 12px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.04);
+      --shadow-lg: 0 10px 30px rgba(0,0,0,.10), 0 4px 8px rgba(0,0,0,.06);
+      --shadow-xl: 0 20px 50px rgba(0,0,0,.12), 0 8px 16px rgba(0,0,0,.06);
+      --shadow-blue: 0 4px 20px rgba(37,99,235,.25);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--white);
+      color: var(--gray-900);
+      min-height: 100vh;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ─── Background Decoration ─────────────────────────────── */
+    .bg-decoration {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .bg-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.45;
+    }
+    .bg-blob-1 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, #dbeafe, transparent);
+      top: -200px; right: -150px;
+    }
+    .bg-blob-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, #eff6ff, transparent);
+      bottom: -100px; left: -100px;
+    }
+
+    /* ─── Layout ─────────────────────────────────────────────── */
+    .page-wrapper {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 60px;
+    }
+
+    /* ─── Header / Logo ──────────────────────────────────────── */
+    .header {
+      width: 100%;
+      max-width: 640px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 36px;
+      padding-top: 8px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .logo-icon {
+      width: 38px; height: 38px;
+      background: linear-gradient(135deg, var(--blue-600), var(--blue-500));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-blue);
+    }
+    .logo-icon i {
+      color: white;
+      font-size: 16px;
+    }
+    .logo-text {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--gray-900);
+      letter-spacing: -0.4px;
+    }
+    .logo-text span { color: var(--blue-600); }
+
+    /* ─── Progress Section ───────────────────────────────────── */
+    .progress-container {
+      width: 100%;
+      max-width: 640px;
+      margin-bottom: 40px;
+    }
+    .progress-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .progress-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-500);
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+    .progress-fraction {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--blue-600);
+    }
+
+    .progress-steps {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .progress-step-dot {
+      height: 6px;
+      border-radius: 10px;
+      transition: all 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+      background: var(--gray-200);
+    }
+    .progress-step-dot.active {
+      background: var(--blue-600);
+      width: 28px !important;
+      box-shadow: 0 0 8px rgba(37,99,235,.45);
+    }
+    .progress-step-dot.done {
+      background: var(--blue-400);
+    }
+
+    .progress-bar-track {
+      height: 4px;
+      background: var(--gray-100);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--blue-500), var(--blue-400));
+      width: 20%;
+      transition: width 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 10px rgba(59,130,246,.4);
+    }
+
+    /* ─── Card Container ─────────────────────────────────────── */
+    .card {
+      width: 100%;
+      max-width: 640px;
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-xl);
+      border: 1px solid rgba(0,0,0,.05);
+      overflow: hidden;
+      position: relative;
+    }
+    .card-inner {
+      padding: 44px 40px 40px;
+    }
+
+    /* ─── Steps ──────────────────────────────────────────────── */
+    .step {
+      display: none;
+      animation: stepFadeIn 0.45s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+    .step.active { display: block; }
+
+    @keyframes stepFadeIn {
+      from { opacity: 0; transform: translateY(18px) scale(0.98); }
+      to   { opacity: 1; transform: translateY(0)  scale(1);     }
+    }
+    @keyframes stepFadeOut {
+      from { opacity: 1; transform: translateY(0)    scale(1);    }
+      to   { opacity: 0; transform: translateY(-14px) scale(0.98); }
+    }
+    .step.exit {
+      animation: stepFadeOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    /* ─── Step Headings ──────────────────────────────────────── */
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--blue-50);
+      color: var(--blue-600);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--blue-100);
+      margin-bottom: 20px;
+    }
+    .step-badge i { font-size: 10px; }
+    .step-heading {
+      font-size: clamp(24px, 5vw, 30px);
+      font-weight: 800;
+      color: var(--gray-900);
+      letter-spacing: -0.6px;
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
+    .step-heading span { color: var(--blue-600); }
+    .step-subheading {
+      font-size: 15px;
+      color: var(--gray-500);
+      line-height: 1.6;
+      max-width: 480px;
+    }
+
+    /* ─── Feature Cards (Step 1) ─────────────────────────────── */
+    .feature-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 32px;
+      margin-bottom: 32px;
+    }
+    .feature-card {
+      background: var(--gray-50);
+      border: 1.5px solid var(--gray-100);
+      border-radius: var(--radius-lg);
+      padding: 24px 18px;
+      text-align: center;
+      transition: all var(--transition-slow);
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--blue-50), transparent);
+      opacity: 0;
+      transition: opacity var(--transition-slow);
+      border-radius: inherit;
+    }
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--blue-200);
+    }
+    .feature-card:hover::before { opacity: 1; }
+    .feature-card-icon {
+      width: 52px; height: 52px;
+      background: linear-gradient(135deg, var(--blue-600), var(--blue-500));
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      box-shadow: var(--shadow-blue);
+      position: relative;
+      z-index: 1;
+      transition: transform var(--transition-slow);
+    }
+    .feature-card:hover .feature-card-icon { transform: scale(1.08); }
+    .feature-card-icon i {
+      color: white;
+      font-size: 20px;
+    }
+    .feature-card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 6px;
+      line-height: 1.3;
+      position: relative;
+      z-index: 1;
+    }
+    .feature-card-desc {
+      font-size: 12px;
+      color: var(--gray-500);
+      line-height: 1.5;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ─── Divider ────────────────────────────────────────────── */
+    .divider {
+      height: 1px;
+      background: var(--gray-100);
+      margin: 8px 0 28px;
+    }
+
+    /* ─── Buttons ────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 15px;
+      border-radius: var(--radius-md);
+      transition: all var(--transition);
+      position: relative;
+      overflow: hidden;
+      white-space: nowrap;
+      letter-spacing: -0.1px;
+    }
+    .btn:focus-visible {
+      outline: 2px solid var(--blue-500);
+      outline-offset: 3px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--blue-600), var(--blue-500));
+      color: white;
+      padding: 15px 28px;
+      width: 100%;
+      font-size: 15px;
+      box-shadow: var(--shadow-blue);
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: linear-gradient(135deg, var(--blue-700), var(--blue-600));
+      box-shadow: 0 6px 24px rgba(37,99,235,.35);
+      transform: translateY(-1px);
+    }
+    .btn-primary:active:not(:disabled) {
+      transform: translateY(0);
+      box-shadow: var(--shadow-blue);
+    }
+    .btn-primary:disabled {
+      background: linear-gradient(135deg, var(--gray-300), var(--gray-200));
+      color: var(--gray-400);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* Ripple */
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,.35);
+      transform: scale(0);
+      animation: rippleAnim 0.55s linear;
+      pointer-events: none;
+    }
+    @keyframes rippleAnim {
+      to { transform: scale(4); opacity: 0; }
+    }
+
+    .btn-arrow {
+      width: 22px; height: 22px;
+      background: rgba(255,255,255,.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform var(--transition);
+    }
+    .btn-primary:hover:not(:disabled) .btn-arrow { transform: translateX(3px); }
+    .btn-arrow i { font-size: 11px; }
+
+    /* ─── User Type Cards (Step 2) ───────────────────────────── */
+    .user-type-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 28px;
+      margin-bottom: 28px;
+    }
+    .user-type-card {
+      border: 1.5px solid var(--gray-200);
+      background: var(--white);
+      border-radius: var(--radius-md);
+      padding: 18px 14px;
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition);
+      position: relative;
+      overflow: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .user-type-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--blue-50), transparent);
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+    .user-type-card:hover {
+      border-color: var(--blue-300);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    .user-type-card:hover::after { opacity: 1; }
+    .user-type-card.selected {
+      border-color: var(--blue-500);
+      background: var(--blue-50);
+      box-shadow: 0 0 0 3px rgba(37,99,235,.12), var(--shadow-md);
+    }
+    .user-type-card.selected::after { opacity: 0; }
+    .user-type-card:focus-visible {
+      outline: 2px solid var(--blue-500);
+      outline-offset: 3px;
+    }
+    .user-type-icon {
+      width: 44px; height: 44px;
+      background: var(--gray-100);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+      transition: all var(--transition);
+      position: relative;
+      z-index: 1;
+    }
+    .user-type-card.selected .user-type-icon {
+      background: linear-gradient(135deg, var(--blue-600), var(--blue-500));
+      box-shadow: var(--shadow-blue);
+    }
+    .user-type-icon i {
+      font-size: 17px;
+      color: var(--gray-500);
+      transition: color var(--transition);
+    }
+    .user-type-card.selected .user-type-icon i { color: white; }
+    .user-type-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-bottom: 4px;
+      line-height: 1.3;
+      position: relative;
+      z-index: 1;
+    }
+    .user-type-desc {
+      font-size: 11px;
+      color: var(--gray-400);
+      line-height: 1.4;
+      position: relative;
+      z-index: 1;
+    }
+    .user-type-card.selected .user-type-title { color: var(--blue-700); }
+    .user-type-card.selected .user-type-desc  { color: var(--blue-500); }
+    .check-badge {
+      position: absolute;
+      top: 8px; right: 8px;
+      width: 18px; height: 18px;
+      background: var(--blue-600);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: scale(0.6);
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 2;
+    }
+    .user-type-card.selected .check-badge {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .check-badge i { color: white; font-size: 9px; }
+
+    /* ─── Step 3–5 Placeholder ───────────────────────────────── */
+    .placeholder-content {
+      text-align: center;
+      padding: 48px 24px;
+    }
+    .placeholder-icon {
+      width: 64px; height: 64px;
+      background: var(--gray-100);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+    .placeholder-icon i { font-size: 26px; color: var(--gray-400); }
+    .placeholder-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--gray-700);
+      margin-bottom: 8px;
+    }
+    .placeholder-desc {
+      font-size: 14px;
+      color: var(--gray-400);
+      line-height: 1.6;
+      max-width: 360px;
+      margin: 0 auto;
+    }
+
+    /* ─── Floating elements ──────────────────────────────────── */
+    .floating-dots {
+      position: absolute;
+      top: 20px; right: 24px;
+      display: flex; gap: 5px;
+      opacity: 0.15;
+    }
+    .floating-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--blue-600);
+      animation: floatDot 2.4s ease-in-out infinite;
+    }
+    .floating-dot:nth-child(2) { animation-delay: 0.3s; }
+    .floating-dot:nth-child(3) { animation-delay: 0.6s; }
+    @keyframes floatDot {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-4px); }
+    }
+
+    /* ─── Trust Row ──────────────────────────────────────────── */
+    .trust-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--gray-400);
+      font-weight: 500;
+    }
+    .trust-item i { color: var(--blue-400); font-size: 12px; }
+
+    /* ─── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .card-inner { padding: 32px 24px 28px; }
+      .feature-cards { grid-template-columns: 1fr; gap: 12px; }
+      .feature-card { padding: 20px 18px; text-align: left; display: flex; align-items: center; gap: 16px; }
+      .feature-card-icon { margin: 0; flex-shrink: 0; width: 44px; height: 44px; }
+      .feature-card-icon i { font-size: 18px; }
+      .user-type-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .trust-row { gap: 14px; }
+    }
+
+    @media (max-width: 380px) {
+      .user-type-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* ─── Shimmer loading state ──────────────────────────────── */
+    @keyframes shimmer {
+      0%   { background-position: -400px 0; }
+      100% { background-position:  400px 0; }
+    }
+
+    /* ─── Form Elements (Step 3) ─────────────────────────────── */
+    .form-section {
+      margin-top: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .form-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-700);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: -0.1px;
+    }
+    .form-label .required-dot {
+      width: 5px; height: 5px;
+      background: var(--blue-500);
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .form-label .optional-tag {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--gray-400);
+      margin-left: 2px;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .input-icon {
+      position: absolute;
+      left: 14px;
+      color: var(--gray-400);
+      font-size: 14px;
+      pointer-events: none;
+      transition: color var(--transition);
+      z-index: 1;
+    }
+    .input-status-icon {
+      position: absolute;
+      right: 14px;
+      font-size: 13px;
+      pointer-events: none;
+      opacity: 0;
+      transition: all var(--transition);
+    }
+
+    .form-input,
+    .form-select {
+      width: 100%;
+      padding: 12px 42px 12px 42px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--gray-900);
+      background: var(--white);
+      border: 1.5px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      outline: none;
+      transition: all var(--transition);
+      box-shadow: var(--shadow-sm);
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .form-select {
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+    }
+    .form-input::placeholder { color: var(--gray-300); font-weight: 400; }
+    .form-input:focus,
+    .form-select:focus {
+      border-color: var(--blue-400);
+      box-shadow: 0 0 0 3px rgba(59,130,246,.1), var(--shadow-sm);
+    }
+    .form-input:focus + .input-status-icon,
+    .form-select:focus + .input-status-icon { opacity: 0; }
+
+    /* Focus moves icon colour */
+    .input-wrapper:focus-within .input-icon { color: var(--blue-500); }
+
+    /* Validation states */
+    .form-group.is-valid .form-input,
+    .form-group.is-valid .form-select {
+      border-color: #22c55e;
+      box-shadow: 0 0 0 3px rgba(34,197,94,.08), var(--shadow-sm);
+    }
+    .form-group.is-valid .input-icon { color: #22c55e; }
+    .form-group.is-valid .input-status-icon {
+      opacity: 1;
+      color: #22c55e;
+    }
+    .form-group.is-error .form-input,
+    .form-group.is-error .form-select {
+      border-color: #ef4444;
+      box-shadow: 0 0 0 3px rgba(239,68,68,.08), var(--shadow-sm);
+    }
+    .form-group.is-error .input-icon { color: #ef4444; }
+    .form-group.is-error .input-status-icon {
+      opacity: 1;
+      color: #ef4444;
+    }
+    .form-error-msg {
+      font-size: 12px;
+      color: #ef4444;
+      font-weight: 500;
+      display: none;
+      align-items: center;
+      gap: 5px;
+      margin-top: 1px;
+    }
+    .form-group.is-error .form-error-msg { display: flex; }
+
+    /* ─── Goal Cards (Step 3) ────────────────────────────────── */
+    .goal-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .goal-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .goal-card {
+      border: 1.5px solid var(--gray-200);
+      background: var(--white);
+      border-radius: var(--radius-md);
+      padding: 14px 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition);
+      position: relative;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .goal-card:hover {
+      border-color: var(--blue-300);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    .goal-card.selected {
+      border-color: var(--blue-500);
+      background: var(--blue-50);
+      box-shadow: 0 0 0 3px rgba(37,99,235,.12), var(--shadow-sm);
+    }
+    .goal-card:focus-visible {
+      outline: 2px solid var(--blue-500);
+      outline-offset: 3px;
+    }
+    .goal-card-icon {
+      width: 36px; height: 36px;
+      background: var(--gray-100);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 9px;
+      transition: all var(--transition);
+    }
+    .goal-card.selected .goal-card-icon {
+      background: linear-gradient(135deg, var(--blue-600), var(--blue-500));
+      box-shadow: var(--shadow-blue);
+    }
+    .goal-card-icon i { font-size: 14px; color: var(--gray-500); transition: color var(--transition); }
+    .goal-card.selected .goal-card-icon i { color: white; }
+    .goal-card-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gray-800);
+      line-height: 1.3;
+      transition: color var(--transition);
+    }
+    .goal-card.selected .goal-card-title { color: var(--blue-700); }
+    .goal-check {
+      position: absolute;
+      top: 6px; right: 6px;
+      width: 16px; height: 16px;
+      background: var(--blue-600);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .goal-card.selected .goal-check { opacity: 1; transform: scale(1); }
+    .goal-check i { color: white; font-size: 8px; }
+
+    /* ─── Validation banner for goal ────────────────────────── */
+    .goal-error {
+      font-size: 12px;
+      color: #ef4444;
+      font-weight: 500;
+      display: none;
+      align-items: center;
+      gap: 5px;
+      margin-top: 8px;
+    }
+    .goal-error.visible { display: flex; }
+
+    /* ─── Button Row ─────────────────────────────────────────── */
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .btn-secondary {
+      background: var(--white);
+      color: var(--gray-700);
+      border: 1.5px solid var(--gray-200);
+      padding: 15px 22px;
+      font-size: 15px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      flex-shrink: 0;
+    }
+    .btn-secondary:hover {
+      background: var(--gray-50);
+      border-color: var(--gray-300);
+      box-shadow: var(--shadow-md);
+    }
+    .btn-secondary:active { transform: translateY(0); }
+    .btn-row .btn-primary { flex: 1; }
+
+    @media (max-width: 600px) {
+      .form-row { grid-template-columns: 1fr; gap: 16px; }
+      .goal-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 380px) {
+      .goal-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* ─── Security Info Card (Step 4) ───────────────────────── */
+    .security-card {
+      background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+      border: 1px solid #bae6fd;
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      margin-top: 24px;
+      margin-bottom: 28px;
+    }
+    .security-icon {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, var(--blue-600), var(--blue-500));
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-blue);
+    }
+    .security-icon i { color: white; font-size: 17px; }
+    .security-text p {
+      font-size: 13px;
+      color: #0369a1;
+      line-height: 1.65;
+      font-weight: 450;
+    }
+
+    /* ─── Platform Cards (Step 4) ────────────────────────────── */
+    .platform-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .platform-card {
+      border: 1.5px solid var(--gray-200);
+      background: var(--white);
+      border-radius: var(--radius-md);
+      padding: 20px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: all var(--transition);
+    }
+    .platform-card:hover {
+      border-color: var(--blue-200);
+      box-shadow: var(--shadow-md);
+    }
+    .platform-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .platform-identity {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .platform-icon {
+      width: 38px; height: 38px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .platform-icon.facebook  { background: #1877f2; }
+    .platform-icon.instagram { background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af); }
+    .platform-icon.linkedin  { background: #0a66c2; }
+    .platform-icon.pinterest { background: #e60023; }
+    .platform-icon i { color: white; font-size: 18px; }
+    .platform-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--gray-900);
+    }
+    .status-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 999px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      line-height: 1.6;
+    }
+    .status-badge.not-connected {
+      background: var(--gray-100);
+      color: var(--gray-500);
+      border: 1px solid var(--gray-200);
+    }
+    .status-badge.connected {
+      background: #dcfce7;
+      color: #15803d;
+      border: 1px solid #bbf7d0;
+    }
+    .status-badge.pending {
+      background: #fef9c3;
+      color: #a16207;
+      border: 1px solid #fef08a;
+    }
+    .platform-desc {
+      font-size: 12px;
+      color: var(--gray-500);
+      line-height: 1.55;
+    }
+    .btn-connect {
+      background: var(--white);
+      color: var(--blue-600);
+      border: 1.5px solid var(--blue-200);
+      padding: 9px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      width: 100%;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      margin-top: auto;
+    }
+    .btn-connect:hover {
+      background: var(--blue-50);
+      border-color: var(--blue-400);
+      box-shadow: var(--shadow-sm);
+    }
+    .btn-connect i { font-size: 12px; }
+    .btn-connected-label {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #15803d;
+      padding: 9px 0;
+      width: 100%;
+      margin-top: auto;
+    }
+    .platform-card.connected {
+      border-color: #bbf7d0;
+      background: #f0fdf4;
+    }
+    .platform-card.connected .btn-connect { display: none; }
+    .platform-card.connected .btn-connected-label { display: flex; }
+    .platform-card.connected .platform-name { color: #15803d; }
+
+    /* ─── Step 4 Skip Button ─────────────────────────────────── */
+    .btn-skip {
+      background: transparent;
+      color: var(--gray-400);
+      border: none;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 10px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: color var(--transition);
+      text-align: center;
+      width: 100%;
+      display: block;
+      margin-top: 2px;
+      letter-spacing: 0.1px;
+    }
+    .btn-skip:hover { color: var(--gray-700); }
+
+    /* ─── Plan Card (Step 5) ─────────────────────────────────── */
+    .plan-card {
+      background: linear-gradient(135deg, var(--blue-50), #f0f9ff);
+      border: 1.5px solid var(--blue-200);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+      margin: 24px 0 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .plan-card::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 140px; height: 140px;
+      background: radial-gradient(circle, rgba(37,99,235,.07), transparent);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .plan-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--blue-600);
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      padding: 5px 13px;
+      border-radius: 999px;
+      margin-bottom: 16px;
+    }
+    .plan-name {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--gray-900);
+      letter-spacing: -0.5px;
+      margin-bottom: 20px;
+    }
+    .plan-features {
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+    }
+    .plan-feature {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      color: var(--gray-700);
+      font-weight: 500;
+    }
+    .plan-feature-check {
+      width: 22px; height: 22px;
+      background: var(--blue-600);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(37,99,235,.25);
+    }
+    .plan-feature-check i { color: white; font-size: 10px; }
+    .plan-upgrade-note {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--blue-100);
+      font-size: 12px;
+      color: var(--gray-500);
+      line-height: 1.55;
+      text-align: center;
+    }
+    .plan-upgrade-note strong { color: var(--blue-600); }
+
+    /* ─── Connected Platform Chips (Step 5) ──────────────────── */
+    .connected-summary {
+      margin-top: 22px;
+    }
+    .connected-summary-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 10px;
+    }
+    .connected-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .connected-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 999px;
+      padding: 5px 12px 5px 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-400);
+      transition: all var(--transition);
+    }
+    .connected-chip .chip-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--gray-300);
+      flex-shrink: 0;
+      transition: background var(--transition);
+    }
+    .connected-chip.is-connected {
+      color: var(--gray-800);
+      border-color: #bbf7d0;
+      background: #f0fdf4;
+    }
+    .connected-chip.is-connected .chip-dot { background: #22c55e; }
+
+    /* ─── Terms Row ──────────────────────────────────────────── */
+    .terms-row {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 12px;
+      color: var(--gray-400);
+      line-height: 1.7;
+    }
+    .terms-row a {
+      color: var(--gray-500);
+      text-decoration: none;
+      font-weight: 500;
+      border-bottom: 1px solid var(--gray-300);
+      transition: color var(--transition);
+    }
+    .terms-row a:hover { color: var(--blue-600); border-color: var(--blue-300); }
+
+    /* ─── Success Overlay ────────────────────────────────────── */
+    .success-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(255,255,255,.97);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 32px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+      text-align: center;
+    }
+    .success-overlay.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .success-check-ring {
+      width: 96px; height: 96px;
+      background: linear-gradient(135deg, var(--blue-600), var(--blue-400));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 32px rgba(37,99,235,.35);
+      animation: successPulse 1.8s ease-in-out infinite;
+    }
+    .success-check-ring i { color: white; font-size: 40px; }
+    .success-headline {
+      font-size: clamp(24px, 6vw, 32px);
+      font-weight: 800;
+      color: var(--gray-900);
+      letter-spacing: -0.7px;
+      margin-bottom: 10px;
+    }
+    .success-sub {
+      font-size: 16px;
+      color: var(--gray-500);
+      margin-bottom: 36px;
+      line-height: 1.6;
+    }
+    .success-progress-bar {
+      width: 200px;
+      height: 3px;
+      background: var(--gray-100);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .success-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--blue-500), var(--blue-400));
+      border-radius: 999px;
+      width: 0%;
+      transition: width 2s linear;
+    }
+    @keyframes successPulse {
+      0%, 100% { box-shadow: 0 8px 32px rgba(37,99,235,.35); transform: scale(1); }
+      50%       { box-shadow: 0 14px 44px rgba(37,99,235,.5); transform: scale(1.05); }
+    }
+
+    /* ─── Step 4 + 5 responsive ──────────────────────────────── */
+    @media (max-width: 600px) {
+      .platform-grid { grid-template-columns: 1fr; }
+      .security-card { padding: 16px; gap: 12px; }
+      .plan-card { padding: 22px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-decoration" aria-hidden="true">
+  <div class="bg-blob bg-blob-1"></div>
+  <div class="bg-blob bg-blob-2"></div>
+</div>
+
+<div class="page-wrapper">
+
+  <!-- Header -->
+  <header class="header">
+    <a href="#" class="logo" aria-label="PortPilot">
+      <div class="logo-icon" aria-hidden="true">
+        <i class="fa-solid fa-sailboat"></i>
+      </div>
+      <span class="logo-text">Port<span>Pilot</span></span>
+    </a>
+  </header>
+
+  <!-- Progress -->
+  <div class="progress-container" role="progressbar" aria-label="Onboarding progress" aria-valuenow="1" aria-valuemin="1" aria-valuemax="5" id="progressContainer">
+    <div class="progress-meta">
+      <span class="progress-label">Getting started</span>
+      <span class="progress-fraction" id="progressFraction">Step 1 of 5</span>
+    </div>
+    <div class="progress-steps" aria-hidden="true" id="progressSteps">
+      <div class="progress-step-dot active" style="width:14px" data-step="1"></div>
+      <div class="progress-step-dot" style="width:8px" data-step="2"></div>
+      <div class="progress-step-dot" style="width:8px" data-step="3"></div>
+      <div class="progress-step-dot" style="width:8px" data-step="4"></div>
+      <div class="progress-step-dot" style="width:8px" data-step="5"></div>
+    </div>
+    <div class="progress-bar-track" aria-hidden="true">
+      <div class="progress-bar-fill" id="progressBarFill"></div>
+    </div>
+  </div>
+
+  <!-- Main Card -->
+  <main class="card" id="mainCard">
+    <div class="floating-dots" aria-hidden="true">
+      <div class="floating-dot"></div>
+      <div class="floating-dot"></div>
+      <div class="floating-dot"></div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         STEP 1 — Welcome
+    ═══════════════════════════════════════════════════════ -->
+    <div class="step active card-inner" id="step-1" data-step="1" role="region" aria-label="Step 1: Welcome">
+
+      <div class="step-badge"><i class="fa-solid fa-circle-check"></i> Welcome</div>
+      <h1 class="step-heading">Welcome to <span>PortPilot</span></h1>
+      <p class="step-subheading">
+        Let's personalize your workspace so PortPilot can generate better content
+        and help you grow your audience faster.
+      </p>
+
+      <div class="feature-cards" role="list">
+
+        <article class="feature-card" role="listitem">
+          <div class="feature-card-icon" aria-hidden="true">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+          </div>
+          <div>
+            <div class="feature-card-title">AI Content Generation</div>
+            <div class="feature-card-desc">Generate titles, captions and hashtags instantly.</div>
+          </div>
+        </article>
+
+        <article class="feature-card" role="listitem">
+          <div class="feature-card-icon" aria-hidden="true">
+            <i class="fa-solid fa-share-nodes"></i>
+          </div>
+          <div>
+            <div class="feature-card-title">Multi-platform Publishing</div>
+            <div class="feature-card-desc">Publish everywhere from one dashboard.</div>
+          </div>
+        </article>
+
+        <article class="feature-card" role="listitem">
+          <div class="feature-card-icon" aria-hidden="true">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <div>
+            <div class="feature-card-title">Grow Faster</div>
+            <div class="feature-card-desc">Save time while building your online presence.</div>
+          </div>
+        </article>
+
+      </div>
+
+      <div class="divider" aria-hidden="true"></div>
+
+      <button
+        class="btn btn-primary"
+        id="step1-continue"
+        type="button"
+        aria-label="Continue to step 2"
+        onclick="goToStep(2, this)"
+      >
+        <span>Continue</span>
+        <span class="btn-arrow" aria-hidden="true"><i class="fa-solid fa-arrow-right"></i></span>
+      </button>
+
+      <div class="trust-row" aria-label="Trust indicators">
+        <div class="trust-item"><i class="fa-solid fa-lock"></i> Secure &amp; Private</div>
+        <div class="trust-item"><i class="fa-solid fa-shield-halved"></i> No credit card needed</div>
+        <div class="trust-item"><i class="fa-solid fa-bolt"></i> Setup in 2 minutes</div>
+      </div>
+
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         STEP 2 — User Type
+    ═══════════════════════════════════════════════════════ -->
+    <div class="step card-inner" id="step-2" data-step="2" role="region" aria-label="Step 2: User type" aria-hidden="true">
+
+      <div class="step-badge"><i class="fa-solid fa-user"></i> About You</div>
+      <h2 class="step-heading">What best <span>describes</span> you?</h2>
+      <p class="step-subheading">Choose the option that best matches your work so we can personalise your experience.</p>
+
+      <div class="user-type-grid" id="userTypeGrid" role="radiogroup" aria-label="User type selection">
+
+        <div class="user-type-card" role="radio" aria-checked="false" tabindex="0" data-type="creator" onclick="selectUserType(this)" onkeydown="handleCardKey(event, this)">
+          <div class="check-badge" aria-hidden="true"><i class="fa-solid fa-check"></i></div>
+          <div class="user-type-icon" aria-hidden="true"><i class="fa-solid fa-video"></i></div>
+          <div class="user-type-title">Creator</div>
+          <div class="user-type-desc">Build and monetise your personal brand.</div>
+        </div>
+
+        <div class="user-type-card" role="radio" aria-checked="false" tabindex="0" data-type="saas-founder" onclick="selectUserType(this)" onkeydown="handleCardKey(event, this)">
+          <div class="check-badge" aria-hidden="true"><i class="fa-solid fa-check"></i></div>
+          <div class="user-type-icon" aria-hidden="true"><i class="fa-solid fa-rocket"></i></div>
+          <div class="user-type-title">SaaS Founder</div>
+          <div class="user-type-desc">Grow your software product with AI content.</div>
+        </div>
+
+        <div class="user-type-card" role="radio" aria-checked="false" tabindex="0" data-type="startup-founder" onclick="selectUserType(this)" onkeydown="handleCardKey(event, this)">
+          <div class="check-badge" aria-hidden="true"><i class="fa-solid fa-lightbulb"></i></div>
+          <div class="user-type-icon" aria-hidden="true"><i class="fa-solid fa-lightbulb"></i></div>
+          <div class="user-type-title">Startup Founder</div>
+          <div class="user-type-desc">Launch and scale your early-stage startup.</div>
+        </div>
+
+        <div class="user-type-card" role="radio" aria-checked="false" tabindex="0" data-type="business-owner" onclick="selectUserType(this)" onkeydown="handleCardKey(event, this)">
+          <div class="check-badge" aria-hidden="true"><i class="fa-solid fa-check"></i></div>
+          <div class="user-type-icon" aria-hidden="true"><i class="fa-solid fa-briefcase"></i></div>
+          <div class="user-type-title">Business Owner</div>
+          <div class="user-type-desc">Grow your business using AI-powered publishing.</div>
+        </div>
+
+        <div class="user-type-card" role="radio" aria-checked="false" tabindex="0" data-type="freelancer" onclick="selectUserType(this)" onkeydown="handleCardKey(event, this)">
+          <div class="check-badge" aria-hidden="true"><i class="fa-solid fa-check"></i></div>
+          <div class="user-type-icon" aria-hidden="true"><i class="fa-solid fa-laptop-code"></i></div>
+          <div class="user-type-title">Freelancer</div>
+          <div class="user-type-desc">Attract clients and showcase your expertise.</div>
+        </div>
+
+        <div class="user-type-card" role="radio" aria-checked="false" tabindex="0" data-type="agency" onclick="selectUserType(this)" onkeydown="handleCardKey(event, this)">
+          <div class="check-badge" aria-hidden="true"><i class="fa-solid fa-check"></i></div>
+          <div class="user-type-icon" aria-hidden="true"><i class="fa-solid fa-building"></i></div>
+          <div class="user-type-title">Agency</div>
+          <div class="user-type-desc">Manage social content at scale for your clients.</div>
+        </div>
+
+        <div class="user-type-card" role="radio" aria-checked="false" tabindex="0" data-type="designer" onclick="selectUserType(this)" onkeydown="handleCardKey(event, this)">
+          <div class="check-badge" aria-hidden="true"><i class="fa-solid fa-check"></i></div>
+          <div class="user-type-icon" aria-hidden="true"><i class="fa-solid fa-pen-nib"></i></div>
+          <div class="user-type-title">Designer</div>
+          <div class="user-type-desc">Share your creative work and win new projects.</div>
+        </div>
+
+        <div class="user-type-card" role="radio" aria-checked="false" tabindex="0" data-type="developer" onclick="selectUserType(this)" onkeydown="handleCardKey(event, this)">
+          <div class="check-badge" aria-hidden="true"><i class="fa-solid fa-check"></i></div>
+          <div class="user-type-icon" aria-hidden="true"><i class="fa-solid fa-code"></i></div>
+          <div class="user-type-title">Developer</div>
+          <div class="user-type-desc">Build in public and grow your developer brand.</div>
+        </div>
+
+        <div class="user-type-card" role="radio" aria-checked="false" tabindex="0" data-type="personal-brand" onclick="selectUserType(this)" onkeydown="handleCardKey(event, this)">
+          <div class="check-badge" aria-hidden="true"><i class="fa-solid fa-check"></i></div>
+          <div class="user-type-icon" aria-hidden="true"><i class="fa-solid fa-star"></i></div>
+          <div class="user-type-title">Personal Brand</div>
+          <div class="user-type-desc">Build your audience and establish thought leadership.</div>
+        </div>
+
+      </div>
+
+      <div class="divider" aria-hidden="true"></div>
+
+      <button
+        class="btn btn-primary"
+        id="step2-continue"
+        type="button"
+        aria-label="Continue to step 3"
+        disabled
+        onclick="goToStep(3, this)"
+      >
+        <span>Continue</span>
+        <span class="btn-arrow" aria-hidden="true"><i class="fa-solid fa-arrow-right"></i></span>
+      </button>
+
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         STEP 3 — Brand Information
+    ═══════════════════════════════════════════════════════ -->
+    <div class="step card-inner" id="step-3" data-step="3" role="region" aria-label="Step 3: Brand information" aria-hidden="true">
+
+      <div class="step-badge"><i class="fa-solid fa-palette"></i> Your Brand</div>
+      <h2 class="step-heading">Let's Set Up Your <span>Workspace</span></h2>
+      <p class="step-subheading">Tell us a little about your brand so PortPilot can personalise your experience.</p>
+
+      <form class="form-section" id="step3-form" novalidate onsubmit="return false;">
+
+        <!-- Row 1: Brand Name + Display Name -->
+        <div class="form-row">
+
+          <div class="form-group" id="fg-brandName">
+            <label class="form-label" for="brandName">
+              <span class="required-dot"></span> Brand / Business Name
+            </label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-building input-icon"></i>
+              <input
+                class="form-input"
+                type="text"
+                id="brandName"
+                name="brandName"
+                placeholder="Jaffet Studio"
+                autocomplete="organization"
+                aria-required="true"
+                aria-describedby="brandName-error"
+              />
+              <i class="fa-solid fa-circle-check input-status-icon" id="brandName-status" aria-hidden="true"></i>
+            </div>
+            <span class="form-error-msg" id="brandName-error" role="alert">
+              <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Brand name is required.
+            </span>
+          </div>
+
+          <div class="form-group" id="fg-displayName">
+            <label class="form-label" for="displayName">
+              <span class="required-dot"></span> Display Name
+            </label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-user input-icon"></i>
+              <input
+                class="form-input"
+                type="text"
+                id="displayName"
+                name="displayName"
+                placeholder="Jaffet Solomon"
+                autocomplete="name"
+                aria-required="true"
+                aria-describedby="displayName-error"
+              />
+              <i class="fa-solid fa-circle-check input-status-icon" id="displayName-status" aria-hidden="true"></i>
+            </div>
+            <span class="form-error-msg" id="displayName-error" role="alert">
+              <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Display name is required.
+            </span>
+          </div>
+
+        </div>
+
+        <!-- Row 2: Website -->
+        <div class="form-group" id="fg-website">
+          <label class="form-label" for="website">
+            Website / Portfolio <span class="optional-tag">Optional</span>
+          </label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-globe input-icon"></i>
+            <input
+              class="form-input"
+              type="url"
+              id="website"
+              name="website"
+              placeholder="https://yourwebsite.com"
+              autocomplete="url"
+              aria-describedby="website-error"
+            />
+            <i class="fa-solid fa-circle-check input-status-icon" id="website-status" aria-hidden="true"></i>
+          </div>
+          <span class="form-error-msg" id="website-error" role="alert">
+            <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Enter a valid URL (e.g. https://yoursite.com).
+          </span>
+        </div>
+
+        <!-- Row 3: Niche + Country -->
+        <div class="form-row">
+
+          <div class="form-group" id="fg-niche">
+            <label class="form-label" for="niche">
+              <span class="required-dot"></span> Niche
+            </label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-tag input-icon"></i>
+              <select class="form-select" id="niche" name="niche" aria-required="true" aria-describedby="niche-error">
+                <option value="" disabled selected>Select your niche</option>
+                <option value="technology">Technology</option>
+                <option value="education">Education</option>
+                <option value="finance">Finance</option>
+                <option value="graphic-design">Graphic Design</option>
+                <option value="marketing">Marketing</option>
+                <option value="business">Business</option>
+                <option value="fashion">Fashion</option>
+                <option value="photography">Photography</option>
+                <option value="food">Food</option>
+                <option value="health">Health</option>
+                <option value="real-estate">Real Estate</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <span class="form-error-msg" id="niche-error" role="alert">
+              <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Please select a niche.
+            </span>
+          </div>
+
+          <div class="form-group" id="fg-country">
+            <label class="form-label" for="country">
+              <span class="required-dot"></span> Country
+            </label>
+            <div class="input-wrapper">
+              <i class="fa-solid fa-location-dot input-icon"></i>
+              <select class="form-select" id="country" name="country" aria-required="true" aria-describedby="country-error">
+                <option value="" disabled>Select your country</option>
+                <option value="nigeria" selected>Nigeria</option>
+                <option value="ghana">Ghana</option>
+                <option value="kenya">Kenya</option>
+                <option value="south-africa">South Africa</option>
+                <option value="united-states">United States</option>
+                <option value="united-kingdom">United Kingdom</option>
+                <option value="canada">Canada</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <span class="form-error-msg" id="country-error" role="alert">
+              <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Please select a country.
+            </span>
+          </div>
+
+        </div>
+
+        <!-- Primary Goal cards -->
+        <div>
+          <div class="goal-label">
+            <span class="required-dot"></span> Primary Goal
+          </div>
+          <div class="goal-grid" role="radiogroup" aria-label="Primary goal selection" id="goalGrid">
+
+            <div class="goal-card" role="radio" aria-checked="false" tabindex="0" data-goal="grow-audience" onclick="selectGoal(this)" onkeydown="handleCardKey(event, this, 'goal')">
+              <div class="goal-check" aria-hidden="true"><i class="fa-solid fa-check"></i></div>
+              <div class="goal-card-icon" aria-hidden="true"><i class="fa-solid fa-users"></i></div>
+              <div class="goal-card-title">Grow My Audience</div>
+            </div>
+
+            <div class="goal-card" role="radio" aria-checked="false" tabindex="0" data-goal="promote-business" onclick="selectGoal(this)" onkeydown="handleCardKey(event, this, 'goal')">
+              <div class="goal-check" aria-hidden="true"><i class="fa-solid fa-check"></i></div>
+              <div class="goal-card-icon" aria-hidden="true"><i class="fa-solid fa-bullhorn"></i></div>
+              <div class="goal-card-title">Promote My Business</div>
+            </div>
+
+            <div class="goal-card" role="radio" aria-checked="false" tabindex="0" data-goal="generate-leads" onclick="selectGoal(this)" onkeydown="handleCardKey(event, this, 'goal')">
+              <div class="goal-check" aria-hidden="true"><i class="fa-solid fa-magnet"></i></div>
+              <div class="goal-card-icon" aria-hidden="true"><i class="fa-solid fa-magnet"></i></div>
+              <div class="goal-card-title">Generate More Leads</div>
+            </div>
+
+            <div class="goal-card" role="radio" aria-checked="false" tabindex="0" data-goal="portfolio" onclick="selectGoal(this)" onkeydown="handleCardKey(event, this, 'goal')">
+              <div class="goal-check" aria-hidden="true"><i class="fa-solid fa-check"></i></div>
+              <div class="goal-card-icon" aria-hidden="true"><i class="fa-solid fa-images"></i></div>
+              <div class="goal-card-title">Show My Portfolio</div>
+            </div>
+
+            <div class="goal-card" role="radio" aria-checked="false" tabindex="0" data-goal="sell-products" onclick="selectGoal(this)" onkeydown="handleCardKey(event, this, 'goal')">
+              <div class="goal-check" aria-hidden="true"><i class="fa-solid fa-check"></i></div>
+              <div class="goal-card-icon" aria-hidden="true"><i class="fa-solid fa-bag-shopping"></i></div>
+              <div class="goal-card-title">Sell Products</div>
+            </div>
+
+            <div class="goal-card" role="radio" aria-checked="false" tabindex="0" data-goal="personal-brand" onclick="selectGoal(this)" onkeydown="handleCardKey(event, this, 'goal')">
+              <div class="goal-check" aria-hidden="true"><i class="fa-solid fa-check"></i></div>
+              <div class="goal-card-icon" aria-hidden="true"><i class="fa-solid fa-star"></i></div>
+              <div class="goal-card-title">Build My Personal Brand</div>
+            </div>
+
+          </div>
+          <div class="goal-error" id="goal-error" role="alert">
+            <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Please select a primary goal.
+          </div>
+        </div>
+
+      </form><!-- /step3-form -->
+
+      <div class="divider" aria-hidden="true" style="margin-top:28px;"></div>
+
+      <div class="btn-row">
+        <button
+          class="btn btn-secondary"
+          type="button"
+          aria-label="Go back to step 2"
+          onclick="goToStep(2, this)"
+        >
+          <i class="fa-solid fa-arrow-left" style="font-size:13px;" aria-hidden="true"></i> Back
+        </button>
+        <button
+          class="btn btn-primary"
+          id="step3-continue"
+          type="button"
+          aria-label="Continue to step 4"
+          disabled
+          onclick="handleStep3Continue(this)"
+        >
+          <span>Continue</span>
+          <span class="btn-arrow" aria-hidden="true"><i class="fa-solid fa-arrow-right"></i></span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         STEP 4 — Connect Platforms
+    ═══════════════════════════════════════════════════════ -->
+    <div class="step card-inner" id="step-4" data-step="4" role="region" aria-label="Step 4: Connect platforms" aria-hidden="true">
+
+      <div class="step-badge"><i class="fa-solid fa-plug"></i> Connect</div>
+      <h2 class="step-heading">Connect Your <span>Social Platforms</span></h2>
+      <p class="step-subheading">Connect the platforms you use today. You can skip any platform and connect it later in Settings.</p>
+
+      <!-- Security notice card -->
+      <div class="security-card" role="note" aria-label="Security information">
+        <div class="security-icon" aria-hidden="true"><i class="fa-solid fa-shield-halved"></i></div>
+        <div class="security-text">
+          <p><strong>PortPilot never asks for your social media passwords.</strong> When you click Connect, you'll be redirected to the platform's official authorization page where you decide what PortPilot can access. You can disconnect your accounts at any time.</p>
+        </div>
+      </div>
+
+      <!-- Platform cards -->
+      <div class="platform-grid" id="platformGrid">
+
+        <!-- Facebook -->
+        <div class="platform-card" id="pc-facebook" data-platform="facebook">
+          <div class="platform-card-header">
+            <div class="platform-identity">
+              <div class="platform-icon facebook" aria-hidden="true">
+                <i class="fa-brands fa-facebook-f"></i>
+              </div>
+              <div class="platform-name">Facebook</div>
+            </div>
+            <span class="status-badge not-connected" id="badge-facebook">Not Connected</span>
+          </div>
+          <p class="platform-desc">Publish posts and reach your audience across Facebook Pages and Groups.</p>
+          <button class="btn-connect" type="button" onclick="connectFacebook(this)" aria-label="Connect Facebook">
+            <i class="fa-solid fa-link" aria-hidden="true"></i> Connect
+          </button>
+          <div class="btn-connected-label" aria-hidden="true">
+            <i class="fa-solid fa-circle-check"></i> Connected
+          </div>
+        </div>
+
+        <!-- Instagram -->
+        <div class="platform-card" id="pc-instagram" data-platform="instagram">
+          <div class="platform-card-header">
+            <div class="platform-identity">
+              <div class="platform-icon instagram" aria-hidden="true">
+                <i class="fa-brands fa-instagram"></i>
+              </div>
+              <div class="platform-name">Instagram</div>
+            </div>
+            <span class="status-badge not-connected" id="badge-instagram">Not Connected</span>
+          </div>
+          <p class="platform-desc">Schedule posts, Reels and Stories to grow your Instagram following.</p>
+          <button class="btn-connect" type="button" onclick="connectInstagram(this)" aria-label="Connect Instagram">
+            <i class="fa-solid fa-link" aria-hidden="true"></i> Connect
+          </button>
+          <div class="btn-connected-label" aria-hidden="true">
+            <i class="fa-solid fa-circle-check"></i> Connected
+          </div>
+        </div>
+
+        <!-- LinkedIn -->
+        <div class="platform-card" id="pc-linkedin" data-platform="linkedin">
+          <div class="platform-card-header">
+            <div class="platform-identity">
+              <div class="platform-icon linkedin" aria-hidden="true">
+                <i class="fa-brands fa-linkedin-in"></i>
+              </div>
+              <div class="platform-name">LinkedIn</div>
+            </div>
+            <span class="status-badge not-connected" id="badge-linkedin">Not Connected</span>
+          </div>
+          <p class="platform-desc">Share thought leadership content and grow your professional network.</p>
+          <button class="btn-connect" type="button" onclick="connectLinkedIn(this)" aria-label="Connect LinkedIn">
+            <i class="fa-solid fa-link" aria-hidden="true"></i> Connect
+          </button>
+          <div class="btn-connected-label" aria-hidden="true">
+            <i class="fa-solid fa-circle-check"></i> Connected
+          </div>
+        </div>
+
+        <!-- Pinterest -->
+        <div class="platform-card" id="pc-pinterest" data-platform="pinterest">
+          <div class="platform-card-header">
+            <div class="platform-identity">
+              <div class="platform-icon pinterest" aria-hidden="true">
+                <i class="fa-brands fa-pinterest-p"></i>
+              </div>
+              <div class="platform-name">Pinterest</div>
+            </div>
+            <span class="status-badge not-connected" id="badge-pinterest">Not Connected</span>
+          </div>
+          <p class="platform-desc">Pin your content to drive consistent traffic from Pinterest boards.</p>
+          <button class="btn-connect" type="button" onclick="connectPinterest(this)" aria-label="Connect Pinterest">
+            <i class="fa-solid fa-link" aria-hidden="true"></i> Connect
+          </button>
+          <div class="btn-connected-label" aria-hidden="true">
+            <i class="fa-solid fa-circle-check"></i> Connected
+          </div>
+        </div>
+
+      </div><!-- /platformGrid -->
+
+      <div class="divider" aria-hidden="true"></div>
+
+      <div class="btn-row">
+        <button
+          class="btn btn-secondary"
+          type="button"
+          aria-label="Go back to step 3"
+          onclick="goToStep(3, this)"
+        >
+          <i class="fa-solid fa-arrow-left" style="font-size:13px;" aria-hidden="true"></i> Back
+        </button>
+        <button
+          class="btn btn-primary"
+          id="step4-continue"
+          type="button"
+          aria-label="Continue to plan summary"
+          onclick="handleStep4Continue(this)"
+        >
+          <span>Continue</span>
+          <span class="btn-arrow" aria-hidden="true"><i class="fa-solid fa-arrow-right"></i></span>
+        </button>
+      </div>
+      <button
+        class="btn-skip"
+        type="button"
+        aria-label="Skip connecting platforms for now"
+        onclick="handleStep4Continue(null)"
+      >Skip for Now</button>
+
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         STEP 5 — Plan Summary
+    ═══════════════════════════════════════════════════════ -->
+    <div class="step card-inner" id="step-5" data-step="5" role="region" aria-label="Step 5: Plan summary" aria-hidden="true">
+
+      <div class="step-badge"><i class="fa-solid fa-circle-check"></i> All Set</div>
+      <h2 class="step-heading">You're <span>Ready</span></h2>
+      <p class="step-subheading">Your PortPilot workspace has been prepared and is ready to use.</p>
+
+      <!-- Connected platforms summary -->
+      <div class="connected-summary" id="connectedSummary">
+        <div class="connected-summary-title">Connected Platforms</div>
+        <div class="connected-chips" role="list" aria-label="Platform connection status">
+          <div class="connected-chip" id="chip-facebook" role="listitem">
+            <span class="chip-dot" aria-hidden="true"></span> Facebook
+          </div>
+          <div class="connected-chip" id="chip-instagram" role="listitem">
+            <span class="chip-dot" aria-hidden="true"></span> Instagram
+          </div>
+          <div class="connected-chip" id="chip-linkedin" role="listitem">
+            <span class="chip-dot" aria-hidden="true"></span> LinkedIn
+          </div>
+          <div class="connected-chip" id="chip-pinterest" role="listitem">
+            <span class="chip-dot" aria-hidden="true"></span> Pinterest
+          </div>
+        </div>
+      </div>
+
+      <!-- Plan card -->
+      <div class="plan-card" aria-label="Your current plan">
+        <div class="plan-badge"><i class="fa-solid fa-bolt" aria-hidden="true"></i> Your Plan</div>
+        <div class="plan-name">Free Plan</div>
+        <div class="plan-features" role="list">
+          <div class="plan-feature" role="listitem">
+            <div class="plan-feature-check" aria-hidden="true"><i class="fa-solid fa-check"></i></div>
+            <span>3 AI Content Generations</span>
+          </div>
+          <div class="plan-feature" role="listitem">
+            <div class="plan-feature-check" aria-hidden="true"><i class="fa-solid fa-check"></i></div>
+            <span>3 Publishing Sessions</span>
+          </div>
+          <div class="plan-feature" role="listitem">
+            <div class="plan-feature-check" aria-hidden="true"><i class="fa-solid fa-check"></i></div>
+            <span>Google Login</span>
+          </div>
+          <div class="plan-feature" role="listitem">
+            <div class="plan-feature-check" aria-hidden="true"><i class="fa-solid fa-check"></i></div>
+            <span>Professional Dashboard</span>
+          </div>
+          <div class="plan-feature" role="listitem">
+            <div class="plan-feature-check" aria-hidden="true"><i class="fa-solid fa-check"></i></div>
+            <span>Connect Social Platforms</span>
+          </div>
+        </div>
+        <p class="plan-upgrade-note">You can upgrade to <strong>PortPilot Pro</strong> at any time for unlimited publishing.</p>
+      </div>
+
+      <div class="divider" aria-hidden="true"></div>
+
+      <button
+        class="btn btn-primary"
+        id="step5-finish"
+        type="button"
+        aria-label="Go to your PortPilot dashboard"
+        onclick="finishOnboarding(this)"
+        style="font-size:16px; padding:17px 28px;"
+      >
+        <i class="fa-solid fa-gauge-high" style="font-size:15px;" aria-hidden="true"></i>
+        <span>Go To Dashboard</span>
+        <span class="btn-arrow" aria-hidden="true"><i class="fa-solid fa-arrow-right"></i></span>
+      </button>
+
+      <div class="terms-row">
+        By continuing you agree to our
+        <a href="terms.html">Terms of Service</a>
+        and
+        <a href="privacy.html">Privacy Policy</a>
+      </div>
+
+    </div>
+
+  </main><!-- /main.card -->
+
+</div><!-- /page-wrapper -->
+
+<!-- ─── Success Overlay ────────────────────────────────────── -->
+<div class="success-overlay" id="successOverlay" role="status" aria-live="polite" aria-atomic="true" aria-label="Onboarding complete">
+  <div class="success-check-ring" aria-hidden="true">
+    <i class="fa-solid fa-check"></i>
+  </div>
+  <h2 class="success-headline">Welcome to PortPilot</h2>
+  <p class="success-sub">Your workspace is ready.</p>
+  <div class="success-progress-bar" aria-hidden="true">
+    <div class="success-progress-fill" id="successProgressFill"></div>
+  </div>
+</div>
+
+<script>
+/* ================================================================
+   PORTPILOT ONBOARDING — JavaScript
+================================================================ */
+
+/* ----------------------------------------------------------------
+   Onboarding Data Object
+   Stores all collected values as the user progresses.
+---------------------------------------------------------------- */
+const onboarding = {
+  userType:      null,   // Step 2 — selected user type key
+  brandName:     '',     // Step 3 — brand / business name
+  displayName:   '',     // Step 3 — user's display name
+  website:       '',     // Step 3 — website URL (optional)
+  niche:         '',     // Step 3 — selected niche
+  country:       'nigeria', // Step 3 — selected country (default: Nigeria)
+  goal:          null,   // Step 3 — primary goal key
+  completedStep: 0,      // Highest step fully completed
+};
+
+/* ----------------------------------------------------------------
+   State (internal UI state)
+---------------------------------------------------------------- */
+const state = {
+  currentStep: 1,
+  totalSteps: 5,
+  selectedUserType: null,
+  userId: null,          // Set after Firebase auth
+};
+
+/* ================================================================
+   FIREBASE CONFIG HERE
+   //////////////////////////
+   Replace the object below with your Firebase project config.
+   //////////////////////////
+================================================================ */
+const firebaseConfig = {
+    apiKey:"AIzaSyBdF5IFp9MblVQ2GUvE2NC8TsgTpVuT7dM",
+    authDomain:"vs-code-d4d6b.firebaseapp.com",
+    projectId:"vs-code-d4d6b",
+    storageBucket:"vs-code-d4d6b.appspot.com",
+    messagingSenderId:"1012283563694",
+    appId:"1:1012283563694:web:f25cfd82e9f762f617d73f"
+  };
+/* ================================================================
+   FIREBASE INITIALIZATION — Placeholder
+   Uncomment and complete when Firebase SDK is loaded.
+================================================================ */
+/*
+import { initializeApp }              from "firebase/app";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getFirestore }               from "firebase/firestore";
+import { getStorage }                 from "firebase/storage";
+
+const firebaseApp = initializeApp(FIREBASE_CONFIG);
+const auth        = getAuth(firebaseApp);
+const db          = getFirestore(firebaseApp);
+const storage     = getStorage(firebaseApp);
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    state.userId = user.uid;
+    loadUserProfile();
+  }
+});
+*/
+
+/* ================================================================
+   FIRESTORE PLACEHOLDER FUNCTIONS
+================================================================ */
+
+/**
+ * saveUserProfile
+ * Saves the completed onboarding profile data to Firestore.
+ * @param {Object} profileData - User profile fields (userType, brandName, etc.)
+ */
+async function saveUserProfile(profileData) {
+  // TODO: Implement with Firestore
+  // const userRef = doc(db, "users", state.userId);
+  // await setDoc(userRef, profileData, { merge: true });
+  console.log("[Firebase] saveUserProfile() — placeholder", profileData);
+}
+
+/**
+ * loadUserProfile
+ * Loads an existing user profile to pre-fill onboarding fields.
+ */
+async function loadUserProfile() {
+  // TODO: Implement with Firestore
+  // const userRef = doc(db, "users", state.userId);
+  // const snap = await getDoc(userRef);
+  // if (snap.exists()) { /* pre-fill form fields */ }
+  console.log("[Firebase] loadUserProfile() — placeholder");
+}
+
+/**
+ * updateOnboardingProgress
+ * Persists the current step so users can resume onboarding later.
+ * @param {number} step - Current step number (1-5)
+ */
+async function updateOnboardingProgress(step) {
+  // TODO: Implement with Firestore
+  // const userRef = doc(db, "users", state.userId);
+  // await updateDoc(userRef, { onboardingStep: step, updatedAt: serverTimestamp() });
+  console.log("[Firebase] updateOnboardingProgress() — step:", step);
+}
+
+/* ================================================================
+   NAVIGATION
+================================================================ */
+
+const PROGRESS_WIDTHS = [20, 40, 60, 80, 100]; // % per step
+
+function goToStep(targetStep, triggerBtn) {
+  if (targetStep === state.currentStep) return;
+  if (targetStep > state.totalSteps)    return;
+
+  // Ripple on the clicked button
+  if (triggerBtn) createRipple(triggerBtn, null);
+
+  const currentEl = document.getElementById(`step-${state.currentStep}`);
+  const targetEl  = document.getElementById(`step-${targetStep}`);
+  if (!currentEl || !targetEl) return;
+
+  // Persist progress
+  updateOnboardingProgress(targetStep);
+
+  // Animate out
+  currentEl.classList.add('exit');
+  setTimeout(() => {
+    currentEl.classList.remove('active', 'exit');
+    currentEl.setAttribute('aria-hidden', 'true');
+
+    targetEl.classList.add('active');
+    targetEl.setAttribute('aria-hidden', 'false');
+    targetEl.focus?.();
+
+    state.currentStep = targetStep;
+    updateProgress();
+
+    // Scroll to top of card on mobile
+    document.getElementById('mainCard')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 280);
+}
+
+function updateProgress() {
+  const step   = state.currentStep;
+  const total  = state.totalSteps;
+
+  document.getElementById('progressFraction').textContent = `Step ${step} of ${total}`;
+
+  const fill = document.getElementById('progressBarFill');
+  fill.style.width = PROGRESS_WIDTHS[step - 1] + '%';
+
+  const progressContainer = document.getElementById('progressContainer');
+  progressContainer.setAttribute('aria-valuenow', step);
+
+  const dots = document.querySelectorAll('.progress-step-dot');
+  dots.forEach((dot, i) => {
+    const dotStep = i + 1;
+    dot.classList.remove('active', 'done');
+    if (dotStep === step) {
+      dot.classList.add('active');
+      dot.style.width = '28px';
+    } else if (dotStep < step) {
+      dot.classList.add('done');
+      dot.style.width = '14px';
+    } else {
+      dot.style.width = '8px';
+    }
+  });
+}
+
+/* ================================================================
+   DRAFT PERSISTENCE — localStorage
+   Saves progress locally so refreshing doesn't erase form data.
+================================================================ */
+
+const DRAFT_KEY = 'portpilot_onboarding_draft';
+const USER_PROFILE_KEY = 'portpilot_user_profile';
+
+function saveUserProfileLocally() {
+    const profile = {
+        userType: onboarding.userType,
+        brandName: onboarding.brandName,
+        displayName: onboarding.displayName,
+        website: onboarding.website,
+        niche: onboarding.niche,
+        country: onboarding.country,
+        goal: onboarding.goal,
+        connectedPlatforms: connectedPlatforms,
+        onboardingComplete: true,
+        createdAt: new Date().toISOString()
+    };
+
+    localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(profile));
+}
+
+function getUserProfile() {
+    const data = localStorage.getItem(USER_PROFILE_KEY);
+    return data ? JSON.parse(data) : null;
+}
+
+function saveDraft() {
+  try {
+    const draft = {
+      ...onboarding,
+      _savedAt: new Date().toISOString(),
+    };
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+  } catch (e) {
+    console.warn('[Draft] Could not save draft:', e);
+  }
+}
+
+function loadDraft() {
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    if (!raw) return null;
+    const draft = JSON.parse(raw);
+    // Merge saved values into the onboarding object
+    Object.keys(onboarding).forEach(key => {
+      if (draft[key] !== undefined && draft[key] !== null && draft[key] !== '') {
+        onboarding[key] = draft[key];
+      }
+    });
+    return draft;
+  } catch (e) {
+    console.warn('[Draft] Could not load draft:', e);
+    return null;
+  }
+}
+
+function clearDraft() {
+  try {
+    localStorage.removeItem(DRAFT_KEY);
+    console.log('[Draft] Draft cleared.');
+  } catch (e) {
+    console.warn('[Draft] Could not clear draft:', e);
+  }
+}
+
+/* ================================================================
+   FIREBASE PLACEHOLDER FUNCTIONS
+================================================================ */
+
+/**
+ * createFirestoreUser
+ * Called after a new user signs up to create their Firestore document.
+ * @param {string} uid   — Firebase Auth UID
+ * @param {Object} data  — Initial profile data
+ */
+async function createFirestoreUser(uid, data) {
+  // TODO: Insert Firebase logic here
+  // -------------------------------------------------
+  // import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+  // const userRef = doc(db, "users", uid);
+  // await setDoc(userRef, {
+  //   ...data,
+  //   createdAt: serverTimestamp(),
+  //   updatedAt: serverTimestamp(),
+  // });
+  // -------------------------------------------------
+  console.log('[Firebase] createFirestoreUser() — placeholder', { uid, data });
+}
+
+/**
+ * updateFirestoreUser
+ * Updates an existing Firestore user document with new field values.
+ * @param {string} uid   — Firebase Auth UID
+ * @param {Object} data  — Fields to update (partial)
+ */
+async function updateFirestoreUser(uid, data) {
+  // TODO: Insert Firebase logic here
+  // -------------------------------------------------
+  // import { doc, updateDoc, serverTimestamp } from "firebase/firestore";
+  // const userRef = doc(db, "users", uid);
+  // await updateDoc(userRef, {
+  //   ...data,
+  //   updatedAt: serverTimestamp(),
+  // });
+  // -------------------------------------------------
+  console.log('[Firebase] updateFirestoreUser() — placeholder', { uid, data });
+}
+
+/**
+ * saveBrandInformation
+ * Saves the Step 3 brand data to Firestore under the user's document.
+ * @param {Object} brandData — { brandName, displayName, website, niche, country, goal }
+ */
+async function saveBrandInformation(brandData) {
+  // TODO: Insert Firebase logic here
+  // -------------------------------------------------
+  // const uid = state.userId;
+  // if (!uid) return;
+  // import { doc, updateDoc, serverTimestamp } from "firebase/firestore";
+  // const userRef = doc(db, "users", uid);
+  // await updateDoc(userRef, {
+  //   brand: brandData,
+  //   onboardingStep: 3,
+  //   updatedAt: serverTimestamp(),
+  // });
+  // -------------------------------------------------
+  console.log('[Firebase] saveBrandInformation() — placeholder', brandData);
+}
+
+/* ================================================================
+   USER TYPE SELECTION (Step 2)
+================================================================ */
+
+function selectUserType(card) {
+  const allCards = document.querySelectorAll('.user-type-card');
+  allCards.forEach(c => {
+    c.classList.remove('selected');
+    c.setAttribute('aria-checked', 'false');
+  });
+
+  card.classList.add('selected');
+  card.setAttribute('aria-checked', 'true');
+  state.selectedUserType = card.dataset.type;
+  onboarding.userType = card.dataset.type;
+  saveDraft();
+
+  document.getElementById('step2-continue').disabled = false;
+
+  card.animate([
+    { transform: 'scale(1)' },
+    { transform: 'scale(1.035)' },
+    { transform: 'scale(1)' }
+  ], { duration: 260, easing: 'ease-out' });
+}
+
+/* ================================================================
+   GOAL SELECTION (Step 3)
+================================================================ */
+
+function selectGoal(card) {
+  document.querySelectorAll('.goal-card').forEach(c => {
+    c.classList.remove('selected');
+    c.setAttribute('aria-checked', 'false');
+  });
+
+  card.classList.add('selected');
+  card.setAttribute('aria-checked', 'true');
+  onboarding.goal = card.dataset.goal;
+  saveDraft();
+
+  document.getElementById('goal-error').classList.remove('visible');
+  checkStep3Valid();
+
+  card.animate([
+    { transform: 'scale(1)' },
+    { transform: 'scale(1.04)' },
+    { transform: 'scale(1)' }
+  ], { duration: 240, easing: 'ease-out' });
+}
+
+/* ================================================================
+   KEYBOARD NAVIGATION — Cards
+================================================================ */
+
+function handleCardKey(event, card, type) {
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault();
+    if (type === 'goal') selectGoal(card);
+    else                 selectUserType(card);
+  }
+}
+
+/* ================================================================
+   STEP 3 — FORM VALIDATION
+================================================================ */
+
+const VALIDATORS = {
+  brandName:   { required: true,  validate: v => v.trim().length > 0 },
+  displayName: { required: true,  validate: v => v.trim().length > 0 },
+  website:     { required: false, validate: v => {
+    if (!v.trim()) return true; // optional — blank is fine
+    try { new URL(v.trim()); return true; } catch { return false; }
+  }},
+  niche:   { required: true, validate: v => v !== '' },
+  country: { required: true, validate: v => v !== '' },
+};
+
+function validateField(id) {
+  const el  = document.getElementById(id);
+  const fg  = document.getElementById(`fg-${id}`);
+  const cfg = VALIDATORS[id];
+  if (!el || !fg || !cfg) return true;
+
+  const val   = el.value;
+  const valid = cfg.validate(val);
+  const blank = !val.trim() && cfg.required;
+
+  fg.classList.remove('is-valid', 'is-error');
+
+  if (blank || !valid) {
+    fg.classList.add('is-error');
+    const si = document.getElementById(`${id}-status`);
+    if (si) { si.className = 'fa-solid fa-circle-xmark input-status-icon'; }
+    return false;
+  }
+
+  if (val.trim()) {
+    fg.classList.add('is-valid');
+    const si = document.getElementById(`${id}-status`);
+    if (si) { si.className = 'fa-solid fa-circle-check input-status-icon'; }
+  }
+  return true;
+}
+
+function checkStep3Valid() {
+  const fieldsOk = Object.keys(VALIDATORS).every(id => {
+    const el  = document.getElementById(id);
+    const cfg = VALIDATORS[id];
+    if (!el) return true;
+    return cfg.validate(el.value) && (!cfg.required || el.value.trim() !== '');
+  });
+
+  const goalOk = !!onboarding.goal;
+  document.getElementById('step3-continue').disabled = !(fieldsOk && goalOk);
+}
+
+function setupStep3Listeners() {
+  Object.keys(VALIDATORS).forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    el.addEventListener('input', () => {
+      onboarding[id] = el.value;
+      validateField(id);
+      checkStep3Valid();
+      saveDraft();
+    });
+
+    el.addEventListener('blur', () => {
+      validateField(id);
+      checkStep3Valid();
+    });
+  });
+}
+
+function handleStep3Continue(btn) {
+  createRipple(btn, null);
+
+  // Validate all fields, show errors for any failures
+  let allOk = true;
+  Object.keys(VALIDATORS).forEach(id => {
+    if (!validateField(id)) allOk = false;
+  });
+
+  if (!onboarding.goal) {
+    document.getElementById('goal-error').classList.add('visible');
+    allOk = false;
+  }
+
+  if (!allOk) {
+    // Shake the button subtly
+    btn.animate([
+      { transform: 'translateX(0)' },
+      { transform: 'translateX(-5px)' },
+      { transform: 'translateX(5px)' },
+      { transform: 'translateX(-3px)' },
+      { transform: 'translateX(0)' },
+    ], { duration: 350, easing: 'ease-out' });
+    return;
+  }
+
+  // Collect form values into onboarding object
+  onboarding.brandName   = document.getElementById('brandName').value.trim();
+  onboarding.displayName = document.getElementById('displayName').value.trim();
+  onboarding.website     = document.getElementById('website').value.trim();
+  onboarding.niche       = document.getElementById('niche').value;
+  onboarding.country     = document.getElementById('country').value;
+  onboarding.completedStep = Math.max(onboarding.completedStep, 3);
+
+  saveDraft();
+  saveBrandInformation({
+    brandName:   onboarding.brandName,
+    displayName: onboarding.displayName,
+    website:     onboarding.website,
+    niche:       onboarding.niche,
+    country:     onboarding.country,
+    goal:        onboarding.goal,
+  });
+  updateOnboardingProgress(4);
+  goToStep(4, null);
+}
+
+/* ================================================================
+   POPULATE STEP 3 FROM DRAFT
+================================================================ */
+
+function populateStep3FromDraft() {
+  const fields = ['brandName', 'displayName', 'website', 'niche', 'country'];
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && onboarding[id]) {
+      el.value = onboarding[id];
+      validateField(id);
+    }
+  });
+
+  if (onboarding.goal) {
+    const card = document.querySelector(`.goal-card[data-goal="${onboarding.goal}"]`);
+    if (card) {
+      card.classList.add('selected');
+      card.setAttribute('aria-checked', 'true');
+    }
+  }
+
+  checkStep3Valid();
+}
+
+/* ================================================================
+   RIPPLE EFFECT
+================================================================ */
+
+function createRipple(button, event) {
+  if (!button) return;
+  const existing = button.querySelector('.ripple');
+  if (existing) existing.remove();
+
+  const rect   = button.getBoundingClientRect();
+  const size   = Math.max(rect.width, rect.height);
+  const x      = event ? event.clientX - rect.left - size / 2 : rect.width / 2 - size / 2;
+  const y      = event ? event.clientY - rect.top  - size / 2 : rect.height / 2 - size / 2;
+
+  const ripple = document.createElement('span');
+  ripple.classList.add('ripple');
+  ripple.style.cssText = `left:${x}px;top:${y}px;width:${size}px;height:${size}px;`;
+  button.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 600);
+}
+
+document.querySelectorAll('.btn-primary').forEach(btn => {
+  btn.addEventListener('click', (e) => createRipple(btn, e));
+});
+
+/* ================================================================
+   CONNECTED PLATFORMS DATA MODEL
+================================================================ */
+
+const connectedPlatforms = {
+  facebook:  false,
+  instagram: false,
+  linkedin:  false,
+  pinterest: false,
+};
+
+/* ================================================================
+   SETTINGS PREPARATION — Placeholder for future Settings page
+   All keys map to sections that will be built post-onboarding.
+================================================================ */
+
+const userSettings = {
+  profile:            { /* TODO: name, avatar, bio, handle */ },
+  connectedPlatforms: { /* TODO: OAuth tokens, platform account IDs */ },
+  notifications:      { /* TODO: email alerts, push, digest frequency */ },
+  security:           { /* TODO: two-factor auth, active sessions, login history */ },
+  billing:            { /* TODO: current plan, invoices, payment methods */ },
+  subscription:       { /* TODO: plan details, renewal date, usage limits */ },
+  theme:              { /* TODO: 'light' | 'dark' | 'system' */ },
+  language:           { /* TODO: locale, date format, timezone */ },
+};
+
+/* ================================================================
+   BILLING DATA MODEL — Placeholder for Stripe integration
+================================================================ */
+
+const billing = {
+  plan:         'free',       // 'free' | 'pro' | 'enterprise'
+  credits:       3,           // AI generation credits remaining
+  subscription: 'inactive',  // 'inactive' | 'active' | 'cancelled'
+
+  // Set on upgrade — 'monthly' | 'yearly'
+  billingPeriod: null,
+
+  // Stripe fields — populated after Stripe customer creation
+  // stripeCustomerId:      null,
+  // stripeSubscriptionId:  null,
+  // stripePaymentMethodId: null,
+  // paymentVerified:       false,
+  // lastPaymentDate:       null,
+  // nextBillingDate:       null,
+};
+
+/* ================================================================
+   PLATFORM CONNECTION FUNCTIONS — OAuth placeholders
+   Replace the simulatePlatformConnection() calls with real
+   OAuth redirect logic once backend endpoints are ready.
+================================================================ */
+
+/**
+ * connectFacebook
+ * Initiates the Facebook OAuth authorization flow.
+ */
+function connectFacebook(btn) {
+  // Facebook OAuth will be implemented here.
+  // ─────────────────────────────────────────────────────────────
+  // 1. Generate a CSRF state token and store it in sessionStorage
+  // 2. Build the authorization URL:
+  //    https://www.facebook.com/dialog/oauth
+  //      ?client_id=APP_ID
+  //      &redirect_uri=CALLBACK_URL
+  //      &scope=pages_manage_posts,pages_read_engagement
+  //      &state=STATE_TOKEN
+  // 3. window.location.href = authUrl;
+  // 4. On callback: exchange code → access token via server
+  // 5. Save encrypted token to Firestore: users/{uid}/platforms/facebook
+  // ─────────────────────────────────────────────────────────────
+  console.log('[OAuth] connectFacebook() — placeholder');
+  simulatePlatformConnection('facebook');
+}
+
+/**
+ * connectInstagram
+ * Initiates the Instagram OAuth flow via Facebook's Graph API.
+ */
+function connectInstagram(btn) {
+  // Instagram OAuth will be implemented here.
+  // ─────────────────────────────────────────────────────────────
+  // Instagram Business accounts use the Facebook OAuth flow:
+  // 1. Request scopes: instagram_basic, instagram_content_publish
+  // 2. After authorization, retrieve linked Instagram Business Account ID
+  // 3. Save access_token + instagram_account_id to Firestore
+  // ─────────────────────────────────────────────────────────────
+  console.log('[OAuth] connectInstagram() — placeholder');
+  simulatePlatformConnection('instagram');
+}
+
+/**
+ * connectLinkedIn
+ * Initiates the LinkedIn OAuth 2.0 authorization flow.
+ */
+function connectLinkedIn(btn) {
+  // LinkedIn OAuth will be implemented here.
+  // ─────────────────────────────────────────────────────────────
+  // 1. Build authorization URL:
+  //    https://www.linkedin.com/oauth/v2/authorization
+  //      ?client_id=CLIENT_ID
+  //      &redirect_uri=CALLBACK_URL
+  //      &response_type=code
+  //      &scope=r_liteprofile,w_member_social
+  //      &state=STATE_TOKEN
+  // 2. Exchange code → access token via server
+  // 3. Save token to Firestore: users/{uid}/platforms/linkedin
+  // ─────────────────────────────────────────────────────────────
+  console.log('[OAuth] connectLinkedIn() — placeholder');
+  simulatePlatformConnection('linkedin');
+}
+
+/**
+ * connectPinterest
+ * Initiates the Pinterest OAuth 2.0 authorization flow.
+ */
+function connectPinterest(btn) {
+  // Pinterest OAuth will be implemented here.
+  // ─────────────────────────────────────────────────────────────
+  // 1. Build authorization URL:
+  //    https://www.pinterest.com/oauth/
+  //      ?client_id=APP_ID
+  //      &redirect_uri=CALLBACK_URL
+  //      &response_type=code
+  //      &scope=boards:read,pins:read,pins:write
+  //      &state=STATE_TOKEN
+  // 2. Exchange code → access token via server
+  // 3. Save token to Firestore: users/{uid}/platforms/pinterest
+  // ─────────────────────────────────────────────────────────────
+  console.log('[OAuth] connectPinterest() — placeholder');
+  simulatePlatformConnection('pinterest');
+}
+
+/**
+ * simulatePlatformConnection
+ * UI-only demo that marks a platform as connected.
+ * Remove once real OAuth is wired up.
+ * @param {string} platform — 'facebook' | 'instagram' | 'linkedin' | 'pinterest'
+ */
+function simulatePlatformConnection(platform) {
+  connectedPlatforms[platform] = true;
+  saveDraft();
+
+  const card  = document.getElementById(`pc-${platform}`);
+  const badge = document.getElementById(`badge-${platform}`);
+  if (card)  card.classList.add('connected');
+  if (badge) {
+    badge.textContent = 'Connected';
+    badge.className   = 'status-badge connected';
+  }
+}
+
+/* ================================================================
+   STEP 4 — CONTINUE / SKIP
+================================================================ */
+
+function handleStep4Continue(btn) {
+  if (btn) createRipple(btn, null);
+
+  // Snapshot platform state into the onboarding object
+  onboarding.connectedPlatforms = { ...connectedPlatforms };
+  onboarding.completedStep = Math.max(onboarding.completedStep, 4);
+  saveDraft();
+
+  // Reflect connection status in Step 5 chips before navigating
+  updateConnectedSummary();
+  updateOnboardingProgress(5);
+  goToStep(5, null);
+}
+
+/**
+ * updateConnectedSummary
+ * Updates the platform chips in Step 5 to reflect actual connection state.
+ */
+function updateConnectedSummary() {
+  Object.keys(connectedPlatforms).forEach(platform => {
+    const chip = document.getElementById(`chip-${platform}`);
+    if (!chip) return;
+    chip.classList.toggle('is-connected', connectedPlatforms[platform]);
+  });
+}
+
+/* ================================================================
+   FINISH ONBOARDING (Step 5)
+================================================================ */
+
+/**
+ * finishOnboarding
+ * Called when the user clicks "Go To Dashboard".
+ * Runs all save placeholders, shows the success animation,
+ * then redirects after ~2 seconds.
+ * @param {HTMLElement} btn — the clicked button element
+ */
+function finishOnboarding(btn) {
+
+    if (btn) {
+        createRipple(btn, null);
+        btn.disabled = true;
+    }
+
+    saveUserProfileLocally();
+
+    const overlay = document.getElementById("successOverlay");
+
+    if (overlay) {
+
+        overlay.classList.add("visible");
+
+        const fill = document.getElementById("successProgressFill");
+
+        requestAnimationFrame(() => {
+            fill.style.width = "100%";
+        });
+
+    }
+
+    setTimeout(() => {
+
+        clearDraft();
+
+        window.location.href = "ho me.html";
+
+    }, 2100);
+
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   /////////////////////////////////////////////////
+   FIREBASE IMPLEMENTATION PLACEHOLDER
+   /////////////////////////////////////////////////
+   Functions below are ready-to-wire stubs.
+   Replace console.log bodies with real Firestore logic once
+   the Firebase SDK is imported and initialized.
+═══════════════════════════════════════════════════════════════════ */
+
+/**
+ * initializeFirebase
+ * Called once on page load to initialize the Firebase app.
+ * Populate FIREBASE_CONFIG with real credentials first.
+ */
+function initializeFirebase() {
+  // TODO: Firebase initialization will be implemented here.
+  // ─────────────────────────────────────────────────────────────
+  // import { initializeApp }               from "firebase/app";
+  // import { getAuth, onAuthStateChanged }  from "firebase/auth";
+  // import { getFirestore }                from "firebase/firestore";
+  // const app  = initializeApp(FIREBASE_CONFIG);
+  // const auth = getAuth(app);
+  // const db   = getFirestore(app);
+  // onAuthStateChanged(auth, (user) => {
+  //   if (user) state.userId = user.uid;
+  // });
+  // ─────────────────────────────────────────────────────────────
+  console.log('[Firebase] initializeFirebase() — placeholder');
+}
+
+/**
+ * saveUserToFirestore
+ * Creates or merges the full onboarding profile document in Firestore.
+ */
+async function saveUserToFirestore() {
+  // TODO: Firestore logic will be implemented here.
+  // ─────────────────────────────────────────────────────────────
+  // const uid = state.userId;
+  // if (!uid) return;
+  // import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+  // const ref = doc(db, "users", uid);
+  // await setDoc(ref, {
+  //   ...onboarding,
+  //   onboardingComplete: true,
+  //   completedAt: serverTimestamp(),
+  //   updatedAt:   serverTimestamp(),
+  // }, { merge: true });
+  // ─────────────────────────────────────────────────────────────
+  console.log('[Firebase] saveUserToFirestore() — placeholder', onboarding);
+}
+
+/**
+ * updatePlatformConnections
+ * Saves the user's connected platform status to Firestore.
+ */
+async function updatePlatformConnections() {
+  // TODO: Firestore logic will be implemented here.
+  // ─────────────────────────────────────────────────────────────
+  // const uid = state.userId;
+  // if (!uid) return;
+  // const ref = doc(db, "users", uid);
+  // await updateDoc(ref, {
+  //   platforms: connectedPlatforms,
+  //   updatedAt: serverTimestamp(),
+  // });
+  // ─────────────────────────────────────────────────────────────
+  console.log('[Firebase] updatePlatformConnections() — placeholder', connectedPlatforms);
+}
+
+/**
+ * saveSubscriptionPlan
+ * Saves the user's current billing plan to Firestore.
+ */
+async function saveSubscriptionPlan() {
+  // TODO: Firestore logic will be implemented here.
+  // ─────────────────────────────────────────────────────────────
+  // const uid = state.userId;
+  // if (!uid) return;
+  // const ref = doc(db, "users", uid);
+  // await updateDoc(ref, {
+  //   billing:   billing,
+  //   updatedAt: serverTimestamp(),
+  // });
+  // ─────────────────────────────────────────────────────────────
+  console.log('[Firebase] saveSubscriptionPlan() — placeholder', billing);
+}
+
+/**
+ * redirectToDashboard
+ * Redirects the user to dashboard.html once onboarding is fully saved.
+ */
+function redirectToDashboard() {
+
+  // TODO: Redirect will be finalized here.
+  // ─────────────────────────────────────────────────────────────
+  // clearDraft();
+  // window.location.href = 'dashboard.html';
+  // ─────────────────────────────────────────────────────────────
+  window.location.href = "ho me.html";
+  // window.location.href = 'dashboard.html';
+}
+
+/* Internal aliases used by finishOnboarding */
+async function saveOnboardingToFirestore() { return saveUserToFirestore(); }
+async function createUserProfileRecord()   { return saveUserToFirestore(); }
+async function savePlatformConnections()   { return updatePlatformConnections(); }
+
+/* ================================================================
+   NAVIGATION — Final step redirects to dashboard
+================================================================ */
+
+function completeOnboarding() {
+  saveUserProfile({
+    ...onboarding,
+    onboardingComplete: true,
+    completedAt: new Date().toISOString()
+  });
+  clearDraft();
+  window.location.href = 'ho me.html';
+}
+
+/* ================================================================
+   INIT
+================================================================ */
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Restore draft if available
+  const draft = loadDraft();
+
+  // Restore step 2 selection from draft
+  if (draft && draft.userType) {
+    const savedCard = document.querySelector(`.user-type-card[data-type="${draft.userType}"]`);
+    if (savedCard) {
+      savedCard.classList.add('selected');
+      savedCard.setAttribute('aria-checked', 'true');
+      state.selectedUserType = draft.userType;
+      document.getElementById('step2-continue').disabled = false;
+    }
+  }
+
+  // Set up Step 3 input listeners
+  setupStep3Listeners();
+
+  // Populate step 3 from draft
+  if (draft) populateStep3FromDraft();
+
+  updateProgress();
+});
+</script>
+</body>
+</html>
