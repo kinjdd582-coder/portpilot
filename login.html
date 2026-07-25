@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PortPilot - Login</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Inter",sans-serif;
+}
+
+
+body{
+
+    min-height:100vh;
+    background:#f8fafc;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#0f172a;
+    padding:20px;
+
+}
+
+
+/* MAIN CONTAINER */
+
+.auth-wrapper{
+
+    width:100%;
+    max-width:460px;
+
+}
+
+
+/* LOGO */
+
+
+.logo{
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:12px;
+
+    font-size:28px;
+    font-weight:800;
+
+    margin-bottom:35px;
+
+}
+
+
+.logo-icon{
+
+    width:45px;
+    height:45px;
+
+    border-radius:14px;
+
+    background:#2563eb;
+
+    color:white;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    font-weight:800;
+
+    box-shadow:
+    0 10px 25px rgba(37,99,235,.25);
+
+}
+
+
+
+/* CARD */
+
+
+.auth-card{
+
+    background:white;
+
+    border:1px solid #e2e8f0;
+
+    border-radius:24px;
+
+    padding:40px;
+
+    box-shadow:
+    0 25px 70px rgba(15,23,42,.08);
+
+    animation:show .5s ease;
+
+
+}
+
+
+@keyframes show{
+
+from{
+
+opacity:0;
+transform:translateY(20px);
+
+}
+
+to{
+
+opacity:1;
+transform:translateY(0);
+
+}
+
+}
+
+
+
+
+.header h1{
+
+    font-size:32px;
+
+    letter-spacing:-1px;
+
+    font-weight:800;
+
+    margin-bottom:12px;
+
+}
+
+
+.header p{
+
+    color:#64748b;
+
+    line-height:1.6;
+
+    margin-bottom:30px;
+
+}
+
+
+
+
+
+/* GOOGLE BUTTON */
+
+
+.google-btn{
+
+    width:100%;
+
+    height:54px;
+
+    border-radius:12px;
+
+    border:1px solid #dbe3ef;
+
+    background:white;
+
+    cursor:pointer;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:12px;
+
+    transition:.3s;
+
+}
+
+
+.google-btn:hover{
+
+    background:#f8fafc;
+
+    transform:translateY(-2px);
+
+}
+
+
+
+.google-icon{
+
+    font-weight:800;
+
+    color:#4285f4;
+
+    font-size:20px;
+
+}
+
+
+
+/* DIVIDER */
+
+
+.divider{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    margin:25px 0;
+
+    color:#94a3b8;
+
+    font-size:13px;
+
+}
+
+
+.divider:before,
+.divider:after{
+
+    content:"";
+
+    height:1px;
+
+    background:#e2e8f0;
+
+    flex:1;
+
+}
+
+
+
+
+/* INPUTS */
+
+
+.input-group{
+
+    margin-bottom:18px;
+
+}
+
+
+.input-group label{
+
+    display:block;
+
+    font-size:14px;
+
+    font-weight:600;
+
+    margin-bottom:8px;
+
+}
+
+
+
+.input-group input{
+
+
+    width:100%;
+
+    height:52px;
+
+    border-radius:12px;
+
+    border:1px solid #cbd5e1;
+
+    padding:0 15px;
+
+    outline:none;
+
+    font-size:15px;
+
+    transition:.3s;
+
+
+}
+
+
+
+.input-group input:focus{
+
+    border-color:#2563eb;
+
+    box-shadow:
+    0 0 0 4px rgba(37,99,235,.1);
+
+}
+
+
+
+
+
+/* BUTTON */
+
+
+.submit-btn{
+
+
+    width:100%;
+
+    height:54px;
+
+    background:#2563eb;
+
+    color:white;
+
+    border:none;
+
+    border-radius:12px;
+
+    font-size:16px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+
+}
+
+
+
+.submit-btn:hover{
+
+    background:#1d4ed8;
+
+    transform:translateY(-2px);
+
+}
+
+
+
+
+
+.forgot{
+
+    text-align:right;
+
+    margin-bottom:20px;
+
+}
+
+
+
+.forgot a{
+
+    color:#2563eb;
+
+    text-decoration:none;
+
+    font-size:14px;
+
+    font-weight:600;
+
+}
+
+
+
+
+
+.toggle{
+
+    text-align:center;
+
+    margin-top:25px;
+
+    color:#64748b;
+
+    font-size:14px;
+
+}
+
+
+.toggle a{
+
+    color:#2563eb;
+
+    font-weight:700;
+
+    text-decoration:none;
+
+}
+
+
+
+
+
+.message{
+
+    display:none;
+
+    padding:12px;
+
+    border-radius:10px;
+
+    margin-bottom:15px;
+
+    font-size:14px;
+
+}
+
+
+
+.error{
+
+    display:block;
+
+    background:#fee2e2;
+
+    color:#991b1b;
+
+}
+
+
+.success{
+
+    display:block;
+
+    background:#dcfce7;
+
+    color:#166534;
+
+}
+
+
+
+
+/* MOBILE */
+
+
+@media(max-width:480px){
+
+
+body{
+
+    padding:15px;
+
+}
+
+
+
+.logo{
+
+    font-size:24px;
+
+    margin-bottom:25px;
+
+}
+
+
+
+.auth-card{
+
+    padding:28px 22px;
+
+    border-radius:20px;
+
+}
+
+
+
+.header h1{
+
+    font-size:26px;
+
+}
+
+
+
+}
+
+
+</style>
+
+
+</head>
+
+
+<body>
+
+
+<div class="auth-wrapper">
+
+
+
+<div class="logo">
+
+<div class="logo-icon">
+P
+</div>
+
+PortPilot
+
+</div>
+
+
+
+<div class="auth-card">
+
+
+<div class="header">
+
+
+<h1>
+Welcome to PortPilot
+</h1>
+
+
+<p>
+Create your account and start growing your portfolio with powerful publishing tools.
+</p>
+
+
+</div>
+
+
+
+<button class="google-btn" id="googleLogin">
+
+<span class="google-icon">
+G
+</span>
+
+Continue with Google
+
+</button>
+
+
+
+
+<div class="divider">
+
+<span>
+or continue with email
+</span>
+
+</div>
+
+
+
+<div id="message" class="message"></div>
+
+
+
+<form id="authForm">
+
+
+
+<div class="input-group" id="nameBox">
+
+<label>
+Full Name
+</label>
+
+
+<input 
+id="fullName"
+type="text"
+placeholder="Your name"
+>
+
+
+</div>
+
+
+
+<div class="input-group">
+
+<label>
+Email
+</label>
+
+
+<input 
+id="email"
+type="email"
+placeholder="Email address"
+required
+>
+
+
+</div>
+
+
+
+<div class="input-group">
+
+<label>
+Password
+</label>
+
+
+<input 
+id="password"
+type="password"
+placeholder="Password"
+required
+>
+
+
+</div>
+
+
+
+<div class="forgot">
+
+<a href="#" id="resetPassword">
+Forgot password?
+</a>
+
+</div>
+
+
+
+<button class="submit-btn" id="submitBtn">
+
+Create Account
+
+</button>
+
+
+
+</form>
+
+
+
+<div class="toggle">
+
+<span id="toggleText">
+Already have an account?
+</span>
+
+
+<a href="#" id="toggleBtn">
+Login
+</a>
+
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+
+<script type="module">
+
+import { initializeApp } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+getAuth,
+GoogleAuthProvider,
+signInWithPopup,
+createUserWithEmailAndPassword,
+signInWithEmailAndPassword,
+sendPasswordResetEmail,
+updateProfile
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+import {
+getFirestore,
+doc,
+setDoc,
+getDoc,
+serverTimestamp
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+import {
+getStorage
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+
+
+const firebaseConfig = {
+
+apiKey:"AIzaSyA5Wab9dX0UKqdkTEUKC25SLtREOK2Bcw0",
+
+authDomain:"portpilot-16d14.firebaseapp.com",
+
+projectId:"portpilot-16d14",
+
+storageBucket:"portpilot-16d14.firebasestorage.app",
+
+messagingSenderId:"941538760648",
+
+appId:"1:941538760648:web:a7fc4f00e96e0cd40712fd"
+
+};
+
+
+
+const app = initializeApp(firebaseConfig);
+
+
+const auth = getAuth(app);
+
+const db = getFirestore(app);
+
+const storage = getStorage(app);
+
+
+
+
+
+const googleLogin =
+document.getElementById("googleLogin");
+
+
+const authForm =
+document.getElementById("authForm");
+
+
+const submitBtn =
+document.getElementById("submitBtn");
+
+
+const toggleBtn =
+document.getElementById("toggleBtn");
+
+
+const toggleText =
+document.getElementById("toggleText");
+
+
+const nameBox =
+document.getElementById("nameBox");
+
+
+const message =
+document.getElementById("message");
+
+
+const resetPassword =
+document.getElementById("resetPassword");
+
+
+
+let loginMode = false;
+
+
+
+
+
+function showMessage(text,type){
+
+message.style.display="block";
+
+message.textContent=text;
+
+message.className="message "+type;
+
+}
+
+
+
+function loading(status){
+
+if(status){
+
+submitBtn.disabled=true;
+
+submitBtn.textContent="Please wait...";
+
+}
+
+else{
+
+submitBtn.disabled=false;
+
+submitBtn.textContent=
+loginMode ? "Login" : "Create Account";
+
+}
+
+}
+
+
+
+
+
+
+async function saveUser(user,fullName){
+
+
+const userRef =
+doc(db,"users",user.uid);
+
+
+
+const userSnap =
+await getDoc(userRef);
+
+
+
+if(!userSnap.exists()){
+
+
+await setDoc(userRef,{
+uid:user.uid,
+
+fullName:fullName || user.displayName || "",
+
+email:user.email,
+
+profilePhoto:user.photoURL || "",
+
+provider:user.providerData[0]?.providerId || "password",
+
+plan:"free",
+
+blastsRemaining:3,
+
+onboardingCompleted:false,
+
+createdAt:serverTimestamp(),
+
+updatedAt:serverTimestamp()
+
+});
+
+
+
+}
+
+
+}
+
+
+
+
+
+// GOOGLE LOGIN
+
+
+googleLogin.onclick = async()=>{
+
+
+try{
+
+
+googleLogin.innerHTML="Connecting...";
+
+
+const provider =
+new GoogleAuthProvider();
+
+
+
+const result =
+await signInWithPopup(
+auth,
+provider
+);
+
+
+
+await saveUser(
+result.user,
+result.user.displayName
+);
+
+
+
+window.location.href="onboarding.html";
+
+
+
+}
+
+catch(error){
+
+
+showMessage(
+error.message,
+"error"
+);
+
+
+
+googleLogin.innerHTML=
+`
+<span class="google-icon">G</span>
+Continue with Google
+`;
+
+}
+
+
+};
+
+
+
+
+
+
+
+// EMAIL LOGIN / SIGNUP
+
+
+authForm.addEventListener(
+"submit",
+async(e)=>{
+
+
+e.preventDefault();
+
+
+
+const email =
+document.getElementById("email").value.trim();
+
+
+const password =
+document.getElementById("password").value;
+
+
+const fullName =
+document.getElementById("fullName").value.trim();
+
+
+
+loading(true);
+
+
+
+try{
+
+
+let user;
+
+
+
+if(loginMode){
+
+
+const result =
+await signInWithEmailAndPassword(
+auth,
+email,
+password
+);
+
+
+user=result.user;
+
+
+
+
+}
+
+else{
+
+
+const result =
+await createUserWithEmailAndPassword(
+auth,
+email,
+password
+);
+
+
+user=result.user;
+await updateProfile(user,{
+    displayName:fullName
+});
+
+
+
+}
+
+
+
+await saveUser(
+user,
+fullName
+);
+
+
+
+window.location.href="onboading.html";
+
+
+
+}
+
+catch(error){
+
+
+showMessage(
+error.message,
+"error"
+);
+
+
+}
+
+
+
+loading(false);
+
+
+});
+
+
+
+
+
+
+
+// SWITCH LOGIN / SIGNUP
+
+
+toggleBtn.onclick=(e)=>{
+
+
+e.preventDefault();
+
+
+
+loginMode=!loginMode;
+
+
+
+if(loginMode){
+
+
+nameBox.style.display="none";
+
+
+submitBtn.textContent="Login";
+
+
+toggleText.textContent=
+"Don't have an account?";
+
+
+toggleBtn.textContent=
+"Create Account";
+
+
+}
+
+else{
+
+
+nameBox.style.display="block";
+
+
+submitBtn.textContent=
+"Create Account";
+
+
+toggleText.textContent=
+"Already have an account?";
+
+
+toggleBtn.textContent=
+"Login";
+
+
+}
+
+
+};
+
+
+
+
+
+
+
+// PASSWORD RESET
+
+
+resetPassword.onclick=async(e)=>{
+
+
+e.preventDefault();
+
+
+
+const email =
+document.getElementById("email").value.trim();
+
+
+
+if(!email){
+
+showMessage(
+"Enter your email first.",
+"error"
+);
+
+return;
+
+}
+
+
+
+try{
+
+
+await sendPasswordResetEmail(
+auth,
+email
+);
+
+
+showMessage(
+"Password reset email sent.",
+"success"
+);
+
+
+
+}
+
+catch(error){
+
+
+showMessage(
+error.message,
+"error"
+);
+
+
+}
+
+
+
+};
+
+onAuthStateChanged(auth,(user)=>{
+
+if(user){
+
+window.location.href="onboading.html";
+
+}
+
+});
+</script>
+
+
+
+</body>
+
+</html>
