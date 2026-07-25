@@ -1,0 +1,2754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PortPilot — Grow Faster. Publish Smarter.</title>
+
+<meta name="description" content="Generate AI content and publish across LinkedIn, Instagram, Pinterest and X from one professional dashboard.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+
+/* ===========================
+   PORTPILOT PREMIUM SAAS
+=========================== */
+
+:root{
+
+--primary:#2563eb;
+--primary-dark:#1d4ed8;
+--bg:#ffffff;
+--section:#f8fafc;
+--text:#0f172a;
+--muted:#64748b;
+--border:#e2e8f0;
+--shadow:0 25px 70px rgba(15,23,42,.08);
+--radius:22px;
+
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+}
+
+html{
+scroll-behavior:smooth;
+}
+
+body{
+background:var(--bg);
+color:var(--text);
+overflow-x:hidden;
+}
+
+.container{
+width:min(92%,1200px);
+margin:auto;
+}
+
+/* ===========================
+   NAVIGATION
+=========================== */
+
+header{
+
+position:fixed;
+top:0;
+left:0;
+width:100%;
+
+background:rgba(255,255,255,.92);
+
+backdrop-filter:blur(14px);
+
+border-bottom:1px solid var(--border);
+
+z-index:1000;
+
+}
+
+nav{
+
+height:78px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:space-between;
+
+}
+
+.logo{
+
+display:flex;
+
+align-items:center;
+
+gap:12px;
+
+font-size:24px;
+
+font-weight:800;
+
+color:var(--text);
+
+text-decoration:none;
+
+}
+
+.logo-icon{
+
+width:42px;
+height:42px;
+
+border-radius:14px;
+
+background:linear-gradient(135deg,#3b82f6,#2563eb);
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+color:#fff;
+
+font-size:18px;
+
+font-weight:800;
+
+box-shadow:0 12px 28px rgba(37,99,235,.28);
+
+}
+
+.nav-links{
+
+display:flex;
+align-items:center;
+gap:34px;
+
+}
+
+.nav-links a{
+
+text-decoration:none;
+
+color:var(--muted);
+
+font-weight:600;
+
+transition:.3s;
+
+}
+
+.nav-links a:hover{
+
+color:var(--primary);
+
+}
+
+.nav-actions{
+
+display:flex;
+align-items:center;
+gap:16px;
+
+}
+
+.login-link{
+
+text-decoration:none;
+
+color:var(--text);
+
+font-weight:600;
+
+}
+
+.primary-btn{
+
+display:inline-flex;
+
+align-items:center;
+
+justify-content:center;
+
+padding:14px 22px;
+
+border-radius:14px;
+
+background:var(--primary);
+
+color:#fff;
+
+font-weight:700;
+
+text-decoration:none;
+
+transition:.3s;
+
+box-shadow:0 12px 30px rgba(37,99,235,.25);
+
+}
+
+.primary-btn:hover{
+
+background:var(--primary-dark);
+
+transform:translateY(-2px);
+
+}
+
+/* ===========================
+   HERO
+=========================== */
+
+.hero{
+
+padding-top:150px;
+
+padding-bottom:100px;
+
+}
+
+.hero-grid{
+
+display:grid;
+
+grid-template-columns:1.05fr .95fr;
+
+align-items:center;
+
+gap:70px;
+
+}
+
+.hero-badge{
+
+display:inline-flex;
+
+align-items:center;
+
+gap:10px;
+
+padding:9px 16px;
+
+border-radius:999px;
+
+background:#eff6ff;
+
+border:1px solid #dbeafe;
+
+color:var(--primary);
+
+font-size:14px;
+
+font-weight:700;
+
+margin-bottom:24px;
+
+}
+
+.hero h1{
+
+font-size:66px;
+
+font-weight:800;
+
+letter-spacing:-2.8px;
+
+line-height:1.05;
+
+margin-bottom:22px;
+
+max-width:620px;
+
+}
+
+.hero p{
+
+font-size:18px;
+
+line-height:1.9;
+
+color:var(--muted);
+
+max-width:580px;
+
+margin-bottom:36px;
+
+}
+
+.hero-buttons{
+
+display:flex;
+
+gap:18px;
+
+flex-wrap:wrap;
+
+}
+
+.secondary-btn{
+
+display:inline-flex;
+
+align-items:center;
+
+justify-content:center;
+
+padding:14px 22px;
+
+border-radius:14px;
+
+border:1px solid var(--border);
+
+background:#fff;
+
+color:var(--text);
+
+font-weight:700;
+
+text-decoration:none;
+
+transition:.3s;
+
+}
+
+.secondary-btn:hover{
+
+background:#f8fafc;
+
+transform:translateY(-2px);
+
+}
+
+.hero-stats{
+
+display:flex;
+
+gap:36px;
+
+margin-top:48px;
+
+flex-wrap:wrap;
+
+}
+
+.stat h3{
+
+font-size:28px;
+
+font-weight:800;
+
+margin-bottom:6px;
+
+}
+
+.stat p{
+
+font-size:14px;
+
+margin:0;
+
+color:var(--muted);
+
+}
+
+/* Dashboard CSS continues in Part 1A.2 */
+/* ===========================
+   PREMIUM DASHBOARD
+=========================== */
+
+.dashboard-preview{
+display:flex;
+justify-content:center;
+}
+
+.dashboard-window{
+width:100%;
+max-width:560px;
+background:#fff;
+border:1px solid var(--border);
+border-radius:24px;
+box-shadow:var(--shadow);
+overflow:hidden;
+transition:.35s ease;
+}
+
+.dashboard-window:hover{
+transform:translateY(-8px);
+box-shadow:0 35px 90px rgba(15,23,42,.12);
+}
+
+.window-top{
+height:64px;
+padding:0 22px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+border-bottom:1px solid var(--border);
+background:#fbfdff;
+}
+
+.window-left{
+display:flex;
+gap:8px;
+}
+
+.window-dot{
+width:10px;
+height:10px;
+border-radius:50%;
+}
+
+.window-dot.red{background:#ef4444;}
+.window-dot.yellow{background:#f59e0b;}
+.window-dot.green{background:#22c55e;}
+
+.window-title{
+font-size:14px;
+font-weight:700;
+color:var(--muted);
+}
+
+.user-avatar{
+width:36px;
+height:36px;
+border-radius:50%;
+background:var(--primary);
+color:#fff;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:700;
+}
+
+.dashboard-body{
+padding:24px;
+display:grid;
+gap:22px;
+}
+
+.project-card,
+.thumbnail-card,
+.platform-card{
+background:#fff;
+border:1px solid var(--border);
+border-radius:18px;
+padding:20px;
+}
+
+.card-header,
+.thumb-header,
+.platform-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:18px;
+}
+
+.card-header h4,
+.thumb-header h4,
+.platform-header h4{
+font-size:16px;
+font-weight:700;
+}
+
+.status-badge{
+background:#eff6ff;
+color:var(--primary);
+padding:6px 12px;
+border-radius:999px;
+font-size:12px;
+font-weight:700;
+}
+
+.project-card label{
+display:block;
+margin:14px 0 8px;
+font-size:13px;
+font-weight:600;
+color:var(--muted);
+}
+
+.project-card input{
+width:100%;
+padding:14px;
+border:1px solid var(--border);
+border-radius:12px;
+background:#f8fafc;
+font-size:14px;
+color:var(--text);
+}
+
+.ai-output{
+background:#f8fafc;
+border:1px solid var(--border);
+padding:16px;
+border-radius:12px;
+font-size:14px;
+line-height:1.7;
+color:var(--muted);
+}
+
+.tag-list{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin-top:10px;
+}
+
+.tag-list span{
+padding:8px 12px;
+background:#eff6ff;
+border-radius:999px;
+color:var(--primary);
+font-size:13px;
+font-weight:600;
+}
+
+.thumb-header button{
+border:none;
+background:#eff6ff;
+color:var(--primary);
+padding:8px 14px;
+border-radius:10px;
+font-weight:700;
+cursor:pointer;
+transition:.3s;
+}
+
+.thumb-header button:hover{
+background:var(--primary);
+color:#fff;
+}
+
+.thumbnail-preview{
+height:180px;
+border-radius:16px;
+background:linear-gradient(135deg,#2563eb,#60a5fa);
+display:flex;
+align-items:flex-end;
+padding:22px;
+position:relative;
+overflow:hidden;
+}
+
+.thumb-overlay{
+color:#fff;
+}
+
+.thumb-title{
+font-size:22px;
+font-weight:800;
+margin-bottom:8px;
+}
+
+.thumb-subtitle{
+font-size:14px;
+opacity:.9;
+}
+/* ===========================
+   PLATFORM PANEL
+=========================== */
+
+.live-status{
+display:flex;
+align-items:center;
+gap:6px;
+font-size:13px;
+font-weight:600;
+color:#16a34a;
+}
+
+.live-status::before{
+content:"";
+width:8px;
+height:8px;
+border-radius:50%;
+background:#22c55e;
+display:block;
+}
+
+.platform-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:14px;
+margin:20px 0 24px;
+}
+
+.platform-item{
+display:flex;
+align-items:center;
+gap:12px;
+padding:16px;
+border:1px solid var(--border);
+border-radius:14px;
+background:#fff;
+cursor:pointer;
+transition:.3s ease;
+}
+
+.platform-item i{
+font-size:20px;
+color:#64748b;
+transition:.3s;
+}
+
+.platform-item span{
+font-size:14px;
+font-weight:600;
+color:var(--text);
+}
+
+.platform-item:hover{
+border-color:var(--primary);
+transform:translateY(-2px);
+box-shadow:0 10px 24px rgba(15,23,42,.08);
+}
+
+.platform-item.active{
+background:#eff6ff;
+border-color:#bfdbfe;
+}
+
+.platform-item.active i{
+color:var(--primary);
+}
+
+.publish-btn{
+width:100%;
+height:54px;
+border:none;
+border-radius:14px;
+background:var(--primary);
+color:#fff;
+font-size:15px;
+font-weight:700;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:10px;
+cursor:pointer;
+transition:.3s ease;
+box-shadow:0 12px 28px rgba(37,99,235,.25);
+}
+
+.publish-btn:hover{
+background:var(--primary-dark);
+transform:translateY(-2px);
+}
+
+.publish-success{
+margin-top:18px;
+display:flex;
+align-items:center;
+gap:10px;
+padding:14px 16px;
+border-radius:14px;
+background:#f0fdf4;
+border:1px solid #bbf7d0;
+font-size:14px;
+font-weight:600;
+color:#15803d;
+}
+
+.publish-success i{
+font-size:18px;
+}
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+
+@media (max-width:980px){
+
+.dashboard-window{
+max-width:100%;
+margin-top:20px;
+}
+
+.dashboard-body{
+padding:18px;
+}
+
+.platform-grid{
+grid-template-columns:1fr 1fr;
+}
+
+}
+
+@media (max-width:640px){
+
+.dashboard-window{
+border-radius:18px;
+}
+
+.window-top{
+padding:0 16px;
+}
+
+.dashboard-body{
+padding:16px;
+gap:16px;
+}
+
+.project-card,
+.thumbnail-card,
+.platform-card{
+padding:16px;
+border-radius:16px;
+}
+
+.thumbnail-preview{
+height:150px;
+}
+
+.thumb-title{
+font-size:18px;
+}
+
+.platform-grid{
+grid-template-columns:1fr;
+}
+
+.publish-btn{
+height:50px;
+font-size:14px;
+}
+
+.hero-stats{
+justify-content:space-between;
+gap:18px;
+}
+
+.stat h3{
+font-size:22px;
+}
+
+}
+/* =========================================
+   SECTION HEADINGS
+========================================= */
+
+.section-heading{
+text-align:center;
+max-width:760px;
+margin:0 auto 70px;
+}
+
+.section-label{
+display:inline-block;
+padding:8px 16px;
+border-radius:999px;
+background:#eff6ff;
+color:var(--primary);
+font-size:13px;
+font-weight:700;
+margin-bottom:18px;
+border:1px solid #dbeafe;
+}
+
+.section-heading h2{
+font-size:46px;
+font-weight:800;
+letter-spacing:-1.5px;
+line-height:1.15;
+margin-bottom:18px;
+color:var(--text);
+}
+
+.section-heading p{
+font-size:17px;
+line-height:1.8;
+color:var(--muted);
+}
+
+/* =========================================
+   TRUSTED SECTION
+========================================= */
+
+.trusted-section{
+padding:110px 0;
+background:var(--section);
+}
+
+.trusted-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:26px;
+}
+
+.trust-card{
+background:#fff;
+border:1px solid var(--border);
+border-radius:20px;
+padding:34px 28px;
+transition:.35s;
+box-shadow:0 10px 35px rgba(15,23,42,.04);
+}
+
+.trust-card:hover{
+transform:translateY(-8px);
+box-shadow:0 25px 60px rgba(15,23,42,.08);
+border-color:#dbeafe;
+}
+
+.trust-icon{
+width:62px;
+height:62px;
+border-radius:18px;
+background:#eff6ff;
+display:flex;
+align-items:center;
+justify-content:center;
+margin-bottom:22px;
+}
+
+.trust-icon i{
+font-size:24px;
+color:var(--primary);
+}
+
+.trust-card h3{
+font-size:21px;
+font-weight:700;
+margin-bottom:12px;
+}
+
+.trust-card p{
+font-size:15px;
+line-height:1.8;
+color:var(--muted);
+}
+
+/* =========================================
+   FEATURES
+========================================= */
+
+.features-section{
+padding:110px 0;
+background:#fff;
+}
+
+.features-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:28px;
+}
+
+.feature-card{
+background:#fff;
+border:1px solid var(--border);
+border-radius:22px;
+padding:34px 30px;
+transition:.35s;
+box-shadow:0 12px 35px rgba(15,23,42,.04);
+}
+
+.feature-card:hover{
+transform:translateY(-8px);
+box-shadow:0 30px 70px rgba(15,23,42,.08);
+border-color:#dbeafe;
+}
+
+.feature-icon{
+width:64px;
+height:64px;
+border-radius:18px;
+background:#eff6ff;
+display:flex;
+align-items:center;
+justify-content:center;
+margin-bottom:24px;
+}
+
+.feature-icon i{
+font-size:24px;
+color:var(--primary);
+}
+
+.feature-card h3{
+font-size:21px;
+font-weight:700;
+margin-bottom:14px;
+}
+
+.feature-card p{
+font-size:15px;
+line-height:1.8;
+color:var(--muted);
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media(max-width:980px){
+
+.section-heading h2{
+font-size:38px;
+}
+
+.trusted-grid,
+.features-grid{
+grid-template-columns:repeat(2,1fr);
+}
+
+}
+
+@media(max-width:640px){
+
+.trusted-section,
+.features-section{
+padding:80px 0;
+}
+
+.section-heading{
+margin-bottom:45px;
+}
+
+.section-heading h2{
+font-size:30px;
+letter-spacing:-.5px;
+}
+
+.section-heading p{
+font-size:16px;
+}
+
+.trusted-grid,
+.features-grid{
+grid-template-columns:1fr;
+gap:20px;
+}
+
+.trust-card,
+.feature-card{
+padding:26px;
+}
+
+}
+/* =========================================
+   HOW IT WORKS
+========================================= */
+
+.workflow-section{
+padding:110px 0;
+background:#fff;
+}
+
+.workflow-grid{
+display:grid;
+grid-template-columns:1fr auto 1fr auto 1fr;
+align-items:center;
+gap:24px;
+}
+
+.workflow-card{
+background:#fff;
+border:1px solid var(--border);
+border-radius:22px;
+padding:34px 28px;
+box-shadow:0 12px 35px rgba(15,23,42,.05);
+transition:.35s;
+}
+
+.workflow-card:hover{
+transform:translateY(-8px);
+box-shadow:0 25px 60px rgba(15,23,42,.08);
+border-color:#dbeafe;
+}
+
+.workflow-icon{
+width:68px;
+height:68px;
+border-radius:18px;
+background:#eff6ff;
+display:flex;
+align-items:center;
+justify-content:center;
+margin-bottom:24px;
+}
+
+.workflow-icon i{
+font-size:28px;
+color:var(--primary);
+}
+
+.workflow-card h3{
+font-size:22px;
+margin-bottom:14px;
+font-weight:700;
+}
+
+.workflow-card p{
+font-size:15px;
+line-height:1.8;
+color:var(--muted);
+}
+
+.workflow-arrow{
+font-size:28px;
+color:#94a3b8;
+}
+
+/* =========================================
+   SUPPORTED PLATFORMS
+========================================= */
+
+.platforms-section{
+padding:110px 0;
+background:var(--section);
+}
+
+.platforms-grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:24px;
+}
+
+.social-card{
+background:#fff;
+border:1px solid var(--border);
+border-radius:20px;
+padding:32px 24px;
+text-align:center;
+transition:.35s;
+box-shadow:0 12px 35px rgba(15,23,42,.04);
+}
+
+.social-card:hover{
+transform:translateY(-8px);
+border-color:#dbeafe;
+box-shadow:0 24px 60px rgba(15,23,42,.08);
+}
+
+.social-card i{
+font-size:38px;
+color:var(--primary);
+margin-bottom:22px;
+}
+
+.social-card h3{
+font-size:21px;
+margin-bottom:12px;
+}
+
+.social-card p{
+font-size:15px;
+line-height:1.7;
+color:var(--muted);
+}
+
+/* =========================================
+   BENEFITS
+========================================= */
+
+.benefits-section{
+padding:110px 0;
+background:#fff;
+}
+
+.benefits-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:26px;
+}
+
+.benefit-card{
+background:#fff;
+border:1px solid var(--border);
+border-radius:22px;
+padding:34px 30px;
+transition:.35s;
+box-shadow:0 12px 35px rgba(15,23,42,.04);
+}
+
+.benefit-card:hover{
+transform:translateY(-8px);
+box-shadow:0 24px 60px rgba(15,23,42,.08);
+border-color:#dbeafe;
+}
+
+.benefit-card h3{
+font-size:22px;
+margin-bottom:16px;
+font-weight:700;
+}
+
+.benefit-card p{
+font-size:15px;
+line-height:1.8;
+color:var(--muted);
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media(max-width:980px){
+
+.workflow-grid{
+grid-template-columns:1fr;
+}
+
+.workflow-arrow{
+display:none;
+}
+
+.platforms-grid{
+grid-template-columns:repeat(2,1fr);
+}
+
+.benefits-grid{
+grid-template-columns:repeat(2,1fr);
+}
+
+}
+
+
+@media(max-width:640px){
+
+.workflow-section,
+.platforms-section,
+.benefits-section{
+padding:80px 0;
+}
+
+.platforms-grid,
+.benefits-grid{
+grid-template-columns:1fr;
+}
+
+.workflow-card,
+.social-card,
+.benefit-card{
+padding:26px;
+}
+
+.social-card i{
+font-size:34px;
+}
+
+}
+/* =========================================
+   PRICING
+========================================= */
+
+.pricing-section{
+padding:110px 0;
+background:#ffffff;
+}
+
+.pricing-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:34px;
+max-width:980px;
+margin:0 auto;
+}
+
+.pricing-card{
+position:relative;
+background:#fff;
+border:1px solid var(--border);
+border-radius:26px;
+padding:42px;
+box-shadow:0 18px 45px rgba(15,23,42,.05);
+transition:.35s ease;
+}
+
+.pricing-card:hover{
+transform:translateY(-8px);
+box-shadow:0 30px 70px rgba(15,23,42,.10);
+}
+
+.featured-plan{
+border:2px solid var(--primary);
+box-shadow:0 25px 70px rgba(37,99,235,.15);
+}
+
+.popular-badge{
+position:absolute;
+top:-14px;
+right:28px;
+background:var(--primary);
+color:#fff;
+padding:8px 16px;
+border-radius:999px;
+font-size:12px;
+font-weight:700;
+}
+
+.plan-name{
+font-size:18px;
+font-weight:700;
+margin-bottom:20px;
+}
+
+.plan-price{
+display:flex;
+align-items:flex-end;
+gap:10px;
+margin-bottom:30px;
+}
+
+.plan-price h3{
+font-size:58px;
+font-weight:800;
+line-height:1;
+}
+
+.plan-price span{
+color:var(--muted);
+font-size:15px;
+padding-bottom:8px;
+}
+
+.plan-features{
+list-style:none;
+display:flex;
+flex-direction:column;
+gap:16px;
+margin-bottom:36px;
+padding:0;
+}
+
+.plan-features li{
+display:flex;
+align-items:center;
+gap:12px;
+font-size:15px;
+color:var(--text);
+}
+
+.plan-features i{
+width:22px;
+height:22px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#eff6ff;
+color:var(--primary);
+font-size:12px;
+flex-shrink:0;
+}
+
+.pricing-btn{
+width:100%;
+justify-content:center;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media(max-width:900px){
+
+.pricing-grid{
+grid-template-columns:1fr;
+}
+
+.pricing-card{
+padding:32px;
+}
+
+.plan-price h3{
+font-size:48px;
+}
+
+}
+
+@media(max-width:640px){
+
+.pricing-section{
+padding:80px 0;
+}
+
+.pricing-card{
+padding:26px;
+border-radius:20px;
+}
+
+.plan-price h3{
+font-size:42px;
+}
+
+.plan-features{
+gap:14px;
+}
+
+}
+/* =========================================
+   FAQ
+========================================= */
+
+.faq-section{
+padding:110px 0;
+background:var(--section);
+}
+
+.faq-wrapper{
+max-width:900px;
+margin:0 auto;
+}
+
+.faq-item{
+background:#fff;
+border:1px solid var(--border);
+border-radius:20px;
+margin-bottom:18px;
+overflow:hidden;
+transition:.3s ease;
+box-shadow:0 10px 30px rgba(15,23,42,.04);
+}
+
+.faq-item:hover{
+border-color:#dbeafe;
+box-shadow:0 18px 45px rgba(15,23,42,.08);
+}
+
+.faq-question{
+width:100%;
+background:#fff;
+border:none;
+padding:24px 28px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+cursor:pointer;
+text-align:left;
+font-size:18px;
+font-weight:700;
+color:var(--text);
+}
+
+.faq-question i{
+font-size:16px;
+color:var(--muted);
+transition:.3s;
+}
+
+.faq-answer{
+max-height:0;
+overflow:hidden;
+transition:max-height .35s ease;
+}
+
+.faq-answer p{
+padding:0 28px 26px;
+font-size:15px;
+line-height:1.8;
+color:var(--muted);
+}
+
+.faq-item.active .faq-answer{
+max-height:220px;
+}
+
+.faq-item.active .faq-question i{
+transform:rotate(45deg);
+color:var(--primary);
+}
+
+/* =========================================
+   FAQ RESPONSIVE
+========================================= */
+
+@media(max-width:640px){
+
+.faq-section{
+padding:80px 0;
+}
+
+.faq-question{
+padding:20px;
+font-size:16px;
+}
+
+.faq-answer p{
+padding:0 20px 20px;
+font-size:14px;
+}
+
+}
+/* =========================================
+   FINAL CTA
+========================================= */
+
+.cta-section{
+padding:110px 0;
+background:#ffffff;
+}
+
+.cta-box{
+background:linear-gradient(135deg,#2563eb,#1d4ed8);
+border-radius:32px;
+padding:80px 60px;
+text-align:center;
+color:#ffffff;
+box-shadow:0 30px 80px rgba(37,99,235,.25);
+}
+
+.cta-box h2{
+font-size:52px;
+font-weight:800;
+letter-spacing:-2px;
+line-height:1.1;
+margin-bottom:20px;
+}
+
+.cta-box p{
+max-width:700px;
+margin:0 auto 40px;
+font-size:18px;
+line-height:1.9;
+opacity:.92;
+}
+
+.cta-buttons{
+display:flex;
+justify-content:center;
+gap:18px;
+flex-wrap:wrap;
+}
+
+.cta-buttons .primary-btn{
+background:#ffffff;
+color:var(--primary);
+box-shadow:none;
+}
+
+.cta-buttons .primary-btn:hover{
+background:#f8fafc;
+}
+
+.cta-buttons .secondary-btn{
+background:transparent;
+border:1px solid rgba(255,255,255,.25);
+color:#ffffff;
+}
+
+.cta-buttons .secondary-btn:hover{
+background:rgba(255,255,255,.08);
+}
+
+/* =========================================
+   FOOTER
+========================================= */
+
+.footer{
+background:#f8fafc;
+border-top:1px solid var(--border);
+padding:80px 0 30px;
+}
+
+.footer-grid{
+display:grid;
+grid-template-columns:2fr 1fr 1fr 1fr;
+gap:40px;
+margin-bottom:50px;
+}
+
+.footer-brand p{
+margin-top:22px;
+color:var(--muted);
+line-height:1.8;
+max-width:340px;
+font-size:15px;
+}
+
+.footer-column h4{
+font-size:17px;
+font-weight:700;
+margin-bottom:20px;
+color:var(--text);
+}
+
+.footer-column{
+display:flex;
+flex-direction:column;
+}
+
+.footer-column a{
+display:flex;
+align-items:center;
+gap:10px;
+text-decoration:none;
+color:var(--muted);
+margin-bottom:14px;
+font-size:15px;
+transition:.3s;
+}
+
+.footer-column a:hover{
+color:var(--primary);
+transform:translateX(3px);
+}
+
+.footer-column i{
+width:18px;
+text-align:center;
+}
+
+.footer-bottom{
+padding-top:28px;
+border-top:1px solid var(--border);
+text-align:center;
+}
+
+.footer-bottom p{
+font-size:14px;
+color:var(--muted);
+}
+
+/* =========================================
+   CTA & FOOTER RESPONSIVE
+========================================= */
+
+@media(max-width:900px){
+
+.cta-box{
+padding:60px 40px;
+}
+
+.cta-box h2{
+font-size:40px;
+}
+
+.footer-grid{
+grid-template-columns:repeat(2,1fr);
+}
+
+}
+
+@media(max-width:640px){
+
+.cta-section{
+padding:80px 0;
+}
+
+.cta-box{
+padding:45px 24px;
+border-radius:24px;
+}
+
+.cta-box h2{
+font-size:32px;
+letter-spacing:-1px;
+}
+
+.cta-box p{
+font-size:16px;
+margin-bottom:30px;
+}
+
+.cta-buttons{
+flex-direction:column;
+}
+
+.cta-buttons .primary-btn,
+.cta-buttons .secondary-btn{
+width:100%;
+justify-content:center;
+}
+
+.footer{
+padding:60px 0 25px;
+}
+
+.footer-grid{
+grid-template-columns:1fr;
+gap:30px;
+}
+
+.footer-brand p{
+max-width:100%;
+}
+
+}
+
+@media(max-width:980px){
+
+.hero-grid{
+
+grid-template-columns:1fr;
+
+}
+
+.nav-links{
+
+display:none;
+
+}
+
+.hero{
+
+padding-top:120px;
+
+}
+
+.hero h1{
+
+font-size:46px;
+
+letter-spacing:-1px;
+
+}
+
+.hero-buttons{
+
+flex-direction:column;
+
+}
+
+.primary-btn,
+.secondary-btn{
+
+width:100%;
+
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<div class="container">
+
+<nav>
+
+<a href="#" class="logo">
+
+<div class="logo-icon">
+P
+</div>
+
+<span>PortPilot</span>
+
+</a>
+
+<div class="nav-links">
+
+<a href="#features">Features</a>
+
+<a href="#pricing">Pricing</a>
+
+<a href="#faq">FAQ</a>
+
+</div>
+
+<div class="nav-actions">
+
+<a href="login.html" class="login-link">
+Login
+</a>
+
+<a href="login.html" class="primary-btn">
+Start Free
+</a>
+
+</div>
+
+</nav>
+
+</div>
+
+</header>
+
+<section class="hero">
+
+<div class="container">
+
+<div class="hero-grid">
+
+<div class="hero-content">
+
+<div class="hero-badge">
+
+<i class="fa-solid fa-wand-magic-sparkles"></i>
+
+AI Powered Publishing
+
+</div>
+
+<h1>
+
+Grow Faster.<br>
+
+Publish Smarter.
+
+</h1>
+
+<p>
+
+Generate professional titles, captions, hashtags and thumbnails with AI, then publish your content across multiple platforms from one modern dashboard.
+
+</p>
+
+<div class="hero-buttons">
+
+<a href="login.html" class="primary-btn">
+
+Start Free
+
+</a>
+
+<a href="#features" class="secondary-btn">
+
+See How It Works
+
+</a>
+
+</div>
+
+<div class="hero-stats">
+
+<div class="stat">
+
+<h3>10×</h3>
+
+<p>Faster Publishing</p>
+
+</div>
+
+<div class="stat">
+
+<h3>4+</h3>
+
+<p>Platforms Supported</p>
+
+</div>
+
+<div class="stat">
+
+<h3>AI</h3>
+
+<p>Content Generation</p>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- Premium Dashboard starts in Part 1A.2 -->
+ <div class="dashboard-preview">
+
+<div class="dashboard-window">
+
+<div class="window-top">
+
+<div class="window-left">
+
+<div class="window-dot red"></div>
+<div class="window-dot yellow"></div>
+<div class="window-dot green"></div>
+
+</div>
+
+<div class="window-title">
+PortPilot Workspace
+</div>
+
+<div class="window-user">
+
+<div class="user-avatar">
+P
+</div>
+
+</div>
+
+</div>
+
+<div class="dashboard-body">
+
+<div class="project-card">
+
+<div class="card-header">
+
+<h4>Project</h4>
+
+<span class="status-badge">
+Draft
+</span>
+
+</div>
+
+<label>Project Title</label>
+
+<input
+type="text"
+value="Modern SaaS Landing Page"
+readonly
+>
+
+<label>Generated Caption</label>
+
+<div class="ai-output">
+
+Helping startups publish professional content faster using AI-powered workflows.
+
+</div>
+
+<label>Generated Hashtags</label>
+
+<div class="tag-list">
+
+<span>#SaaS</span>
+<span>#Startup</span>
+<span>#AI</span>
+<span>#Marketing</span>
+<span>#Growth</span>
+
+</div>
+
+</div>
+
+<div class="thumbnail-card">
+
+<div class="thumb-header">
+
+<h4>AI Thumbnail</h4>
+
+<button>
+Regenerate
+</button>
+
+</div>
+
+<div class="thumbnail-preview">
+
+<div class="thumb-overlay">
+
+<div class="thumb-title">
+Product Launch
+</div>
+
+<div class="thumb-subtitle">
+Ready to Publish
+</div>
+
+</div>
+
+</div>
+<div class="platform-card">
+
+<div class="platform-header">
+
+<h4>Publish To</h4>
+
+<span class="live-status">Ready</span>
+
+</div>
+
+<div class="platform-grid">
+
+<div class="platform-item active">
+<i class="fa-brands fa-linkedin-in"></i>
+<span>LinkedIn</span>
+</div>
+
+<div class="platform-item active">
+<i class="fa-brands fa-instagram"></i>
+<span>Instagram</span>
+</div>
+
+<div class="platform-item">
+<i class="fa-brands fa-pinterest-p"></i>
+<span>Pinterest</span>
+</div>
+
+<div class="platform-item">
+<i class="fa-brands fa-x-twitter"></i>
+<span>X</span>
+</div>
+
+</div>
+
+<button class="publish-btn">
+
+<i class="fa-solid fa-paper-plane"></i>
+
+Publish Content
+
+</button>
+
+<div class="publish-success">
+
+<i class="fa-solid fa-circle-check"></i>
+
+<span>Ready for publishing</span>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+<!-- =========================================
+     TRUSTED FOR GROWTH
+========================================= -->
+
+<section id="features" class="trusted-section">
+
+<div class="container">
+
+<div class="section-heading">
+
+<span class="section-label">
+Trusted For Growth
+</span>
+
+<h2>
+Built for modern creators and businesses.
+</h2>
+
+<p>
+Whether you're growing a personal brand, launching a startup, managing clients or building a business, PortPilot helps you create and publish consistently from one workspace.
+</p>
+
+</div>
+
+<div class="trusted-grid">
+
+<div class="trust-card">
+
+<div class="trust-icon">
+<i class="fa-solid fa-user"></i>
+</div>
+
+<h3>Creators</h3>
+
+<p>Grow your audience with consistent AI-assisted publishing.</p>
+
+</div>
+
+<div class="trust-card">
+
+<div class="trust-icon">
+<i class="fa-solid fa-rocket"></i>
+</div>
+
+<h3>Startups</h3>
+
+<p>Launch updates and product announcements faster.</p>
+
+</div>
+
+<div class="trust-card">
+
+<div class="trust-icon">
+<i class="fa-solid fa-briefcase"></i>
+</div>
+
+<h3>Freelancers</h3>
+
+<p>Showcase your work and attract more clients online.</p>
+
+</div>
+
+<div class="trust-card">
+
+<div class="trust-icon">
+<i class="fa-solid fa-building"></i>
+</div>
+
+<h3>Businesses</h3>
+
+<p>Keep every social channel active without extra effort.</p>
+
+</div>
+
+<div class="trust-card">
+
+<div class="trust-icon">
+<i class="fa-solid fa-users"></i>
+</div>
+
+<h3>Agencies</h3>
+
+<p>Manage publishing workflows for multiple clients.</p>
+
+</div>
+
+<div class="trust-card">
+
+<div class="trust-icon">
+<i class="fa-solid fa-bullhorn"></i>
+</div>
+
+<h3>Personal Brands</h3>
+
+<p>Build authority with professional AI-generated content.</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- =========================================
+     EVERYTHING YOU NEED
+========================================= -->
+
+<section class="features-section">
+
+<div class="container">
+
+<div class="section-heading">
+
+<span class="section-label">
+Everything You Need
+</span>
+
+<h2>
+Powerful tools designed for faster publishing.
+</h2>
+
+<p>
+Generate high-quality content, organize projects and publish everywhere from one beautiful dashboard.
+</p>
+
+</div>
+
+<div class="features-grid">
+
+<div class="feature-card">
+
+<div class="feature-icon">
+<i class="fa-solid fa-pen-nib"></i>
+</div>
+
+<h3>AI Caption Generator</h3>
+
+<p>Create engaging captions in seconds for every platform.</p>
+
+</div>
+
+<div class="feature-card">
+
+<div class="feature-icon">
+<i class="fa-solid fa-heading"></i>
+</div>
+
+<h3>AI Title Generator</h3>
+
+<p>Generate attention-grabbing titles that increase clicks.</p>
+
+</div>
+
+<div class="feature-card">
+
+<div class="feature-icon">
+<i class="fa-solid fa-hashtag"></i>
+</div>
+
+<h3>AI Hashtag Generator</h3>
+
+<p>Receive optimized hashtags tailored to your content.</p>
+
+</div>
+
+<div class="feature-card">
+
+<div class="feature-icon">
+<i class="fa-solid fa-image"></i>
+</div>
+
+<h3>AI Thumbnail Generator</h3>
+
+<p>Create attractive thumbnails without design experience.</p>
+
+</div>
+
+<div class="feature-card">
+
+<div class="feature-icon">
+<i class="fa-solid fa-share-nodes"></i>
+</div>
+
+<h3>Multi-platform Publishing</h3>
+
+<p>Publish once and distribute across every connected platform.</p>
+
+</div>
+
+<div class="feature-card">
+
+<div class="feature-icon">
+<i class="fa-solid fa-chart-line"></i>
+</div>
+
+<h3>Portfolio Analytics</h3>
+
+<p>Coming soon — measure engagement and publishing performance.</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+<!-- =========================================
+     HOW IT WORKS
+========================================= -->
+
+<section class="workflow-section">
+
+<div class="container">
+
+<div class="section-heading">
+
+<span class="section-label">
+How It Works
+</span>
+
+<h2>
+From idea to published content in minutes.
+</h2>
+
+<p>
+PortPilot simplifies your workflow into three straightforward steps, helping you spend less time posting and more time creating.
+</p>
+
+</div>
+
+<div class="workflow-grid">
+
+<div class="workflow-card">
+
+<div class="workflow-icon">
+<i class="fa-solid fa-cloud-arrow-up"></i>
+</div>
+
+<h3>1. Upload Your Content</h3>
+
+<p>
+Upload your project, product update, portfolio piece or announcement from one clean workspace.
+</p>
+
+</div>
+
+<div class="workflow-arrow">
+<i class="fa-solid fa-arrow-right"></i>
+</div>
+
+<div class="workflow-card">
+
+<div class="workflow-icon">
+<i class="fa-solid fa-wand-magic-sparkles"></i>
+</div>
+
+<h3>2. AI Generates Everything</h3>
+
+<p>
+Generate professional titles, captions, hashtags and thumbnails instantly using AI.
+</p>
+
+</div>
+
+<div class="workflow-arrow">
+<i class="fa-solid fa-arrow-right"></i>
+</div>
+
+<div class="workflow-card">
+
+<div class="workflow-icon">
+<i class="fa-solid fa-paper-plane"></i>
+</div>
+
+<h3>3. Publish Everywhere</h3>
+
+<p>
+Send your content to multiple connected platforms with one click from a single dashboard.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- =========================================
+     SUPPORTED PLATFORMS
+========================================= -->
+
+<section class="platforms-section">
+
+<div class="container">
+
+<div class="section-heading">
+
+<span class="section-label">
+Supported Platforms
+</span>
+
+<h2>
+Publish across your favorite platforms.
+</h2>
+
+<p>
+Manage all your publishing from one workspace instead of switching between multiple apps.
+</p>
+
+</div>
+
+<div class="platforms-grid">
+
+<div class="social-card">
+
+<i class="fa-brands fa-linkedin"></i>
+
+<h3>LinkedIn</h3>
+
+<p>Professional networking and company updates.</p>
+
+</div>
+
+<div class="social-card">
+
+<i class="fa-brands fa-instagram"></i>
+
+<h3>Instagram</h3>
+
+<p>Share visual content with your audience.</p>
+
+</div>
+
+<div class="social-card">
+
+<i class="fa-brands fa-pinterest-p"></i>
+
+<h3>Pinterest</h3>
+
+<p>Drive long-term traffic using visual discovery.</p>
+
+</div>
+
+<div class="social-card">
+
+<i class="fa-brands fa-x-twitter"></i>
+
+<h3>X</h3>
+
+<p>Publish updates and grow your online presence.</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- =========================================
+     WHY PORTPILOT
+========================================= -->
+
+<section class="benefits-section">
+
+<div class="container">
+
+<div class="section-heading">
+
+<span class="section-label">
+Why PortPilot
+</span>
+
+<h2>
+Everything you need to grow consistently online.
+</h2>
+
+<p>
+Instead of spending hours writing and publishing content, let PortPilot automate the repetitive work.
+</p>
+
+</div>
+
+<div class="benefits-grid">
+
+<div class="benefit-card">
+<h3>Save Hours Every Week</h3>
+<p>Reduce repetitive publishing tasks with AI automation.</p>
+</div>
+
+<div class="benefit-card">
+<h3>Stay Consistent Online</h3>
+<p>Keep every platform active without extra effort.</p>
+</div>
+
+<div class="benefit-card">
+<h3>Grow Your Personal Brand</h3>
+<p>Build trust through consistent professional content.</p>
+</div>
+
+<div class="benefit-card">
+<h3>Increase Your Reach</h3>
+<p>Reach more people by publishing everywhere at once.</p>
+</div>
+
+<div class="benefit-card">
+<h3>Professional AI Assistance</h3>
+<p>Create high-quality content faster with intelligent suggestions.</p>
+</div>
+
+<div class="benefit-card">
+<h3>One Dashboard</h3>
+<p>Manage your entire publishing workflow from one place.</p>
+</div>
+
+</div>
+
+</div>
+
+</section>
+<!-- =========================================
+     PRICING
+========================================= -->
+
+<section id="pricing" class="pricing-section">
+
+<div class="container">
+
+<div class="section-heading">
+
+<span class="section-label">
+Pricing
+</span>
+
+<h2>
+Simple pricing for every stage.
+</h2>
+
+<p>
+Start free and upgrade whenever you're ready to publish without limits.
+</p>
+
+</div>
+
+<div class="pricing-grid">
+
+<!-- FREE -->
+
+<div class="pricing-card">
+
+<div class="plan-name">
+Free
+</div>
+
+<div class="plan-price">
+
+<h3>$0</h3>
+
+<span>Forever</span>
+
+</div>
+
+<ul class="plan-features">
+
+<li>
+<i class="fa-solid fa-check"></i>
+3 AI Content Generations
+</li>
+
+<li>
+<i class="fa-solid fa-check"></i>
+3 Publishing Sessions
+</li>
+
+<li>
+<i class="fa-solid fa-check"></i>
+Google Login
+</li>
+
+<li>
+<i class="fa-solid fa-check"></i>
+Basic Dashboard
+</li>
+
+</ul>
+
+<a href="login.html" class="primary-btn pricing-btn">
+Start Free
+</a>
+
+</div>
+
+<!-- PRO -->
+
+<div class="pricing-card featured-plan">
+
+<div class="popular-badge">
+Most Popular
+</div>
+
+<div class="plan-name">
+Pro
+</div>
+
+<div class="plan-price">
+
+<h3>$5</h3>
+
+<span>per month</span>
+
+</div>
+
+<ul class="plan-features">
+
+<li>
+<i class="fa-solid fa-check"></i>
+Unlimited AI Content
+</li>
+
+<li>
+<i class="fa-solid fa-check"></i>
+Unlimited Publishing
+</li>
+
+<li>
+<i class="fa-solid fa-check"></i>
+Unlimited Projects
+</li>
+
+<li>
+<i class="fa-solid fa-check"></i>
+Priority Support
+</li>
+
+<li>
+<i class="fa-solid fa-check"></i>
+Early Access to New Features
+</li>
+
+</ul>
+
+<a href="login.html" class="primary-btn pricing-btn">
+Upgrade to Pro
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+<!-- =========================================
+     FAQ
+========================================= -->
+
+<section id="faq" class="faq-section">
+
+<div class="container">
+
+<div class="section-heading">
+
+<span class="section-label">
+FAQ
+</span>
+
+<h2>
+Frequently Asked Questions
+</h2>
+
+<p>
+Everything you need to know before getting started with PortPilot.
+</p>
+
+</div>
+
+<div class="faq-wrapper">
+
+<div class="faq-item">
+
+<button class="faq-question">
+
+<span>What is PortPilot?</span>
+
+<i class="fa-solid fa-plus"></i>
+
+</button>
+
+<div class="faq-answer">
+
+<p>
+
+PortPilot is an AI-powered publishing platform that helps creators, founders, freelancers and businesses generate content and publish it across multiple social platforms from one dashboard.
+
+</p>
+
+</div>
+
+</div>
+
+<div class="faq-item">
+
+<button class="faq-question">
+
+<span>Which platforms are supported?</span>
+
+<i class="fa-solid fa-plus"></i>
+
+</button>
+
+<div class="faq-answer">
+
+<p>
+
+PortPilot currently supports LinkedIn, Instagram, Pinterest and X, with more platforms planned in future updates.
+
+</p>
+
+</div>
+
+</div>
+
+<div class="faq-item">
+
+<button class="faq-question">
+
+<span>Can I use PortPilot for free?</span>
+
+<i class="fa-solid fa-plus"></i>
+
+</button>
+
+<div class="faq-answer">
+
+<p>
+
+Yes. The Free plan includes AI content generation, publishing sessions and secure Google sign in so you can experience the platform before upgrading.
+
+</p>
+
+</div>
+
+</div>
+
+<div class="faq-item">
+
+<button class="faq-question">
+
+<span>Is my content stored permanently?</span>
+
+<i class="fa-solid fa-plus"></i>
+
+</button>
+
+<div class="faq-answer">
+
+<p>
+
+No. Your content is only stored as needed to complete your publishing workflow, helping keep your workspace secure and lightweight.
+
+</p>
+
+</div>
+
+</div>
+
+<div class="faq-item">
+
+<button class="faq-question">
+
+<span>Who is PortPilot built for?</span>
+
+<i class="fa-solid fa-plus"></i>
+
+</button>
+
+<div class="faq-answer">
+
+<p>
+
+PortPilot is designed for creators, SaaS founders, startups, agencies, freelancers, developers, marketers, business owners and anyone who wants to publish consistently online.
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+<!-- =========================================
+     FINAL CALL TO ACTION
+========================================= -->
+
+<section class="cta-section">
+
+<div class="container">
+
+<div class="cta-box">
+
+<h2>
+Start Growing Online Today.
+</h2>
+
+<p>
+
+Create better content.
+Publish everywhere.
+Build your online presence faster with PortPilot.
+
+</p>
+
+<div class="cta-buttons">
+
+<a href="login.html" class="primary-btn">
+
+Start Free
+
+</a>
+
+<a href="#pricing" class="secondary-btn">
+
+View Pricing
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- =========================================
+     FOOTER
+========================================= -->
+
+<footer class="footer">
+
+<div class="container">
+
+<div class="footer-grid">
+
+<!-- Brand -->
+
+<div class="footer-brand">
+
+<div class="logo">
+
+<div class="logo-icon">
+P
+</div>
+
+<span>PortPilot</span>
+
+</div>
+
+<p>
+
+AI-powered content creation and multi-platform publishing for creators, startups, businesses and agencies.
+
+</p>
+
+</div>
+
+<!-- Product -->
+
+<div class="footer-column">
+
+<h4>Product</h4>
+
+<a href="#features">Features</a>
+
+<a href="#pricing">Pricing</a>
+
+<a href="#faq">FAQ</a>
+
+</div>
+
+<!-- Company -->
+
+<div class="footer-column">
+
+<h4>Company</h4>
+
+<a href="#">Contact</a>
+
+<a href="#">Terms</a>
+
+<a href="#">Privacy</a>
+
+</div>
+
+<!-- Social -->
+
+<div class="footer-column">
+
+<h4>Social</h4>
+
+<a href="#">
+<i class="fa-brands fa-linkedin"></i>
+LinkedIn
+</a>
+
+<a href="#">
+<i class="fa-brands fa-x-twitter"></i>
+X
+</a>
+
+</div>
+
+</div>
+
+<div class="footer-bottom">
+
+<p>
+
+© 2026 PortPilot. All rights reserved.
+
+</p>
+
+</div>
+
+</div>
+
+</footer>
+
+</body>
+</html>
