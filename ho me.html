@@ -1,0 +1,3090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PortPilot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    /* ===================================================
+       CSS VARIABLES & RESET
+    =================================================== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --font: 'Inter', sans-serif;
+      --bg: #f8f9fc;
+      --surface: #ffffff;
+      --surface-2: #f2f4f8;
+      --border: #e5e7ef;
+      --border-light: #f0f1f7;
+      --primary: #5b5ef6;
+      --primary-hover: #4a4de0;
+      --primary-light: #ededfe;
+      --primary-text: #3b3db8;
+      --text: #111827;
+      --text-2: #4b5563;
+      --text-3: #9ca3af;
+      --text-on-primary: #ffffff;
+      --success: #10b981;
+      --success-light: #d1fae5;
+      --warning: #f59e0b;
+      --warning-light: #fef3c7;
+      --danger: #ef4444;
+      --danger-light: #fee2e2;
+      --info: #3b82f6;
+      --info-light: #dbeafe;
+      --sidebar-w: 240px;
+      --header-h: 64px;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --radius-xs: 6px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+      --shadow: 0 4px 12px rgba(0,0,0,.08), 0 1px 4px rgba(0,0,0,.04);
+      --shadow-md: 0 8px 24px rgba(0,0,0,.10), 0 2px 8px rgba(0,0,0,.06);
+      --ease: cubic-bezier(.4,0,.2,1);
+      --duration: 200ms;
+    }
+
+    html { font-family: var(--font); background: var(--bg); color: var(--text); font-size: 14px; -webkit-font-smoothing: antialiased; }
+    body { min-height: 100vh; }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+    button { cursor: pointer; font-family: var(--font); border: none; background: none; }
+    input, textarea, select { font-family: var(--font); }
+
+    /* ===================================================
+       LAYOUT
+    =================================================== */
+    .app { display: flex; min-height: 100vh; }
+
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 100;
+      transition: transform var(--duration) var(--ease);
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .logo-mark {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, var(--primary), #818cf8);
+      border-radius: var(--radius-xs);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .logo-mark i { color: #fff; font-size: 15px; }
+    .logo-text { font-size: 16px; font-weight: 700; letter-spacing: -.3px; color: var(--text); }
+    .sidebar-nav { flex: 1; padding: 12px 8px; overflow-y: auto; }
+    .nav-section-label { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text-3); padding: 12px 12px 6px; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: var(--radius-sm); color: var(--text-2); font-size: 13.5px; font-weight: 500; cursor: pointer; transition: background var(--duration) var(--ease), color var(--duration) var(--ease); margin-bottom: 1px; }
+    .nav-item i { width: 16px; text-align: center; font-size: 14px; flex-shrink: 0; }
+    .nav-item:hover { background: var(--surface-2); color: var(--text); }
+    .nav-item.active { background: var(--primary-light); color: var(--primary); }
+    .nav-item.active i { color: var(--primary); }
+    .sidebar-footer { padding: 12px 8px; border-top: 1px solid var(--border-light); }
+
+    .main { flex: 1; margin-left: var(--sidebar-w); display: flex; flex-direction: column; min-height: 100vh; }
+
+    .topbar {
+      height: var(--header-h);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .topbar-left { display: flex; align-items: center; gap: 12px; flex: 1; }
+    .menu-toggle { display: none; padding: 6px; color: var(--text-2); border-radius: var(--radius-xs); transition: background var(--duration) var(--ease); }
+    .menu-toggle:hover { background: var(--surface-2); }
+    .search-wrap { position: relative; max-width: 340px; width: 100%; }
+    .search-wrap i { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--text-3); font-size: 13px; pointer-events: none; }
+    .search-input { width: 100%; padding: 8px 12px 8px 34px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-2); font-size: 13.5px; color: var(--text); transition: border-color var(--duration) var(--ease), background var(--duration) var(--ease); outline: none; }
+    .search-input::placeholder { color: var(--text-3); }
+    .search-input:focus { border-color: var(--primary); background: var(--surface); }
+    .topbar-right { display: flex; align-items: center; gap: 8px; }
+    .icon-btn { position: relative; width: 36px; height: 36px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: var(--text-2); transition: background var(--duration) var(--ease), color var(--duration) var(--ease); }
+    .icon-btn:hover { background: var(--surface-2); color: var(--text); }
+    .badge { position: absolute; top: 5px; right: 5px; width: 8px; height: 8px; background: var(--primary); border-radius: 50%; border: 2px solid var(--surface); display: none; }
+    .badge.visible { display: block; }
+    .avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), #818cf8); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; font-weight: 600; cursor: pointer; flex-shrink: 0; overflow: hidden; }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+
+    .content { flex: 1; padding: 28px 28px; overflow-y: auto; }
+    .page { display: none; animation: fadeIn .2s var(--ease); }
+    .page.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ===================================================
+       SHARED UI COMPONENTS
+    =================================================== */
+    .page-header { margin-bottom: 24px; }
+    .page-title { font-size: 22px; font-weight: 700; letter-spacing: -.3px; color: var(--text); }
+    .page-subtitle { font-size: 13.5px; color: var(--text-2); margin-top: 4px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 20px; transition: box-shadow var(--duration) var(--ease), transform var(--duration) var(--ease); }
+    .stat-card:hover { box-shadow: var(--shadow); transform: translateY(-1px); }
+    .stat-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .stat-card-label { font-size: 12.5px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: .05em; }
+    .stat-icon { width: 36px; height: 36px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 15px; }
+    .stat-value { font-size: 28px; font-weight: 700; letter-spacing: -.5px; color: var(--text); line-height: 1; }
+    .stat-loading { font-size: 13px; color: var(--text-3); font-style: italic; margin-top: 6px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 16px; border-radius: var(--radius-sm); font-size: 13.5px; font-weight: 600; transition: all var(--duration) var(--ease); white-space: nowrap; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-hover); box-shadow: 0 4px 12px rgba(91,94,246,.3); transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: .6; transform: none; box-shadow: none; cursor: not-allowed; }
+    .btn-secondary { background: var(--surface); color: var(--text-2); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: var(--surface-2); color: var(--text); border-color: #d1d5e0; }
+    .btn-ghost { color: var(--text-2); padding: 7px 12px; }
+    .btn-ghost:hover { background: var(--surface-2); color: var(--text); }
+    .btn-danger { background: var(--danger-light); color: var(--danger); }
+    .btn-danger:hover { background: var(--danger); color: #fff; }
+    .btn-warning { background: var(--warning-light); color: var(--warning); border: 1px solid var(--warning); }
+    .btn-warning:hover { background: var(--warning); color: #fff; }
+    .btn-sm { padding: 6px 12px; font-size: 12.5px; }
+    .btn-icon { padding: 9px; }
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+    .form-hint { font-size: 12px; color: var(--text-3); margin-top: 4px; }
+    .form-control { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13.5px; color: var(--text); background: var(--surface); outline: none; transition: border-color var(--duration) var(--ease), box-shadow var(--duration) var(--ease); }
+    .form-control::placeholder { color: var(--text-3); }
+    .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(91,94,246,.12); }
+    textarea.form-control { resize: vertical; min-height: 90px; }
+    select.form-control { cursor: pointer; }
+    .status-dot { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+    .status-dot::before { content: ''; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .status-dot.connected { background: var(--success-light); color: var(--success); }
+    .status-dot.connected::before { background: var(--success); }
+    .status-dot.disconnected { background: var(--surface-2); color: var(--text-3); }
+    .status-dot.disconnected::before { background: var(--text-3); }
+    .status-dot.pending { background: var(--warning-light); color: var(--warning); }
+    .status-dot.pending::before { background: var(--warning); }
+    .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px 24px; color: var(--text-3); text-align: center; }
+    .empty-state i { font-size: 32px; margin-bottom: 12px; opacity: .6; }
+    .empty-state p { font-size: 14px; max-width: 280px; line-height: 1.6; }
+    .section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .section-title { font-size: 15px; font-weight: 700; letter-spacing: -.2px; color: var(--text); }
+    .divider { height: 1px; background: var(--border-light); margin: 20px 0; }
+    .skeleton { background: linear-gradient(90deg, var(--surface-2) 25%, #e9ebf4 50%, var(--surface-2) 75%); background-size: 400% 100%; animation: shimmer 1.6s infinite; border-radius: var(--radius-xs); }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    .toast { position: fixed; bottom: 24px; right: 24px; padding: 12px 18px; border-radius: var(--radius-sm); font-size: 13.5px; font-weight: 500; color: #fff; z-index: 9999; box-shadow: var(--shadow-md); display: flex; align-items: center; gap: 8px; animation: slideUp .25s var(--ease); max-width: 340px; }
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--danger); }
+    .toast.info { background: var(--primary); }
+    @keyframes slideUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+    .upload-progress { height: 3px; background: var(--border); border-radius: 99px; margin-top: 12px; overflow: hidden; display: none; }
+    .upload-progress.visible { display: block; }
+    .upload-progress-bar { height: 100%; background: var(--primary); border-radius: 99px; transition: width .3s var(--ease); width: 0%; }
+
+    /* ===================================================
+       SIDEBAR OVERLAY (mobile)
+    =================================================== */
+    .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 99; }
+    .sidebar-overlay.open { display: block; }
+
+    /* ===================================================
+       NOTIFICATION DROPDOWN
+    =================================================== */
+    .notif-dropdown { position: absolute; top: calc(100% + 8px); right: 0; width: 320px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-md); z-index: 200; display: none; }
+    .notif-dropdown.open { display: block; animation: fadeIn .15s var(--ease); }
+    .notif-header { padding: 14px 16px 10px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-light); }
+    .notif-header span { font-size: 13.5px; font-weight: 600; }
+    .notif-body { max-height: 320px; overflow-y: auto; }
+    .notif-empty { padding: 32px 16px; text-align: center; color: var(--text-3); font-size: 13px; }
+    .notif-item { display: flex; align-items: flex-start; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border-light); cursor: pointer; transition: background var(--duration) var(--ease); }
+    .notif-item:last-child { border-bottom: none; }
+    .notif-item:hover { background: var(--surface-2); }
+    .notif-item.unread { background: var(--primary-light); }
+    .notif-item-dot { width:8px; height:8px; border-radius:50%; background:var(--primary); flex-shrink:0; margin-top:5px; }
+    .notif-item-text { flex:1; font-size:13px; line-height:1.5; color:var(--text-2); }
+    .notif-item-time { font-size:11px; color:var(--text-3); white-space:nowrap; }
+    .profile-dropdown { position: absolute; top: calc(100% + 8px); right: 0; width: 200px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-md); z-index: 200; display: none; padding: 6px; }
+    .profile-dropdown.open { display: block; animation: fadeIn .15s var(--ease); }
+    .profile-dropdown-item { display: flex; align-items: center; gap: 9px; padding: 8px 10px; font-size: 13.5px; color: var(--text-2); border-radius: var(--radius-xs); cursor: pointer; transition: background var(--duration) var(--ease), color var(--duration) var(--ease); }
+    .profile-dropdown-item:hover { background: var(--surface-2); color: var(--text); }
+    .profile-dropdown-item i { width: 16px; text-align: center; font-size: 13px; }
+    .profile-dropdown-item.danger:hover { background: var(--danger-light); color: var(--danger); }
+    .profile-dropdown-divider { height: 1px; background: var(--border-light); margin: 4px 0; }
+    .topbar-right { position: relative; }
+    .notif-wrap { position: relative; }
+    .profile-wrap { position: relative; }
+
+    /* ===================================================
+       DASHBOARD PAGE
+    =================================================== */
+    .welcome-banner { background: linear-gradient(135deg, var(--primary) 0%, #818cf8 100%); border-radius: var(--radius); padding: 24px 28px; margin-bottom: 24px; color: #fff; position: relative; overflow: hidden; }
+    .welcome-banner::before { content: ''; position: absolute; top: -40px; right: -40px; width: 160px; height: 160px; background: rgba(255,255,255,.08); border-radius: 50%; }
+    .welcome-banner h2 { font-size: 20px; font-weight: 700; letter-spacing: -.3px; margin-bottom: 4px; }
+    .welcome-banner p { font-size: 13.5px; opacity: .85; }
+    .quick-actions { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+    .quick-btn { padding: 7px 14px; background: rgba(255,255,255,.18); color: #fff; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; cursor: pointer; transition: background var(--duration) var(--ease); border: 1px solid rgba(255,255,255,.25); display: inline-flex; align-items: center; gap: 6px; }
+    .quick-btn:hover { background: rgba(255,255,255,.28); }
+    .activity-feed { padding: 0; }
+    .activity-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px 20px; border-bottom: 1px solid var(--border-light); cursor: pointer; transition: background var(--duration) var(--ease); }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-item:hover { background: var(--surface-2); }
+    .activity-icon { width: 34px; height: 34px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+    .activity-text { flex: 1; }
+    .activity-text strong { font-weight: 600; font-size: 13.5px; }
+    .activity-text p { font-size: 12.5px; color: var(--text-3); margin-top: 1px; }
+    .activity-time { font-size: 12px; color: var(--text-3); white-space: nowrap; }
+    .countdown-badge { display: inline-block; margin-top: 4px; font-size: 11.5px; font-weight: 600; color: var(--warning); background: var(--warning-light); padding: 2px 8px; border-radius: 20px; }
+
+    /* ===================================================
+       CREATE PAGE
+    =================================================== */
+    .create-layout { display: grid; grid-template-columns: 1fr 380px; gap: 20px; align-items: start; }
+    .drop-zone { border: 2px dashed var(--border); border-radius: var(--radius); padding: 40px 24px; text-align: center; cursor: pointer; transition: border-color var(--duration) var(--ease), background var(--duration) var(--ease); background: var(--surface); }
+    .drop-zone:hover, .drop-zone.drag-over { border-color: var(--primary); background: var(--primary-light); }
+    .drop-zone i { font-size: 32px; color: var(--text-3); margin-bottom: 12px; display: block; }
+    .drop-zone p { font-size: 13.5px; color: var(--text-2); }
+    .drop-zone small { font-size: 12px; color: var(--text-3); display: block; margin-top: 4px; }
+    .image-preview { position: relative; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); aspect-ratio: 16/9; background: var(--surface-2); display: flex; align-items: center; justify-content: center; }
+    .image-preview img { width: 100%; height: 100%; object-fit: cover; display: none; }
+    .image-preview-placeholder { text-align: center; color: var(--text-3); }
+    .image-preview-placeholder i { font-size: 28px; margin-bottom: 8px; }
+    .image-preview-placeholder p { font-size: 12.5px; }
+    .ai-tools-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .ai-tool-btn { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 12.5px; font-weight: 500; color: var(--text-2); cursor: pointer; transition: all var(--duration) var(--ease); }
+    .ai-tool-btn:hover { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
+    .ai-tool-btn i { font-size: 13px; color: var(--primary); }
+
+    /* AI Prompt Box */
+    .ai-prompt-box { display: none; background: var(--surface); border: 1px solid var(--primary); border-radius: var(--radius-sm); padding: 12px; margin-top: 8px; animation: fadeIn .15s var(--ease); }
+    .ai-prompt-box.open { display: block; }
+    .ai-prompt-box input { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-xs); font-size: 13px; margin-bottom: 8px; outline: none; }
+    .ai-prompt-box input:focus { border-color: var(--primary); }
+    .ai-prompt-box .prompt-actions { display: flex; gap: 6px; align-items: center; }
+
+    .ai-output-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 10px; }
+    .ai-output-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .ai-output-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--text-3); }
+    .ai-output-body { min-height: 36px; font-size: 13.5px; color: var(--text-2); border: 1px solid var(--border-light); border-radius: var(--radius-xs); padding: 8px 10px; outline: none; background: var(--surface-2); }
+    .ai-output-body:focus { border-color: var(--primary); background: var(--surface); }
+    .ai-output-body[contenteditable="true"]:empty::before { content: attr(data-placeholder); color: var(--text-3); font-style: italic; }
+
+    /* ===================================================
+       ANALYTICS PAGE
+    =================================================== */
+    .chart-placeholder { height: 220px; background: var(--surface-2); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px; color: var(--text-3); border: 1px dashed var(--border); }
+    .chart-placeholder i { font-size: 28px; opacity: .5; }
+    .chart-placeholder p { font-size: 12.5px; }
+    .chart-container { height: 220px; }
+
+    /* ===================================================
+       CONNECTED ACCOUNTS PAGE
+    =================================================== */
+    .platform-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; display: flex; align-items: center; gap: 16px; transition: box-shadow var(--duration) var(--ease); }
+    .platform-card:hover { box-shadow: var(--shadow); }
+    .platform-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .platform-icon.facebook { background: #e7f0ff; color: #1877f2; }
+    .platform-icon.instagram { background: #fce7f3; color: #e1306c; }
+    .platform-icon.linkedin { background: #e7f3f8; color: #0a66c2; }
+    .platform-icon.pinterest { background: #fde7e7; color: #e60023; }
+    .platform-icon.twitter { background: #e7f0ff; color: #000000; }
+    .platform-info { flex: 1; }
+    .platform-name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+    .platform-desc { font-size: 12.5px; color: var(--text-3); }
+
+    /* ===================================================
+       BILLING PAGE
+    =================================================== */
+    .plan-card { border: 2px solid var(--border); border-radius: var(--radius); padding: 24px; background: var(--surface); position: relative; transition: border-color var(--duration) var(--ease); }
+    .plan-card.featured { border-color: var(--primary); }
+    .plan-badge { position: absolute; top: -11px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #fff; font-size: 11px; font-weight: 600; padding: 3px 12px; border-radius: 20px; white-space: nowrap; }
+    .plan-name { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .plan-price { font-size: 30px; font-weight: 800; letter-spacing: -.5px; color: var(--text); }
+    .plan-price span { font-size: 14px; font-weight: 400; color: var(--text-3); }
+    .plan-ngn { font-size: 12px; color: var(--text-3); margin-bottom: 8px; }
+    .plan-feature { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-2); margin-bottom: 6px; }
+    .plan-feature i { color: var(--success); font-size: 12px; }
+    .invoice-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-bottom: 1px solid var(--border-light); font-size: 13.5px; }
+    .invoice-row:last-child { border-bottom: none; }
+
+    /* ===================================================
+       SETTINGS PAGE
+    =================================================== */
+    .settings-layout { display: grid; grid-template-columns: 200px 1fr; gap: 20px; align-items: start; }
+    .settings-nav { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .settings-nav-item { display: flex; align-items: center; gap: 9px; padding: 11px 16px; font-size: 13.5px; font-weight: 500; color: var(--text-2); cursor: pointer; border-bottom: 1px solid var(--border-light); transition: background var(--duration) var(--ease), color var(--duration) var(--ease); }
+    .settings-nav-item:last-child { border-bottom: none; }
+    .settings-nav-item:hover { background: var(--surface-2); color: var(--text); }
+    .settings-nav-item.active { background: var(--primary-light); color: var(--primary); }
+    .settings-nav-item i { width: 16px; text-align: center; font-size: 13px; }
+    .settings-panel { display: none; }
+    .settings-panel.active { display: block; }
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--border-light); }
+    .toggle-row:last-child { border-bottom: none; }
+    .toggle-row-text strong { display: block; font-size: 13.5px; font-weight: 500; }
+    .toggle-row-text p { font-size: 12.5px; color: var(--text-3); margin-top: 2px; }
+    .toggle { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-track { position: absolute; inset: 0; background: var(--border); border-radius: 11px; cursor: pointer; transition: background var(--duration) var(--ease); }
+    .toggle-track::before { content: ''; position: absolute; width: 16px; height: 16px; background: #fff; border-radius: 50%; top: 3px; left: 3px; transition: transform var(--duration) var(--ease); box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+    .toggle input:checked + .toggle-track { background: var(--primary); }
+    .toggle input:checked + .toggle-track::before { transform: translateX(18px); }
+    .danger-zone { border-color: var(--danger) !important; }
+    .danger-zone .section-title { color: var(--danger); }
+
+    /* ===================================================
+       HELP PAGE
+    =================================================== */
+    .faq-item { border-bottom: 1px solid var(--border-light); }
+    .faq-question { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; cursor: pointer; font-size: 13.5px; font-weight: 500; transition: color var(--duration) var(--ease); }
+    .faq-question:hover { color: var(--primary); }
+    .faq-question i { transition: transform var(--duration) var(--ease); font-size: 12px; color: var(--text-3); }
+    .faq-item.open .faq-question i { transform: rotate(180deg); }
+    .faq-answer { display: none; padding: 0 20px 16px; font-size: 13.5px; color: var(--text-2); line-height: 1.7; }
+    .faq-item.open .faq-answer { display: block; }
+    .doc-link-card { display: flex; align-items: center; gap: 12px; padding: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); transition: all var(--duration) var(--ease); cursor: pointer; }
+    .doc-link-card:hover { border-color: var(--primary); background: var(--primary-light); }
+    .doc-link-card i { font-size: 18px; color: var(--primary); }
+    .doc-link-card strong { display: block; font-size: 13.5px; font-weight: 600; }
+    .doc-link-card p { font-size: 12.5px; color: var(--text-3); margin-top: 1px; }
+
+    /* ===================================================
+       SCHEDULE MODAL
+    =================================================== */
+    .schedule-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: none; justify-content: center; align-items: center; z-index: 99999; backdrop-filter: blur(4px); }
+    .schedule-overlay.open { display: flex; }
+    .schedule-card { width: 440px; max-width: 95%; background: #fff; border-radius: 18px; padding: 28px; box-shadow: 0 25px 60px rgba(0,0,0,.25); animation: schedulePopup .25s ease; }
+    @keyframes schedulePopup { from { opacity:0; transform:translateY(25px) scale(.95); } to { opacity:1; transform:translateY(0) scale(1); } }
+    .schedule-card h2 { margin: 0; font-size: 20px; font-weight: 700; }
+    .schedule-card > p { margin-top: 6px; color: #6b7280; font-size: 13.5px; }
+    .schedule-field { margin-top: 16px; }
+    .schedule-field label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 6px; }
+    .schedule-field input, .schedule-field select { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 10px; font-size: 14px; font-family: var(--font); outline: none; }
+    .schedule-field input:focus, .schedule-field select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(91,94,246,.12); }
+    .schedule-buttons { margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px; }
+
+    /* ===================================================
+       PAYMENT MODAL
+    =================================================== */
+    .payment-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: none; justify-content: center; align-items: center; z-index: 99999; backdrop-filter: blur(4px); }
+    .payment-overlay.open { display: flex; }
+    .payment-card { width: 480px; max-width: 95%; background: #fff; border-radius: 18px; padding: 28px; box-shadow: 0 25px 60px rgba(0,0,0,.25); animation: schedulePopup .25s ease; }
+    .payment-plan-info { background: var(--surface-2); border-radius: var(--radius-sm); padding: 16px; margin: 16px 0; }
+    .payment-plan-name { font-size: 16px; font-weight: 700; }
+    .payment-plan-price { font-size: 24px; font-weight: 800; color: var(--primary); margin-top: 4px; }
+    .payment-plan-ngn { font-size: 12px; color: var(--text-3); }
+    .payment-features { margin: 12px 0; }
+    .payment-feature { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-2); margin-bottom: 6px; }
+    .payment-feature i { color: var(--success); }
+    .subscription-banner { background: var(--warning-light); border: 1px solid var(--warning); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: #92400e; }
+    .subscription-banner i { flex-shrink: 0; color: var(--warning); }
+
+    /* ===================================================
+       SEARCH RESULTS
+    =================================================== */
+    .search-results-overlay { position: fixed; inset: 0; z-index: 5000; display: none; }
+    .search-results-overlay.open { display: block; }
+    .search-results-panel { position: absolute; top: var(--header-h); left: var(--sidebar-w); right: 0; background: var(--surface); border-bottom: 1px solid var(--border); box-shadow: var(--shadow-md); max-height: 400px; overflow-y: auto; }
+    .search-result-item { display: flex; align-items: center; gap: 12px; padding: 12px 24px; border-bottom: 1px solid var(--border-light); cursor: pointer; transition: background var(--duration) var(--ease); }
+    .search-result-item:hover { background: var(--surface-2); }
+    .search-result-icon { width: 32px; height: 32px; border-radius: var(--radius-xs); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+    .search-result-title { font-size: 13.5px; font-weight: 500; }
+    .search-result-meta { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+
+    /* ===================================================
+       RESPONSIVE
+    =================================================== */
+    @media (max-width: 1024px) { .create-layout { grid-template-columns: 1fr; } .grid-4 { grid-template-columns: repeat(2, 1fr); } .settings-layout { grid-template-columns: 1fr; } }
+    @media (max-width: 768px) {
+      :root { --sidebar-w: 240px; }
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.mobile-open { transform: translateX(0); }
+      .main { margin-left: 0; }
+      .menu-toggle { display: flex; }
+      .content { padding: 16px; }
+      .grid-2 { grid-template-columns: 1fr; }
+      .grid-3 { grid-template-columns: 1fr; }
+      .grid-4 { grid-template-columns: repeat(2, 1fr); }
+      .topbar { padding: 0 16px; }
+      .welcome-banner { padding: 20px; }
+      .welcome-banner h2 { font-size: 17px; }
+      .quick-actions { gap: 6px; }
+      .notif-dropdown { right: -60px; width: 280px; }
+      .search-results-panel { left: 0; }
+    }
+    @media (max-width: 480px) { .grid-4 { grid-template-columns: 1fr; } .ai-tools-grid { grid-template-columns: 1fr; } .plan-card { padding: 16px; } .plan-price { font-size: 24px; } }
+
+    /* Spacing utilities */
+    .mt-4 { margin-top: 4px; } .mt-8 { margin-top: 8px; } .mt-12 { margin-top: 12px; } .mt-16 { margin-top: 16px; } .mt-20 { margin-top: 20px; } .mt-24 { margin-top: 24px; }
+    .mb-8 { margin-bottom: 8px; } .mb-12 { margin-bottom: 12px; } .mb-16 { margin-bottom: 16px; } .mb-20 { margin-bottom: 20px; } .mb-24 { margin-bottom: 24px; }
+    .gap-8 { gap: 8px; } .gap-12 { gap: 12px; } .p-20 { padding: 20px; }
+    .flex { display: flex; } .flex-col { flex-direction: column; } .items-center { align-items: center; } .justify-between { justify-content: space-between; } .flex-wrap { flex-wrap: wrap; }
+    .text-sm { font-size: 12.5px; } .text-xs { font-size: 11.5px; } .text-muted { color: var(--text-3); } .text-primary { color: var(--primary); }
+    .fw-600 { font-weight: 600; } .fw-700 { font-weight: 700; }
+  </style>
+</head>
+<body>
+
+<!-- SIDEBAR OVERLAY (mobile) -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- SEARCH RESULTS OVERLAY -->
+<div class="search-results-overlay" id="searchResultsOverlay" onclick="closeSearch(event)">
+  <div class="search-results-panel" id="searchResultsPanel">
+    <div style="padding:14px 24px;font-size:13px;color:var(--text-3)">No results found.</div>
+  </div>
+</div>
+
+<div class="app">
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark"><i class="fa-solid fa-paper-plane"></i></div>
+      <span class="logo-text">PortPilot</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Workspace</div>
+      <div class="nav-item active" data-page="dashboardPage"><i class="fa-solid fa-house"></i> Dashboard</div>
+      <div class="nav-item" data-page="createPage"><i class="fa-solid fa-plus-circle"></i> Create</div>
+      <div class="nav-item" data-page="analyticsPage"><i class="fa-solid fa-chart-line"></i> Analytics</div>
+      <div class="nav-section-label">Accounts</div>
+      <div class="nav-item" data-page="connectedPage"><i class="fa-solid fa-link"></i> Connected Accounts</div>
+      <div class="nav-section-label">Account</div>
+      <div class="nav-item" data-page="billingPage"><i class="fa-solid fa-credit-card"></i> Billing</div>
+      <div class="nav-item" data-page="settingsPage"><i class="fa-solid fa-gear"></i> Settings</div>
+      <div class="nav-item" data-page="helpPage"><i class="fa-solid fa-circle-question"></i> Help</div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="nav-item" onclick="handleSignOut()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</div>
+    </div>
+  </aside>
+
+  <!-- ===================== MAIN ===================== -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="icon-btn menu-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+        <div class="search-wrap">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" class="search-input" id="globalSearch" placeholder="Search posts, drafts..." autocomplete="off" oninput="handleSearch(this.value)" />
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="notif-wrap">
+          <button class="icon-btn" onclick="toggleNotif(event)"><i class="fa-solid fa-bell"></i><span class="badge" id="notifBadge"></span></button>
+          <div class="notif-dropdown" id="notifDropdown">
+            <div class="notif-header">
+              <span>Notifications</span>
+              <button class="btn-ghost btn text-sm" style="padding:2px 8px" onclick="markAllNotifsRead()">Mark all read</button>
+            </div>
+            <div class="notif-body" id="notifBody">
+              <div class="notif-empty" id="notifEmpty"><i class="fa-regular fa-bell" style="font-size:24px;display:block;margin-bottom:8px;opacity:.4"></i>No notifications yet</div>
+            </div>
+          </div>
+        </div>
+        <div class="profile-wrap">
+          <div class="avatar" id="topbarAvatar" onclick="toggleProfile(event)" title="Profile menu">U</div>
+          <div class="profile-dropdown" id="profileDropdown">
+            <div class="profile-dropdown-item" onclick="showPage('settingsPage')"><i class="fa-solid fa-user"></i> Profile</div>
+            <div class="profile-dropdown-item" onclick="showPage('billingPage')"><i class="fa-solid fa-credit-card"></i> Billing</div>
+            <div class="profile-dropdown-item" onclick="showPage('settingsPage')"><i class="fa-solid fa-gear"></i> Settings</div>
+            <div class="profile-dropdown-divider"></div>
+            <div class="profile-dropdown-item danger" onclick="handleSignOut()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- PAGES -->
+    <main class="content">
+
+      <!-- ============ DASHBOARD PAGE ============ -->
+      <div class="page active" id="dashboardPage">
+        <div class="welcome-banner">
+          <h2 id="welcomeName">Welcome back</h2>
+          <p id="welcomeSubtitle">Here's what's happening with your content today.</p>
+          <div class="quick-actions">
+            <button class="quick-btn" onclick="showPage('createPage')"><i class="fa-solid fa-plus"></i> New Post</button>
+            <button class="quick-btn" onclick="showPage('analyticsPage')"><i class="fa-solid fa-chart-bar"></i> View Analytics</button>
+            <button class="quick-btn" onclick="showPage('connectedPage')"><i class="fa-solid fa-link"></i> Connect Account</button>
+          </div>
+        </div>
+
+        <!-- Subscription Warning Banner -->
+        <div class="subscription-banner" id="subscriptionWarningBanner" style="display:none">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <span id="subscriptionWarningText">Your subscription has expired. <button class="btn btn-sm btn-warning" onclick="showPage('billingPage')" style="margin-left:8px">Renew Now</button></span>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="grid-4 mb-24">
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-card-label">Published</span>
+              <div class="stat-icon" style="background:var(--success-light)"><i class="fa-solid fa-paper-plane" style="color:var(--success)"></i></div>
+            </div>
+            <div class="stat-value" id="statPublished" style="display:none"></div>
+            <div class="stat-loading" id="statPublishedLoading">Loading...</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-card-label">Scheduled</span>
+              <div class="stat-icon" style="background:var(--warning-light)"><i class="fa-solid fa-clock" style="color:var(--warning)"></i></div>
+            </div>
+            <div class="stat-value" id="statScheduled" style="display:none"></div>
+            <div class="stat-loading" id="statScheduledLoading">Loading...</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-card-label">Drafts</span>
+              <div class="stat-icon" style="background:var(--surface-2)"><i class="fa-regular fa-floppy-disk" style="color:var(--text-2)"></i></div>
+            </div>
+            <div class="stat-value" id="statDrafts" style="display:none"></div>
+            <div class="stat-loading" id="statDraftsLoading">Loading...</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <span class="stat-card-label">Connected</span>
+              <div class="stat-icon" style="background:var(--info-light)"><i class="fa-solid fa-link" style="color:var(--info)"></i></div>
+            </div>
+            <div class="stat-value" id="statConnected" style="display:none"></div>
+            <div class="stat-loading" id="statConnectedLoading">Loading...</div>
+          </div>
+        </div>
+
+        <!-- Activity & Quick Start -->
+        <div class="grid-2">
+          <div class="card">
+            <div class="section-head p-20" style="padding-bottom:0">
+              <span class="section-title">Recent Activity</span>
+              <span class="text-xs text-muted">Click to edit</span>
+            </div>
+            <div class="activity-feed" id="activityFeed">
+              <div class="empty-state"><i class="fa-regular fa-clock"></i><p>No activity yet. Create your first post to get started.</p></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="section-head p-20" style="padding-bottom:12px"><span class="section-title">Getting Started</span></div>
+            <div style="padding:0 20px 20px">
+              <div class="flex items-center gap-12 mb-16" style="padding:12px;background:var(--surface-2);border-radius:var(--radius-sm)">
+                <div style="width:32px;height:32px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fa-solid fa-link text-primary" style="font-size:13px"></i></div>
+                <div style="flex:1"><div style="font-size:13.5px;font-weight:500">Connect your accounts</div><div class="text-muted text-xs mt-4">Link your social media profiles</div></div>
+                <button class="btn btn-sm btn-primary" onclick="showPage('connectedPage')">Connect</button>
+              </div>
+              <div class="flex items-center gap-12 mb-16" style="padding:12px;background:var(--surface-2);border-radius:var(--radius-sm)">
+                <div style="width:32px;height:32px;border-radius:50%;background:var(--success-light);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fa-solid fa-plus" style="color:var(--success);font-size:13px"></i></div>
+                <div style="flex:1"><div style="font-size:13.5px;font-weight:500">Create your first post</div><div class="text-muted text-xs mt-4">Use AI tools to craft content</div></div>
+                <button class="btn btn-sm btn-secondary" onclick="showPage('createPage')">Create</button>
+              </div>
+              <div class="flex items-center gap-12" style="padding:12px;background:var(--surface-2);border-radius:var(--radius-sm)">
+                <div style="width:32px;height:32px;border-radius:50%;background:var(--warning-light);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fa-solid fa-credit-card" style="color:var(--warning);font-size:13px"></i></div>
+                <div style="flex:1"><div style="font-size:13.5px;font-weight:500">Choose a plan</div><div class="text-muted text-xs mt-4">Upgrade to unlock all features</div></div>
+                <button class="btn btn-sm btn-secondary" onclick="showPage('billingPage')">View Plans</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ CREATE PAGE ============ -->
+      <div class="page" id="createPage">
+        <div class="page-header">
+          <div class="flex items-center justify-between flex-wrap gap-8">
+            <div>
+              <div class="page-title">Content Studio</div>
+              <div class="page-subtitle">Upload media, craft your post, and publish across all your platforms.</div>
+            </div>
+            <div class="flex gap-8">
+              <button class="btn btn-ghost btn-sm" id="btnClearForm" onclick="clearCreateForm()"><i class="fa-solid fa-rotate-left"></i> New Post</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Editing Banner -->
+        <div id="editingBanner" style="display:none;background:var(--info-light);border:1px solid var(--info);border-radius:var(--radius-sm);padding:10px 16px;margin-bottom:16px;display:none;align-items:center;gap:10px;font-size:13.5px;color:#1e40af">
+          <i class="fa-solid fa-pen-to-square" style="color:var(--info)"></i>
+          <span>Editing saved post — <strong id="editingPostTitle"></strong></span>
+          <button class="btn btn-sm" style="margin-left:auto;background:var(--info);color:#fff" onclick="clearCreateForm()">Cancel Edit</button>
+        </div>
+
+        <div class="create-layout">
+          <!-- Left: Upload + Editor -->
+          <div>
+            <div class="card p-20 mb-20">
+              <div class="section-head mb-16">
+                <span class="section-title">Media</span>
+                <button class="btn btn-sm btn-secondary" onclick="clearMedia()"><i class="fa-solid fa-xmark"></i> Clear</button>
+              </div>
+              <div class="drop-zone" id="dropZone" onclick="triggerFileSelect()" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <p id="dropZoneText">Drop your image or video here</p>
+                <small>PNG, JPG, MP4 — up to 50MB &middot; Uploaded to Cloudinary</small>
+              </div>
+              <input type="file" id="fileInput" accept="image/*,video/*" style="display:none" onchange="handleFileSelect(event)" />
+              <div class="upload-progress" id="uploadProgress"><div class="upload-progress-bar" id="uploadProgressBar"></div></div>
+              <div class="image-preview mt-16" id="imagePreview">
+                <img id="previewImg" alt="Preview" />
+                <div class="image-preview-placeholder" id="previewPlaceholder"><i class="fa-regular fa-image"></i><p>Preview will appear here</p></div>
+              </div>
+              <input type="hidden" id="uploadedMediaUrl" />
+              <input type="hidden" id="uploadedMediaType" />
+              <input type="hidden" id="uploadedPublicId" />
+              <input type="hidden" id="editingPostId" />
+            </div>
+
+            <div class="card p-20">
+              <div class="section-title mb-16">Post Details</div>
+              <div class="form-group">
+                <label class="form-label">Project Title</label>
+                <input type="text" class="form-control" id="postTitle" placeholder="Enter a project title..." />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Caption</label>
+                <textarea class="form-control" id="postCaption" rows="4" placeholder="Write your caption here, or use AI tools to generate one..."></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Custom #Hashtags</label>
+                <textarea class="form-control" id="customHashtags" rows="2" placeholder="Write your own hashtags or combine with AI-generated ones..."></textarea>
+                <p class="form-hint">Combine your own hashtags with AI-generated ones from the output panel.</p>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Publish to</label>
+                <div class="flex gap-8 flex-wrap" style="gap:12px">
+                  <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" value="facebook" class="platform-checkbox" /> <i class="fa-brands fa-facebook" style="color:#1877f2"></i> Facebook</label>
+                  <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" value="instagram" class="platform-checkbox" /> <i class="fa-brands fa-instagram" style="color:#e1306c"></i> Instagram</label>
+                  <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" value="linkedin" class="platform-checkbox" /> <i class="fa-brands fa-linkedin" style="color:#0a66c2"></i> LinkedIn</label>
+                  <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" value="pinterest" class="platform-checkbox" /> <i class="fa-brands fa-pinterest" style="color:#e60023"></i> Pinterest</label>
+                  <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" value="twitter" class="platform-checkbox" /> <i class="fa-brands fa-x-twitter" style="color:#000"></i> X (Twitter)</label>
+                </div>
+                <p class="form-hint">Connect accounts first to enable publishing.</p>
+              </div>
+              <div class="flex gap-8 flex-wrap">
+                <button class="btn btn-primary" id="btnPublishNow" onclick="handlePublishNow()"><i class="fa-solid fa-paper-plane"></i> Publish Now</button>
+                <button class="btn btn-secondary" id="btnSchedule" onclick="openScheduleModal()"><i class="fa-regular fa-clock"></i> Schedule</button>
+                <button class="btn btn-ghost" onclick="handleSaveDraft()"><i class="fa-regular fa-floppy-disk"></i> Save Draft</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: AI Tools + Output -->
+          <div>
+            <div class="card p-20 mb-16">
+              <div class="flex items-center gap-8 mb-16">
+                <div style="width:28px;height:28px;border-radius:var(--radius-xs);background:linear-gradient(135deg,#7c3aed,#818cf8);display:flex;align-items:center;justify-content:center"><i class="fa-solid fa-wand-magic-sparkles" style="color:#fff;font-size:12px"></i></div>
+                <span class="section-title">AI Tools</span>
+              </div>
+              <div class="ai-tools-grid">
+                <button class="ai-tool-btn" onclick="toggleAIPrompt('promptTitle')"><i class="fa-solid fa-heading"></i> Generate Title</button>
+                <button class="ai-tool-btn" onclick="toggleAIPrompt('promptCaption')"><i class="fa-solid fa-align-left"></i> Generate Caption</button>
+                <button class="ai-tool-btn" onclick="toggleAIPrompt('promptHashtags')"><i class="fa-solid fa-hashtag"></i> Generate Hashtags</button>
+                <button class="ai-tool-btn" onclick="toggleAIPrompt('promptCTA')"><i class="fa-solid fa-bullhorn"></i> Generate CTA</button>
+                <button class="ai-tool-btn" onclick="toggleAIPrompt('promptImprove')"><i class="fa-solid fa-wand-sparkles"></i> Improve Caption</button>
+                <button class="ai-tool-btn" onclick="toggleAIPrompt('promptRewrite')"><i class="fa-solid fa-rotate"></i> Rewrite Caption</button>
+                <button class="ai-tool-btn" onclick="toggleAIPrompt('promptThumbnail')" style="grid-column:span 2"><i class="fa-regular fa-image"></i> Thumbnail Prompt</button>
+              </div>
+
+              <!-- AI Prompt Boxes (one at a time) -->
+              <div class="ai-prompt-box mt-12" id="promptTitle">
+                <div style="font-size:12px;font-weight:600;color:var(--text-3);margin-bottom:6px">GENERATE TITLE</div>
+                <input type="text" id="inputTitle" placeholder="E.g. Generate a professional title for a blog about graphic design..." />
+                <div class="prompt-actions">
+                  <button class="btn btn-primary btn-sm" onclick="generateTitle()"><i class="fa-solid fa-sparkles"></i> <span id="btnTitleText">Send</span></button>
+                  <button class="btn btn-ghost btn-sm" onclick="closeAllPrompts()">Cancel</button>
+                </div>
+              </div>
+
+              <div class="ai-prompt-box mt-12" id="promptCaption">
+                <div style="font-size:12px;font-weight:600;color:var(--text-3);margin-bottom:6px">GENERATE CAPTION</div>
+                <input type="text" id="inputCaption" placeholder="E.g. Write a caption encouraging people to start learning graphic design..." />
+                <div class="prompt-actions">
+                  <button class="btn btn-primary btn-sm" onclick="generateCaption()"><i class="fa-solid fa-sparkles"></i> <span id="btnCaptionText">Send</span></button>
+                  <button class="btn btn-ghost btn-sm" onclick="closeAllPrompts()">Cancel</button>
+                </div>
+              </div>
+
+              <div class="ai-prompt-box mt-12" id="promptHashtags">
+                <div style="font-size:12px;font-weight:600;color:var(--text-3);margin-bottom:6px">GENERATE HASHTAGS</div>
+                <input type="text" id="inputHashtags" placeholder="E.g. Generate hashtags for graphic design beginners..." />
+                <div class="prompt-actions">
+                  <button class="btn btn-primary btn-sm" onclick="generateHashtags()"><i class="fa-solid fa-sparkles"></i> <span id="btnHashtagsText">Send</span></button>
+                  <button class="btn btn-ghost btn-sm" onclick="closeAllPrompts()">Cancel</button>
+                </div>
+              </div>
+
+              <div class="ai-prompt-box mt-12" id="promptCTA">
+                <div style="font-size:12px;font-weight:600;color:var(--text-3);margin-bottom:6px">GENERATE CTA</div>
+                <input type="text" id="inputCTA" placeholder="E.g. Generate a CTA encouraging users to subscribe..." />
+                <div class="prompt-actions">
+                  <button class="btn btn-primary btn-sm" onclick="generateCTA()"><i class="fa-solid fa-sparkles"></i> <span id="btnCTAText">Send</span></button>
+                  <button class="btn btn-ghost btn-sm" onclick="closeAllPrompts()">Cancel</button>
+                </div>
+              </div>
+
+              <div class="ai-prompt-box mt-12" id="promptImprove">
+                <div style="font-size:12px;font-weight:600;color:var(--text-3);margin-bottom:6px">IMPROVE CAPTION</div>
+                <input type="text" id="inputImprove" placeholder="E.g. Make it more professional and engaging..." />
+                <div class="prompt-actions">
+                  <button class="btn btn-primary btn-sm" onclick="improveCaption()"><i class="fa-solid fa-sparkles"></i> <span id="btnImproveText">Send</span></button>
+                  <button class="btn btn-ghost btn-sm" onclick="closeAllPrompts()">Cancel</button>
+                </div>
+              </div>
+
+              <div class="ai-prompt-box mt-12" id="promptRewrite">
+                <div style="font-size:12px;font-weight:600;color:var(--text-3);margin-bottom:6px">REWRITE CAPTION</div>
+                <input type="text" id="inputRewrite" placeholder="E.g. Rewrite using Nigerian English and a fun tone..." />
+                <div class="prompt-actions">
+                  <button class="btn btn-primary btn-sm" onclick="rewriteCaption()"><i class="fa-solid fa-sparkles"></i> <span id="btnRewriteText">Send</span></button>
+                  <button class="btn btn-ghost btn-sm" onclick="closeAllPrompts()">Cancel</button>
+                </div>
+              </div>
+
+              <div class="ai-prompt-box mt-12" id="promptThumbnail">
+                <div style="font-size:12px;font-weight:600;color:var(--text-3);margin-bottom:6px">THUMBNAIL PROMPT</div>
+                <input type="text" id="inputThumbnail" placeholder="E.g. Create an image prompt for a motivational graphic design post..." />
+                <div class="prompt-actions">
+                  <button class="btn btn-primary btn-sm" onclick="generateThumbnailPrompt()"><i class="fa-solid fa-sparkles"></i> <span id="btnThumbnailText">Send</span></button>
+                  <button class="btn btn-ghost btn-sm" onclick="closeAllPrompts()">Cancel</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- AI Output Cards -->
+            <div class="card p-20">
+              <div class="section-title mb-12">AI Output</div>
+              <div class="ai-output-card">
+                <div class="ai-output-header"><span class="ai-output-label">Title</span><button class="btn btn-ghost btn-sm" onclick="copyOutput('outputTitle'); applyOutputToField('outputTitle','postTitle')"><i class="fa-regular fa-copy"></i> Copy & Apply</button></div>
+                <div class="ai-output-body" id="outputTitle" contenteditable="true" data-placeholder="Title will appear here..."></div>
+              </div>
+              <div class="ai-output-card">
+                <div class="ai-output-header"><span class="ai-output-label">Caption</span><button class="btn btn-ghost btn-sm" onclick="copyOutput('outputCaption'); applyOutputToField('outputCaption','postCaption')"><i class="fa-regular fa-copy"></i> Copy & Apply</button></div>
+                <div class="ai-output-body" id="outputCaption" contenteditable="true" data-placeholder="Caption will appear here..."></div>
+              </div>
+              <div class="ai-output-card">
+                <div class="ai-output-header"><span class="ai-output-label">Hashtags</span><button class="btn btn-ghost btn-sm" onclick="copyOutput('outputHashtags'); applyOutputToField('outputHashtags','customHashtags')"><i class="fa-regular fa-copy"></i> Copy & Apply</button></div>
+                <div class="ai-output-body" id="outputHashtags" contenteditable="true" data-placeholder="#hashtags will appear here..."></div>
+              </div>
+              <div class="ai-output-card">
+                <div class="ai-output-header"><span class="ai-output-label">CTA</span><button class="btn btn-ghost btn-sm" onclick="copyOutput('outputCTA')"><i class="fa-regular fa-copy"></i> Copy</button></div>
+                <div class="ai-output-body" id="outputCTA" contenteditable="true" data-placeholder="Call-to-action will appear here..."></div>
+              </div>
+              <div class="ai-output-card">
+                <div class="ai-output-header"><span class="ai-output-label">Thumbnail Prompt</span><button class="btn btn-ghost btn-sm" onclick="copyOutput('outputThumbnail')"><i class="fa-regular fa-copy"></i> Copy</button></div>
+                <div class="ai-output-body" id="outputThumbnail" contenteditable="true" data-placeholder="Image generation prompt will appear here..."></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ ANALYTICS PAGE ============ -->
+      <div class="page" id="analyticsPage">
+        <div class="page-header">
+          <div class="flex items-center justify-between flex-wrap gap-8">
+            <div><div class="page-title">Analytics</div><div class="page-subtitle">Track performance across all connected platforms.</div></div>
+            <div class="flex gap-8">
+              <select class="form-control" style="width:auto" id="analyticsRange" onchange="refreshAnalytics()">
+                <option value="7">Last 7 days</option>
+                <option value="30" selected>Last 30 days</option>
+                <option value="90">Last 90 days</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-4 mb-24">
+          <div class="stat-card">
+            <div class="stat-card-header"><span class="stat-card-label">Total Posts</span><div class="stat-icon" style="background:var(--primary-light)"><i class="fa-solid fa-file-alt" style="color:var(--primary)"></i></div></div>
+            <div class="stat-value" id="analyticsStatPosts">--</div>
+            <div class="stat-loading" id="analyticsStatPostsLabel">Loading...</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header"><span class="stat-card-label">Scheduled</span><div class="stat-icon" style="background:var(--warning-light)"><i class="fa-solid fa-clock" style="color:var(--warning)"></i></div></div>
+            <div class="stat-value" id="analyticsStatScheduled">--</div>
+            <div class="stat-loading" id="analyticsStatScheduledLabel">Loading...</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header"><span class="stat-card-label">Drafts</span><div class="stat-icon" style="background:var(--surface-2)"><i class="fa-regular fa-floppy-disk" style="color:var(--text-2)"></i></div></div>
+            <div class="stat-value" id="analyticsStatDrafts">--</div>
+            <div class="stat-loading" id="analyticsStatDraftsLabel">Loading...</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header"><span class="stat-card-label">Hours Saved</span><div class="stat-icon" style="background:var(--success-light)"><i class="fa-solid fa-clock" style="color:var(--success)"></i></div></div>
+            <div class="stat-value" id="analyticsStatHours">--</div>
+            <div class="stat-loading" id="analyticsStatHoursLabel">Loading...</div>
+          </div>
+        </div>
+
+        <div class="grid-2 mb-20">
+          <div class="card p-20">
+            <div class="section-head mb-16"><span class="section-title">Posts Over Time</span></div>
+            <div id="postsOverTimeChart" class="chart-placeholder"><i class="fa-solid fa-chart-line"></i><p>No posts yet.</p></div>
+          </div>
+          <div class="card p-20">
+            <div class="section-head mb-16"><span class="section-title">Platform Breakdown</span></div>
+            <div id="platformBreakdownChart" class="chart-placeholder"><i class="fa-solid fa-chart-pie"></i><p>No posts published yet.</p></div>
+          </div>
+        </div>
+
+        <div class="card p-20">
+          <div class="section-head mb-16">
+            <span class="section-title">Recent Posts</span>
+            <div class="flex gap-8">
+              <button class="btn btn-sm btn-ghost" onclick="filterActivity('all')" id="filterAll" style="font-weight:700;color:var(--primary)">All</button>
+              <button class="btn btn-sm btn-ghost" onclick="filterActivity('published')" id="filterPublished">Published</button>
+              <button class="btn btn-sm btn-ghost" onclick="filterActivity('scheduled')" id="filterScheduled">Scheduled</button>
+              <button class="btn btn-sm btn-ghost" onclick="filterActivity('draft')" id="filterDraft">Draft</button>
+              <button class="btn btn-sm btn-ghost" onclick="filterActivity('failed')" id="filterFailed">Failed</button>
+            </div>
+          </div>
+          <div id="analyticsPostsList">
+            <div class="empty-state"><i class="fa-regular fa-file-alt"></i><p>No posts yet. Create your first post to see it here.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ CONNECTED ACCOUNTS PAGE ============ -->
+      <div class="page" id="connectedPage">
+        <div class="page-header">
+          <div class="page-title">Connected Accounts</div>
+          <div class="page-subtitle">Manage your social media platforms and publishing permissions.</div>
+        </div>
+
+        <div class="card p-20 mb-20">
+          <div class="section-title mb-4">Social Platforms</div>
+          <p class="text-sm text-muted mb-16">Connect your accounts to start publishing and tracking analytics.</p>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="platform-card" id="platformCardFacebook">
+              <div class="platform-icon facebook"><i class="fa-brands fa-facebook-f"></i></div>
+              <div class="platform-info"><div class="platform-name">Facebook</div><div class="platform-desc" id="platformDescFacebook">Pages, Groups, and Reels publishing</div></div>
+              <span class="status-dot disconnected" id="statusFacebook">Not Connected</span>
+              <button class="btn btn-sm btn-secondary" id="btnFacebook" onclick="connectPlatform('facebook')"><i class="fa-solid fa-plug"></i> Connect</button>
+            </div>
+            <div class="platform-card" id="platformCardInstagram">
+              <div class="platform-icon instagram"><i class="fa-brands fa-instagram"></i></div>
+              <div class="platform-info"><div class="platform-name">Instagram</div><div class="platform-desc" id="platformDescInstagram">Feed posts, Stories, and Reels</div></div>
+              <span class="status-dot disconnected" id="statusInstagram">Not Connected</span>
+              <button class="btn btn-sm btn-secondary" id="btnInstagram" onclick="connectPlatform('instagram')"><i class="fa-solid fa-plug"></i> Connect</button>
+            </div>
+            <div class="platform-card" id="platformCardLinkedin">
+              <div class="platform-icon linkedin"><i class="fa-brands fa-linkedin-in"></i></div>
+              <div class="platform-info"><div class="platform-name">LinkedIn</div><div class="platform-desc" id="platformDescLinkedin">Personal feed and Company Pages</div></div>
+              <span class="status-dot disconnected" id="statusLinkedin">Not Connected</span>
+              <button class="btn btn-sm btn-secondary" id="btnLinkedin" onclick="connectPlatform('linkedin')"><i class="fa-solid fa-plug"></i> Connect</button>
+            </div>
+            <div class="platform-card" id="platformCardPinterest">
+              <div class="platform-icon pinterest"><i class="fa-brands fa-pinterest-p"></i></div>
+              <div class="platform-info"><div class="platform-name">Pinterest</div><div class="platform-desc" id="platformDescPinterest">Pins and Board management</div></div>
+              <span class="status-dot disconnected" id="statusPinterest">Not Connected</span>
+              <button class="btn btn-sm btn-secondary" id="btnPinterest" onclick="connectPlatform('pinterest')"><i class="fa-solid fa-plug"></i> Connect</button>
+            </div>
+            <div class="platform-card" id="platformCardTwitter">
+              <div class="platform-icon twitter"><i class="fa-brands fa-x-twitter"></i></div>
+              <div class="platform-info"><div class="platform-name">X (Twitter)</div><div class="platform-desc" id="platformDescTwitter">Tweets and threads</div></div>
+              <span class="status-dot disconnected" id="statusTwitter">Not Connected</span>
+              <button class="btn btn-sm btn-secondary" id="btnTwitter" onclick="connectPlatform('twitter')"><i class="fa-solid fa-plug"></i> Connect</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card p-20">
+          <div class="section-title mb-4">OAuth Information</div>
+          <p class="text-sm text-muted">Account connections use Zernio OAuth authorization. Each platform redirects to their official login page and grants PortPilot permission to publish on your behalf. Connection status is stored securely in Firestore and synchronized automatically.</p>
+        </div>
+      </div>
+
+      <!-- ============ BILLING PAGE ============ -->
+      <div class="page" id="billingPage">
+        <div class="page-header">
+          <div class="page-title">Billing</div>
+          <div class="page-subtitle">Manage your subscription and payment method.</div>
+        </div>
+
+        <!-- Current Plan -->
+        <div class="card p-20 mb-20">
+          <div class="section-head mb-16">
+            <span class="section-title">Current Plan</span>
+            <span class="status-dot" id="billingPlanStatus">Loading...</span>
+          </div>
+          <div style="background:var(--surface-2);border-radius:var(--radius-sm);padding:16px">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+              <div>
+                <div style="font-size:15px;font-weight:700;margin-bottom:2px" id="currentPlanName">Free Plan</div>
+                <div class="text-sm text-muted" id="currentPlanDesc">Upgrade to unlock publishing and AI features.</div>
+              </div>
+              <button class="btn btn-primary" onclick="openPaymentModal('pro')"><i class="fa-solid fa-arrow-up"></i> Upgrade Plan</button>
+            </div>
+            <div id="subscriptionDetails" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+              <div class="flex gap-8 flex-wrap text-sm">
+                <span><strong>Started:</strong> <span id="subStartDate">--</span></span>
+                <span style="color:var(--text-3)">·</span>
+                <span><strong>Expires:</strong> <span id="subExpireDate">--</span></span>
+                <span style="color:var(--text-3)">·</span>
+                <span id="subDaysLeft" style="font-weight:600;color:var(--success)"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Plans -->
+        <div class="mb-20">
+          <div class="section-title mb-16">Choose a Plan</div>
+          <div class="grid-3">
+            <div class="plan-card">
+              <div class="plan-name">Starter</div>
+              <div class="plan-price">$5<span>/30 days</span></div>
+              <div class="plan-ngn">≈ NGN 6,800</div>
+              <div class="divider"></div>
+              <div class="plan-feature"><i class="fa-solid fa-check"></i> 5 connected accounts</div>
+              <div class="plan-feature"><i class="fa-solid fa-check"></i> 30 posts per month</div>
+              <div class="plan-feature"><i class="fa-solid fa-check"></i> Basic analytics</div>
+              <div class="plan-feature"><i class="fa-solid fa-check"></i> AI tools (50 credits/mo)</div>
+              <button class="btn btn-secondary mt-16" style="width:100%" onclick="openPaymentModal('starter')">Get Started</button>
+            </div>
+            <div class="plan-card featured">
+              <div class="plan-badge">Most Popular</div>
+              <div class="plan-name">Pro</div>
+              <div class="plan-price">$25<span>/30 days</span></div>
+              <div class="plan-ngn">≈ NGN 34,300</div>
+              <div class="divider"></div>
+              <div class="plan-feature"><i class="fa-solid fa-check"></i> All 5 platforms</div>
+              <div class="plan-feature"><i class="fa-solid fa-check"></i> Unlimited posts</div>
+              <div class="plan-feature"><i class="fa-solid fa-check"></i> Advanced analytics</div>
+              <div class="plan-feature"><i class="fa-solid fa-check"></i> AI tools (500 credits/mo)</div>
+              <div class="plan-feature"><i class="fa-solid fa-check"></i> Priority support</div>
+              <button class="btn btn-primary mt-16" style="width:100%" onclick="openPaymentModal('pro')">Upgrade to Pro</button>
+            </div>
+            <div class="plan-card">
+              <div class="plan-name">Agency</div>
+              <div class="plan-price">$79<span>/30 days</span></div>
+              <div class="plan-ngn">≈ NGN 108,500</div>
+              <div class="divider"></div>
+              <div class="plan-feature"><i class="fa-solid fa-check"></i> All 5 platforms</div>
+              <div class="plan-feature"><i class="fa-solid fa-check"></i> Unlimited posts</div>
+              <div class="plan-feature"><i class="fa-solid fa-check"></i> White-label reports</div>
+              <div class="plan-feature"><i class="fa-solid fa-check"></i> Unlimited AI credits</div>
+              <div class="plan-feature"><i class="fa-solid fa-check"></i> 5 team members</div>
+              <div class="plan-feature"><i class="fa-solid fa-check"></i> Dedicated support</div>
+              <button class="btn btn-secondary mt-16" style="width:100%" onclick="openPaymentModal('agency')">Get Agency</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Invoices -->
+        <div class="card">
+          <div class="section-head p-20" style="padding-bottom:12px"><span class="section-title">Payment History</span></div>
+          <div id="invoiceList"><div class="invoice-row"><span class="text-muted text-sm">No payments yet.</span></div></div>
+        </div>
+      </div>
+
+      <!-- ============ SETTINGS PAGE ============ -->
+      <div class="page" id="settingsPage">
+        <div class="page-header">
+          <div class="page-title">Settings</div>
+          <div class="page-subtitle">Manage your account preferences and configuration.</div>
+        </div>
+        <div class="settings-layout">
+          <div class="settings-nav">
+            <div class="settings-nav-item active" data-panel="profilePanel"><i class="fa-solid fa-user"></i> Profile</div>
+            <div class="settings-nav-item" data-panel="accountPanel"><i class="fa-solid fa-circle-user"></i> Account</div>
+            <div class="settings-nav-item" data-panel="passwordPanel"><i class="fa-solid fa-lock"></i> Password</div>
+            <div class="settings-nav-item" data-panel="notifPanel"><i class="fa-solid fa-bell"></i> Notifications</div>
+            <div class="settings-nav-item" data-panel="appearancePanel"><i class="fa-solid fa-palette"></i> Appearance</div>
+            <div class="settings-nav-item" data-panel="languagePanel"><i class="fa-solid fa-globe"></i> Language</div>
+            <div class="settings-nav-item" data-panel="dangerPanel"><i class="fa-solid fa-triangle-exclamation"></i> Danger Zone</div>
+          </div>
+          <div>
+            <!-- Profile -->
+            <div class="settings-panel active card p-20" id="profilePanel">
+              <div class="section-title mb-20">Profile Information</div>
+              <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
+                <div class="avatar" id="settProfileAvatar" style="width:56px;height:56px;font-size:18px;border-radius:50%">U</div>
+                <div>
+                  <input type="file" id="avatarFileInput" accept="image/*" style="display:none" onchange="handleAvatarChange(event)" />
+                  <button class="btn btn-secondary btn-sm" onclick="document.getElementById('avatarFileInput').click()"><i class="fa-solid fa-camera"></i> Change Photo</button>
+                  <p class="text-xs text-muted mt-4">JPG, PNG or GIF. Max 5MB. Uploaded to Cloudinary.</p>
+                </div>
+              </div>
+              <div class="grid-2">
+                <div class="form-group"><label class="form-label">First Name</label><input type="text" class="form-control" id="settFirstName" placeholder="First name" /></div>
+                <div class="form-group"><label class="form-label">Last Name</label><input type="text" class="form-control" id="settLastName" placeholder="Last name" /></div>
+              </div>
+              <div class="form-group"><label class="form-label">Display Name</label><input type="text" class="form-control" id="settDisplayName" placeholder="How you appear across PortPilot" /></div>
+              <div class="form-group"><label class="form-label">Bio</label><textarea class="form-control" id="settBio" rows="3" placeholder="Tell others a bit about yourself..."></textarea></div>
+              <div class="form-group"><label class="form-label">Company</label><input type="text" class="form-control" id="settCompany" placeholder="Your company or brand name" /></div>
+              <div class="form-group"><label class="form-label">Website</label><input type="url" class="form-control" id="settWebsite" placeholder="https://" /></div>
+              <button class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
+            </div>
+            <!-- Account -->
+            <div class="settings-panel card p-20" id="accountPanel">
+              <div class="section-title mb-20">Account Settings</div>
+              <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="form-control" id="settEmail" placeholder="your@email.com" /><p class="form-hint">Changing your email requires re-verification.</p></div>
+              <div class="form-group"><label class="form-label">Username</label><input type="text" class="form-control" id="settUsername" placeholder="@username" /></div>
+              <div class="form-group"><label class="form-label">Country</label><input type="text" class="form-control" id="settCountry" placeholder="Your country" /></div>
+              <div class="form-group"><label class="form-label">Timezone</label><select class="form-control" id="settTimezone"><option value="UTC">UTC</option><option value="Africa/Lagos">Africa/Lagos</option><option value="America/New_York">America/New_York</option><option value="America/Los_Angeles">America/Los_Angeles</option><option value="Europe/London">Europe/London</option><option value="Europe/Paris">Europe/Paris</option><option value="Asia/Tokyo">Asia/Tokyo</option><option value="Asia/Singapore">Asia/Singapore</option><option value="Australia/Sydney">Australia/Sydney</option></select></div>
+              <button class="btn btn-primary" onclick="saveAccount()">Save Changes</button>
+            </div>
+            <!-- Password -->
+            <div class="settings-panel card p-20" id="passwordPanel">
+              <div class="section-title mb-20">Change Password</div>
+              <div class="form-group"><label class="form-label">Current Password</label><input type="password" class="form-control" id="settCurrentPwd" placeholder="Enter current password" /></div>
+              <div class="form-group"><label class="form-label">New Password</label><input type="password" class="form-control" id="settNewPwd" placeholder="At least 8 characters" /></div>
+              <div class="form-group"><label class="form-label">Confirm New Password</label><input type="password" class="form-control" id="settConfirmPwd" placeholder="Repeat new password" /></div>
+              <button class="btn btn-primary" onclick="changePassword()">Update Password</button>
+            </div>
+            <!-- Notifications -->
+            <div class="settings-panel card p-20" id="notifPanel">
+              <div class="section-title mb-20">Notification Preferences</div>
+              <div class="toggle-row"><div class="toggle-row-text"><strong>Post published</strong><p>When a scheduled post is published successfully</p></div><label class="toggle"><input type="checkbox" id="notifPostPublished" checked /><span class="toggle-track"></span></label></div>
+              <div class="toggle-row"><div class="toggle-row-text"><strong>Post failed</strong><p>When a post fails to publish</p></div><label class="toggle"><input type="checkbox" id="notifPostFailed" checked /><span class="toggle-track"></span></label></div>
+              <div class="toggle-row"><div class="toggle-row-text"><strong>Account disconnected</strong><p>When a social account token expires or disconnects</p></div><label class="toggle"><input type="checkbox" id="notifAccountDisconnected" checked /><span class="toggle-track"></span></label></div>
+              <div class="toggle-row"><div class="toggle-row-text"><strong>Weekly digest</strong><p>A summary of your performance each week</p></div><label class="toggle"><input type="checkbox" id="notifWeeklyDigest" /><span class="toggle-track"></span></label></div>
+              <div class="toggle-row"><div class="toggle-row-text"><strong>Product updates</strong><p>New features and announcements from PortPilot</p></div><label class="toggle"><input type="checkbox" id="notifProductUpdates" /><span class="toggle-track"></span></label></div>
+              <div class="toggle-row"><div class="toggle-row-text"><strong>Marketing emails</strong><p>Tips, guides, and promotional content</p></div><label class="toggle"><input type="checkbox" id="notifMarketing" /><span class="toggle-track"></span></label></div>
+              <button class="btn btn-primary mt-16" onclick="saveNotifPrefs()">Save Preferences</button>
+            </div>
+            <!-- Appearance -->
+            <div class="settings-panel card p-20" id="appearancePanel">
+              <div class="section-title mb-20">Appearance</div>
+              <div class="form-group"><label class="form-label">Theme</label>
+                <div class="flex gap-8 flex-wrap">
+                  <label style="cursor:pointer;flex:1;min-width:100px"><input type="radio" name="theme" value="light" checked style="display:none" /><div style="border:2px solid var(--primary);border-radius:var(--radius-sm);padding:12px;text-align:center;background:#f8f9fc"><i class="fa-solid fa-sun" style="font-size:18px;color:var(--primary);display:block;margin-bottom:4px"></i><span style="font-size:12.5px;font-weight:500">Light</span></div></label>
+                  <label style="cursor:pointer;flex:1;min-width:100px"><input type="radio" name="theme" value="dark" style="display:none" /><div style="border:2px solid var(--border);border-radius:var(--radius-sm);padding:12px;text-align:center;background:#1e1e2e"><i class="fa-solid fa-moon" style="font-size:18px;color:#818cf8;display:block;margin-bottom:4px"></i><span style="font-size:12.5px;font-weight:500;color:#cdd6f4">Dark</span></div></label>
+                  <label style="cursor:pointer;flex:1;min-width:100px"><input type="radio" name="theme" value="system" style="display:none" /><div style="border:2px solid var(--border);border-radius:var(--radius-sm);padding:12px;text-align:center"><i class="fa-solid fa-circle-half-stroke" style="font-size:18px;color:var(--text-2);display:block;margin-bottom:4px"></i><span style="font-size:12.5px;font-weight:500">System</span></div></label>
+                </div>
+              </div>
+              <button class="btn btn-primary">Save Preferences</button>
+            </div>
+            <!-- Language -->
+            <div class="settings-panel card p-20" id="languagePanel">
+              <div class="section-title mb-20">Language &amp; Region</div>
+              <div class="form-group"><label class="form-label">Interface Language</label><select class="form-control" id="settLanguage"><option value="en-US">English (US)</option><option value="en-GB">English (UK)</option><option value="es">Spanish</option><option value="fr">French</option><option value="de">German</option><option value="pt">Portuguese</option><option value="ja">Japanese</option></select></div>
+              <div class="form-group"><label class="form-label">AI Output Language</label><select class="form-control" id="settAiLanguage"><option value="same">Same as interface</option><option value="en">English</option><option value="es">Spanish</option><option value="fr">French</option><option value="de">German</option></select></div>
+              <div class="form-group"><label class="form-label">First Day of Week</label><select class="form-control" id="settFirstDayOfWeek"><option value="sunday">Sunday</option><option value="monday">Monday</option></select></div>
+              <button class="btn btn-primary" onclick="saveLanguagePrefs()">Save Preferences</button>
+            </div>
+            <!-- Danger Zone -->
+            <div class="settings-panel card p-20 danger-zone" id="dangerPanel">
+              <div class="section-title mb-4">Danger Zone</div>
+              <p class="text-sm text-muted mb-20">These actions are irreversible. Please proceed with caution.</p>
+              <div style="border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden">
+                <div class="flex items-center justify-between" style="padding:16px;border-bottom:1px solid var(--border-light)"><div><div style="font-size:13.5px;font-weight:600">Disconnect all accounts</div><div class="text-xs text-muted mt-4">Remove all social platform connections</div></div><button class="btn btn-danger btn-sm" onclick="disconnectAllAccounts()">Disconnect All</button></div>
+                <div class="flex items-center justify-between" style="padding:16px;border-bottom:1px solid var(--border-light)"><div><div style="font-size:13.5px;font-weight:600">Delete all posts</div><div class="text-xs text-muted mt-4">Permanently delete all saved drafts and published post records</div></div><button class="btn btn-danger btn-sm" onclick="deleteAllPosts()">Delete Posts</button></div>
+                <div class="flex items-center justify-between" style="padding:16px"><div><div style="font-size:13.5px;font-weight:600;color:var(--danger)">Delete Account</div><div class="text-xs text-muted mt-4">Permanently delete your account and all associated data</div></div><button class="btn btn-danger btn-sm" onclick="deleteAccount()">Delete Account</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ HELP PAGE ============ -->
+      <div class="page" id="helpPage">
+        <div class="page-header"><div class="page-title">Help &amp; Support</div><div class="page-subtitle">Find answers, browse documentation, or reach our support team.</div></div>
+        <div class="card p-20 mb-20"><div class="section-title mb-12">Search Help Center</div><div class="search-wrap" style="max-width:100%"><i class="fa-solid fa-magnifying-glass"></i><input type="text" class="search-input" placeholder="Search articles, guides, FAQs..." style="background:var(--surface)" /></div></div>
+        <div class="grid-2 mb-20">
+          <div class="card">
+            <div class="section-head p-20" style="padding-bottom:12px;border-bottom:1px solid var(--border-light)"><span class="section-title">Frequently Asked Questions</span></div>
+            <div id="faqContainer">
+              <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)">How do I connect a social media account?<i class="fa-solid fa-chevron-down"></i></div><div class="faq-answer">Go to Connected Accounts and click the Connect button next to the platform you want to authorize. You'll be redirected through Zernio's OAuth flow and returned to PortPilot automatically.</div></div>
+              <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)">What AI tools are available?<i class="fa-solid fa-chevron-down"></i></div><div class="faq-answer">PortPilot includes AI tools for generating titles, captions, hashtags, CTAs, improving captions, rewriting captions, and generating thumbnail prompts. These are powered by OpenAI and require an active subscription.</div></div>
+              <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)">How do I upgrade my plan?<i class="fa-solid fa-chevron-down"></i></div><div class="faq-answer">Navigate to Billing, review the available plans, and click the Get Started or Upgrade button. You'll be directed to Flutterwave's secure checkout to complete the payment.</div></div>
+              <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)">Can I schedule posts in advance?<i class="fa-solid fa-chevron-down"></i></div><div class="faq-answer">Yes. In the Create studio, after composing your post, click "Schedule" and choose your desired publish date and time. Scheduled posts are stored in Firestore and published automatically via Zernio when the time arrives.</div></div>
+              <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)">Where is my data stored?<i class="fa-solid fa-chevron-down"></i></div><div class="faq-answer">All user data is stored in Firebase Firestore. Media assets are stored via Cloudinary. Payment and subscription data is managed by Flutterwave. No third party has access to your credentials.</div></div>
+            </div>
+          </div>
+          <div class="card p-20">
+            <div class="section-title mb-12">Contact Support</div>
+            <div class="form-group"><label class="form-label">Subject</label><select class="form-control" id="supportSubject"><option>-- Select a topic --</option><option>Account issue</option><option>Billing question</option><option>Connected account problem</option><option>AI tools not working</option><option>Feature request</option><option>Bug report</option><option>Other</option></select></div>
+            <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-control" id="supportEmail" placeholder="your@email.com" /></div>
+            <div class="form-group"><label class="form-label">Message</label><textarea class="form-control" id="supportMessage" rows="5" placeholder="Describe your issue in detail..."></textarea></div>
+            <button class="btn btn-primary" onclick="submitSupportTicket()"><i class="fa-solid fa-paper-plane"></i> Send Ticket</button>
+          </div>
+        </div>
+        <div class="card p-20"><div class="section-title mb-16">Documentation</div><div class="grid-3">
+          <div class="doc-link-card"><i class="fa-solid fa-rocket"></i><div><strong>Getting Started</strong><p>Setup guide and first steps</p></div></div>
+          <div class="doc-link-card"><i class="fa-solid fa-plug"></i><div><strong>Connecting Accounts</strong><p>OAuth setup for each platform</p></div></div>
+          <div class="doc-link-card"><i class="fa-solid fa-wand-magic-sparkles"></i><div><strong>AI Tools Guide</strong><p>How to use OpenAI-powered features</p></div></div>
+          <div class="doc-link-card"><i class="fa-solid fa-calendar-days"></i><div><strong>Scheduling Posts</strong><p>Automate your publishing workflow</p></div></div>
+          <div class="doc-link-card"><i class="fa-solid fa-chart-line"></i><div><strong>Analytics</strong><p>Understanding your metrics</p></div></div>
+          <div class="doc-link-card"><i class="fa-solid fa-credit-card"></i><div><strong>Billing &amp; Plans</strong><p>Subscription management guide</p></div></div>
+        </div></div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ===================== SCHEDULE MODAL ===================== -->
+<div class="schedule-overlay" id="scheduleModal">
+  <div class="schedule-card">
+    <h2><i class="fa-regular fa-clock" style="color:var(--primary);margin-right:8px"></i>Schedule Post</h2>
+    <p>Select when you want this post to be published.</p>
+    <div class="schedule-field">
+      <label>Date</label>
+      <input type="date" id="scheduleDate" />
+    </div>
+    <div class="schedule-field">
+      <label>Time</label>
+      <input type="time" id="scheduleTime" />
+    </div>
+    <div class="schedule-field">
+      <label>Timezone</label>
+      <select id="scheduleTz">
+        <option value="Africa/Lagos">Africa/Lagos (WAT)</option>
+        <option value="UTC">UTC</option>
+        <option value="America/New_York">America/New_York (EST/EDT)</option>
+        <option value="America/Los_Angeles">America/Los_Angeles (PST/PDT)</option>
+        <option value="Europe/London">Europe/London (GMT/BST)</option>
+        <option value="Europe/Paris">Europe/Paris (CET/CEST)</option>
+        <option value="Asia/Tokyo">Asia/Tokyo (JST)</option>
+        <option value="Asia/Singapore">Asia/Singapore (SGT)</option>
+        <option value="Australia/Sydney">Australia/Sydney (AEST)</option>
+      </select>
+    </div>
+    <div class="schedule-buttons">
+      <button class="btn btn-secondary" onclick="closeScheduleModal()">Cancel</button>
+      <button class="btn btn-primary" id="btnConfirmSchedule" onclick="confirmSchedulePost()"><i class="fa-regular fa-clock"></i> Schedule Post</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PAYMENT MODAL ===================== -->
+<div class="payment-overlay" id="paymentModal">
+  <div class="payment-card">
+    <div class="flex items-center justify-between mb-16">
+      <h2 style="font-size:20px;font-weight:700"><i class="fa-solid fa-credit-card" style="color:var(--primary);margin-right:8px"></i>Choose Payment</h2>
+      <button class="btn btn-ghost btn-sm" onclick="closePaymentModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="payment-plan-info">
+      <div class="payment-plan-name" id="modalPlanName">Pro Plan</div>
+      <div class="payment-plan-price" id="modalPlanPrice">$25</div>
+      <div class="payment-plan-ngn" id="modalPlanNgn">≈ NGN 34,300 / 30 days</div>
+    </div>
+    <div class="payment-features" id="modalPlanFeatures"></div>
+    <div style="background:var(--surface-2);border-radius:var(--radius-sm);padding:12px;margin-bottom:16px;font-size:12.5px;color:var(--text-3)">
+      <i class="fa-solid fa-shield-halved" style="color:var(--success)"></i> Payment processed securely via Flutterwave. Your subscription activates immediately after payment verification.
+    </div>
+    <div class="flex gap-8">
+      <button class="btn btn-primary" style="flex:1" id="btnProceedPayment" onclick="proceedToFlutterwave()"><i class="fa-solid fa-lock"></i> Proceed to Payment</button>
+      <button class="btn btn-secondary" onclick="closePaymentModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== FIREBASE + APP SCRIPT ===================== -->
+<script type="module">
+  import { initializeApp }              from 'https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js';
+  import {
+    getAuth,
+    onAuthStateChanged,
+    signOut,
+    updatePassword,
+    EmailAuthProvider,
+    reauthenticateWithCredential
+  }                                     from 'https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js';
+  import {
+    getFirestore,
+    doc,
+    getDoc,
+    setDoc,
+    updateDoc,
+    collection,
+    query,
+    where,
+    orderBy,
+    limit,
+    onSnapshot,
+    addDoc,
+    deleteDoc,
+    writeBatch,
+    serverTimestamp,
+    getDocs,
+    Timestamp
+  }                                     from 'https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js';
+
+  /* =========================
+     FIREBASE CONFIG
+  ========================= */
+  const firebaseConfig = {
+    apiKey: "AIzaSyA5Wab9dX0UKqdkTEUKC25SLtREOK2Bcw0",
+    authDomain: "portpilot-16d14.firebaseapp.com",
+    projectId: "portpilot-16d14",
+    storageBucket: "portpilot-16d14.firebasestorage.app",
+    messagingSenderId: "941538760648",
+    appId: "1:941538760648:web:a7fc4f00e96e0cd40712fd",
+    measurementId: "G-FZ23CY4GZQ"
+  };
+
+  /* =========================
+     CLOUDINARY CONFIG
+  ========================= */
+  const CLOUDINARY_CLOUD_NAME    = 'gl3jfdm6';
+  const CLOUDINARY_UPLOAD_PRESET = 'portpilot_upload';
+  const CLOUDINARY_UPLOAD_URL    = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`;
+
+  /* =========================
+     OPENAI + ZERNIO
+     API keys are stored in Replit Secrets (server-side).
+     All AI and publishing calls go through the /api/* proxy routes.
+  ========================= */
+
+  /* =========================
+     FLUTTERWAVE
+     -------------------------
+     Paste your Flutterwave public key below.
+  ========================= */
+  // =============================
+  // FLUTTERWAVE CONFIG
+  // Paste your Flutterwave Public Key here:
+  const FLW_PUBLIC_KEY = '';
+  // =============================
+
+  /* =========================
+     APP STATE
+  ========================= */
+  let _app          = null;
+  let _auth         = null;
+  let _db           = null;
+  let _currentUser  = null;
+  let _userProfile  = null;
+  let _unsubscribers = [];
+  let _selectedScheduleDate = null;
+  let _currentPaymentPlan   = null;
+  let _countdownInterval    = null;
+  let _allPosts             = [];   // cache for search + analytics
+
+  const PLAN_PRICES = {
+    starter: { usd: 5,  ngn: 6800,  label: 'Starter Plan' },
+    pro:     { usd: 25, ngn: 34300, label: 'Pro Plan' },
+    agency:  { usd: 79, ngn: 108500,label: 'Agency Plan' },
+  };
+
+  const PLAN_FEATURES = {
+    starter: ['5 connected accounts', '30 posts per month', 'Basic analytics', 'AI tools (50 credits/mo)'],
+    pro:     ['All 5 platforms', 'Unlimited posts', 'Advanced analytics', 'AI tools (500 credits/mo)', 'Priority support'],
+    agency:  ['All 5 platforms', 'Unlimited posts', 'White-label reports', 'Unlimited AI credits', '5 team members', 'Dedicated support'],
+  };
+
+  /* =========================
+     INITIALIZE FIREBASE
+  ========================= */
+  try {
+    _app  = initializeApp(firebaseConfig);
+    _auth = getAuth(_app);
+    _db   = getFirestore(_app);
+  } catch (err) {
+    console.error('[Firebase] Init failed:', err);
+    showToast('Firebase initialization failed. Check your config.', 'error');
+  }
+
+  /* =========================
+     AUTH STATE
+  ========================= */
+  if (_auth) {
+    onAuthStateChanged(_auth, async (user) => {
+      if (!user) {
+        window.location.href = 'onboarding.html';
+        return;
+      }
+      _currentUser = user;
+      _unsubscribers.forEach(fn => fn());
+      _unsubscribers = [];
+      await loadUserProfile(user.uid);
+      subscribeToActivity(user.uid);
+      subscribeToNotifications(user.uid);
+      subscribeToPostStats(user.uid);
+    });
+  }
+
+  /* =========================
+     FIRESTORE — LOAD USER PROFILE
+  ========================= */
+  async function loadUserProfile(uid) {
+    try {
+      const snap = await getDoc(doc(_db, 'users', uid));
+      if (!snap.exists()) { console.warn('[Firestore] No user doc for uid:', uid); return; }
+      _userProfile = snap.data();
+      applyProfileToUI(_userProfile);
+      checkSubscriptionStatus(_userProfile);
+    } catch (err) {
+      console.error('[Firestore] loadUserProfile error:', err);
+    }
+  }
+
+  /* =========================
+     SUBSCRIPTION STATUS CHECK
+  ========================= */
+  function checkSubscriptionStatus(profile) {
+    const sub = profile?.subscription;
+    const banner = document.getElementById('subscriptionWarningBanner');
+    if (!banner) return;
+    if (!sub || sub.plan === 'free' || !sub.plan) {
+      banner.style.display = 'none';
+      return;
+    }
+    const expiry = sub.expiryDate?.toDate ? sub.expiryDate.toDate() : null;
+    if (!expiry) { banner.style.display = 'none'; return; }
+    const now = new Date();
+    const daysLeft = Math.ceil((expiry - now) / (1000 * 60 * 60 * 24));
+    if (daysLeft <= 0) {
+      banner.style.display = 'flex';
+      document.getElementById('subscriptionWarningText').innerHTML =
+        `Your subscription has expired. <button class="btn btn-sm btn-warning" onclick="showPage('billingPage')" style="margin-left:8px">Renew Now</button>`;
+    } else if (daysLeft <= 3) {
+      banner.style.display = 'flex';
+      document.getElementById('subscriptionWarningText').innerHTML =
+        `Your subscription expires in <strong>${daysLeft} day${daysLeft !== 1 ? 's' : ''}</strong>. <button class="btn btn-sm btn-warning" onclick="showPage('billingPage')" style="margin-left:8px">Renew Now</button>`;
+    } else {
+      banner.style.display = 'none';
+    }
+  }
+
+  function hasActiveSubscription() {
+    if (!_userProfile?.subscription) return false;
+    const sub = _userProfile.subscription;
+    if (!sub.plan || sub.plan === 'free') return false;
+    if (sub.status !== 'active') return false;
+    const expiry = sub.expiryDate?.toDate ? sub.expiryDate.toDate() : null;
+    if (!expiry) return false;
+    return new Date() < expiry;
+  }
+
+  /* =========================
+     APPLY PROFILE TO UI
+  ========================= */
+  function applyProfileToUI(p) {
+    if (!p) return;
+    const firstName   = p.firstName   || '';
+    const displayName = p.displayName || p.fullName || `${firstName} ${p.lastName || ''}`.trim() || 'User';
+    const initials    = getInitials(displayName);
+    const photoURL    = p.photoURL    || '';
+
+    const nameEl = document.getElementById('welcomeName');
+    if (nameEl) nameEl.textContent = `Welcome back${firstName ? ', ' + firstName : ''}`;
+
+    renderAvatar('topbarAvatar',     initials, photoURL, 'font-size:12px');
+    renderAvatar('settProfileAvatar', initials, photoURL, 'font-size:18px');
+
+    // Subscription stat
+    const sub = p.subscription;
+    const subEl = document.getElementById('statSubscription');
+    // Connected accounts
+    const accounts = p.connectedAccounts || {};
+    const connCount = Object.values(accounts).filter(a => a?.connected).length;
+    renderStatValue('statConnected', 'statConnectedLoading', connCount > 0 ? `${connCount}` : '0');
+
+    // Platform statuses on Connected page
+    ['facebook','instagram','linkedin','pinterest','twitter'].forEach(pl => renderPlatformStatus(pl, accounts[pl]));
+
+    // Billing current plan
+    const plan = sub?.plan || 'free';
+    const planNames = { free: 'Free Plan', starter: 'Starter Plan', pro: 'Pro Plan', agency: 'Agency Plan' };
+    setTextContent('currentPlanName', planNames[plan] || 'Free Plan');
+    const isActive = sub?.status === 'active';
+    const expiry = sub?.expiryDate?.toDate ? sub.expiryDate.toDate() : null;
+    const planDescEl = document.getElementById('currentPlanDesc');
+    if (planDescEl) planDescEl.textContent = plan === 'free' ? 'Upgrade to unlock publishing and AI features.' : (isActive ? `Active until ${expiry ? formatDate(expiry) : '--'}` : 'Subscription inactive.');
+    const statusEl = document.getElementById('billingPlanStatus');
+    if (statusEl) {
+      statusEl.className = `status-dot ${isActive ? 'connected' : (plan === 'free' ? 'disconnected' : 'pending')}`;
+      statusEl.textContent = isActive ? 'Active' : (plan === 'free' ? 'Free' : 'Inactive');
+    }
+    // Subscription details section
+    if (sub && sub.plan && sub.plan !== 'free') {
+      const detailsEl = document.getElementById('subscriptionDetails');
+      if (detailsEl) {
+        detailsEl.style.display = 'block';
+        const start = sub.startDate?.toDate ? sub.startDate.toDate() : null;
+        setTextContent('subStartDate', start ? formatDate(start) : '--');
+        setTextContent('subExpireDate', expiry ? formatDate(expiry) : '--');
+        if (expiry) {
+          const dLeft = Math.ceil((expiry - new Date()) / (1000 * 60 * 60 * 24));
+          const daysEl = document.getElementById('subDaysLeft');
+          if (daysEl) {
+            if (dLeft > 0) { daysEl.textContent = `${dLeft} Day${dLeft !== 1 ? 's' : ''} Left`; daysEl.style.color = dLeft <= 3 ? 'var(--danger)' : 'var(--success)'; }
+            else { daysEl.textContent = 'Expired'; daysEl.style.color = 'var(--danger)'; }
+          }
+        }
+      }
+    }
+
+    // Settings pre-fill
+    setInputValue('settFirstName',   firstName);
+    setInputValue('settLastName',    p.lastName    || '');
+    setInputValue('settDisplayName', displayName);
+    setInputValue('settBio',         p.bio         || '');
+    setInputValue('settCompany',     p.company     || '');
+    setInputValue('settWebsite',     p.website     || '');
+    setInputValue('settEmail',       _currentUser?.email || p.email || '');
+    setInputValue('settUsername',    p.username    || '');
+    setInputValue('settCountry',     p.country     || '');
+    setSelectValue('settTimezone',   p.timezone    || 'UTC');
+    const notifPrefs = p.notifPrefs || {};
+    setCheckbox('notifPostPublished',       notifPrefs.postPublished       !== false);
+    setCheckbox('notifPostFailed',          notifPrefs.postFailed          !== false);
+    setCheckbox('notifAccountDisconnected', notifPrefs.accountDisconnected !== false);
+    setCheckbox('notifWeeklyDigest',        !!notifPrefs.weeklyDigest);
+    setCheckbox('notifProductUpdates',      !!notifPrefs.productUpdates);
+    setCheckbox('notifMarketing',           !!notifPrefs.marketing);
+    setSelectValue('settLanguage',       p.language       || 'en-US');
+    setSelectValue('settAiLanguage',     p.aiLanguage     || 'same');
+    setSelectValue('settFirstDayOfWeek', p.firstDayOfWeek || 'sunday');
+    setInputValue('supportEmail', _currentUser?.email || p.email || '');
+
+    // Load invoices
+    loadInvoices(_currentUser.uid);
+  }
+
+  /* =========================
+     FIRESTORE — POST STATS (real-time)
+  ========================= */
+  function subscribeToPostStats(uid) {
+    const q = query(collection(_db, 'posts'), where('owner', '==', uid));
+    const unsub = onSnapshot(q, (snap) => {
+      _allPosts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      const published = _allPosts.filter(p => p.status === 'published').length;
+      const scheduled = _allPosts.filter(p => p.status === 'scheduled').length;
+      const drafts    = _allPosts.filter(p => p.status === 'draft').length;
+      const failed    = _allPosts.filter(p => p.status === 'failed').length;
+
+      renderStatValue('statPublished',  'statPublishedLoading',  published.toString());
+      renderStatValue('statScheduled',  'statScheduledLoading',  scheduled.toString());
+      renderStatValue('statDrafts',     'statDraftsLoading',     drafts.toString());
+
+      // Analytics page stats
+      const total = _allPosts.length;
+      const anPosts = document.getElementById('analyticsStatPosts');
+      if (anPosts) anPosts.textContent = total;
+      const anPostsLabel = document.getElementById('analyticsStatPostsLabel');
+      if (anPostsLabel) anPostsLabel.textContent = total === 0 ? 'No posts yet.' : `${published} published`;
+      const anSched = document.getElementById('analyticsStatScheduled');
+      if (anSched) anSched.textContent = scheduled;
+      const anSchedLabel = document.getElementById('analyticsStatScheduledLabel');
+      if (anSchedLabel) anSchedLabel.textContent = scheduled === 0 ? 'No scheduled posts.' : `${scheduled} pending`;
+      const anDrafts = document.getElementById('analyticsStatDrafts');
+      if (anDrafts) anDrafts.textContent = drafts;
+      const anDraftsLabel = document.getElementById('analyticsStatDraftsLabel');
+      if (anDraftsLabel) anDraftsLabel.textContent = drafts === 0 ? 'No drafts.' : `${drafts} saved`;
+
+      // Hours saved: each published post = 5 min × number of platforms
+      const hoursSaved = _allPosts
+        .filter(p => p.status === 'published')
+        .reduce((acc, p) => {
+          const platforms = p.platforms?.length || 1;
+          return acc + (platforms * 5);
+        }, 0);
+      const hDisplay = hoursSaved < 60 ? `${hoursSaved}m` : `${(hoursSaved/60).toFixed(1)}h`;
+      const anHours = document.getElementById('analyticsStatHours');
+      if (anHours) anHours.textContent = hDisplay;
+      const anHoursLabel = document.getElementById('analyticsStatHoursLabel');
+      if (anHoursLabel) anHoursLabel.textContent = hoursSaved === 0 ? 'No posts published yet.' : 'Estimated time saved';
+
+      // Charts + post list
+      renderPostsOverTime(_allPosts);
+      renderPlatformBreakdown(_allPosts);
+      renderAnalyticsPostsList(_allPosts, 'all');
+
+      // Check for scheduled posts that should fire
+      checkScheduledPosts(uid);
+    }, (err) => { console.error('[Firestore] postStats listener error:', err); });
+    _unsubscribers.push(unsub);
+  }
+
+  /* =========================
+     FIRESTORE — ACTIVITY FEED (real-time)
+  ========================= */
+  function subscribeToActivity(uid) {
+    const q = query(collection(_db, 'users', uid, 'activity'), orderBy('createdAt', 'desc'), limit(15));
+    const unsub = onSnapshot(q, (snap) => {
+      const feed = document.getElementById('activityFeed');
+      if (!feed) return;
+      if (snap.empty) {
+        feed.innerHTML = `<div class="empty-state"><i class="fa-regular fa-clock"></i><p>No activity yet. Create your first post to get started.</p></div>`;
+        return;
+      }
+      feed.innerHTML = snap.docs.map(d => {
+        const a    = d.data();
+        const time = a.createdAt?.toDate ? relativeTime(a.createdAt.toDate()) : '';
+        const iconClass = activityIconClass(a.type);
+        const iconBg    = activityIconBg(a.type);
+        const iconColor = activityIconColor(a.type);
+        let extra = '';
+        if (a.type === 'scheduled' && a.scheduledFor) {
+          const schedDate = a.scheduledFor?.toDate ? a.scheduledFor.toDate() : new Date(a.scheduledFor);
+          const countdown = countdownText(schedDate);
+          extra = `<div><span class="countdown-badge" data-scheduled="${schedDate.toISOString()}">${countdown}</span></div>`;
+        }
+        return `<div class="activity-item" onclick="openPostForEdit('${escHtml(a.postId || '')}')">
+          <div class="activity-icon" style="background:${iconBg}"><i class="${iconClass}" style="color:${iconColor}"></i></div>
+          <div class="activity-text">
+            <strong>${escHtml(a.title || a.type || 'Event')}</strong>
+            <p>${escHtml(a.message || '')}</p>
+            ${extra}
+          </div>
+          <span class="activity-time">${time}</span>
+        </div>`;
+      }).join('');
+      startCountdownUpdates();
+    }, (err) => { console.error('[Firestore] activity listener error:', err); });
+    _unsubscribers.push(unsub);
+  }
+
+  /* =========================
+     COUNTDOWN UPDATER
+  ========================= */
+  function startCountdownUpdates() {
+    if (_countdownInterval) clearInterval(_countdownInterval);
+    _countdownInterval = setInterval(() => {
+      document.querySelectorAll('.countdown-badge[data-scheduled]').forEach(el => {
+        const date = new Date(el.dataset.scheduled);
+        el.textContent = countdownText(date);
+      });
+    }, 60000);
+  }
+
+  function countdownText(date) {
+    const diff = date - new Date();
+    if (diff <= 0) return 'Published';
+    const mins  = Math.floor(diff / 60000);
+    const hours = Math.floor(mins / 60);
+    const days  = Math.floor(hours / 24);
+    if (days > 0)  return `${days} Day${days !== 1 ? 's' : ''} Left`;
+    if (hours > 0) return `${hours} Hour${hours !== 1 ? 's' : ''} Left`;
+    return `${mins} Minute${mins !== 1 ? 's' : ''} Left`;
+  }
+
+  /* =========================
+     FIRESTORE — NOTIFICATIONS (real-time)
+  ========================= */
+  function subscribeToNotifications(uid) {
+    const q = query(collection(_db, 'users', uid, 'notifications'), orderBy('createdAt', 'desc'), limit(20));
+    const unsub = onSnapshot(q, (snap) => {
+      const body  = document.getElementById('notifBody');
+      const empty = document.getElementById('notifEmpty');
+      const badge = document.getElementById('notifBadge');
+      if (!body) return;
+      const unread = snap.docs.filter(d => !d.data().read).length;
+      if (badge) badge.classList.toggle('visible', unread > 0);
+      if (snap.empty) { if (empty) empty.style.display = 'block'; body.querySelectorAll('.notif-item').forEach(el => el.remove()); return; }
+      if (empty) empty.style.display = 'none';
+      body.querySelectorAll('.notif-item').forEach(el => el.remove());
+      snap.docs.forEach(d => {
+        const n    = d.data();
+        const time = n.createdAt?.toDate ? relativeTime(n.createdAt.toDate()) : '';
+        const item = document.createElement('div');
+        item.className = `notif-item${n.read ? '' : ' unread'}`;
+        item.dataset.id = d.id;
+        item.innerHTML = `${!n.read ? '<div class="notif-item-dot"></div>' : ''}<div class="notif-item-text">${escHtml(n.message || n.title || '')}</div><div class="notif-item-time">${time}</div>`;
+        item.addEventListener('click', () => markNotifRead(uid, d.id));
+        body.insertBefore(item, body.firstChild);
+      });
+    }, (err) => { console.error('[Firestore] notifications listener error:', err); });
+    _unsubscribers.push(unsub);
+  }
+
+  /* =========================
+     NOTIFICATIONS — READ
+  ========================= */
+  async function markNotifRead(uid, notifId) {
+    try { await updateDoc(doc(_db, 'users', uid, 'notifications', notifId), { read: true }); } catch(e) { console.error(e); }
+  }
+
+  window.markAllNotifsRead = async function () {
+    if (!_currentUser) return;
+    try {
+      const q    = query(collection(_db, 'users', _currentUser.uid, 'notifications'), where('read', '==', false));
+      const snap = await getDocs(q);
+      const batch = writeBatch(_db);
+      snap.docs.forEach(d => batch.update(d.ref, { read: true }));
+      await batch.commit();
+    } catch (err) { console.error('[Firestore] markAllNotifsRead error:', err); }
+  };
+
+  /* =========================
+     ADD NOTIFICATION
+  ========================= */
+  async function addNotification(uid, message, type = 'info') {
+    try {
+      await addDoc(collection(_db, 'users', uid, 'notifications'), {
+        message, type, read: false, createdAt: serverTimestamp()
+      });
+    } catch(e) { console.error('[Firestore] addNotification error:', e); }
+  }
+
+  /* =========================
+     ADD ACTIVITY
+  ========================= */
+  async function addActivity(uid, type, title, message, extraData = {}) {
+    try {
+      await addDoc(collection(_db, 'users', uid, 'activity'), {
+        type, title, message, createdAt: serverTimestamp(), ...extraData
+      });
+    } catch(e) { console.error('[Firestore] addActivity error:', e); }
+  }
+
+  /* =========================
+     CLOUDINARY UPLOAD
+  ========================= */
+  async function uploadToCloudinary(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+    const progressWrap = document.getElementById('uploadProgress');
+    const progressBar  = document.getElementById('uploadProgressBar');
+    if (progressWrap) progressWrap.classList.add('visible');
+    if (progressBar)  progressBar.style.width = '10%';
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', CLOUDINARY_UPLOAD_URL);
+      xhr.upload.addEventListener('progress', (e) => {
+        if (e.lengthComputable && progressBar) {
+          progressBar.style.width = `${Math.round((e.loaded / e.total) * 90) + 5}%`;
+        }
+      });
+      xhr.addEventListener('load', () => {
+        if (progressBar) progressBar.style.width = '100%';
+        setTimeout(() => { if (progressWrap) progressWrap.classList.remove('visible'); if (progressBar) progressBar.style.width = '0%'; }, 600);
+        if (xhr.status >= 200 && xhr.status < 300) resolve(JSON.parse(xhr.responseText));
+        else reject(new Error(`Cloudinary upload failed: ${xhr.status}`));
+      });
+      xhr.addEventListener('error', () => reject(new Error('Cloudinary upload network error')));
+      xhr.send(formData);
+    });
+  }
+
+  /* =========================
+     FILE HANDLING
+  ========================= */
+  window.triggerFileSelect = function () { document.getElementById('fileInput').click(); };
+  window.handleFileSelect  = async function (e) { const file = e.target.files[0]; if (file) await processMediaFile(file); };
+  window.handleDragOver    = function (e) { e.preventDefault(); document.getElementById('dropZone').classList.add('drag-over'); };
+  window.handleDragLeave   = function () { document.getElementById('dropZone').classList.remove('drag-over'); };
+  window.handleDrop        = async function (e) { e.preventDefault(); document.getElementById('dropZone').classList.remove('drag-over'); const file = e.dataTransfer.files[0]; if (file) await processMediaFile(file); };
+
+  async function processMediaFile(file) {
+    if (file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = document.getElementById('previewImg');
+        img.src = ev.target.result; img.style.display = 'block';
+        document.getElementById('previewPlaceholder').style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+    }
+    const dzt = document.getElementById('dropZoneText');
+    if (dzt) dzt.textContent = `Uploading ${file.name}…`;
+    try {
+      const result = await uploadToCloudinary(file);
+      document.getElementById('uploadedMediaUrl').value  = result.secure_url;
+      document.getElementById('uploadedMediaType').value = file.type.startsWith('image/') ? 'image' : 'video';
+      document.getElementById('uploadedPublicId').value  = result.public_id;
+      if (dzt) dzt.textContent = 'Media uploaded successfully ✓';
+      showToast('Media uploaded to Cloudinary.', 'success');
+    } catch (err) {
+      console.error('[Cloudinary] Upload failed:', err);
+      if (dzt) dzt.textContent = 'Upload failed — try again';
+      showToast('Media upload failed. Please try again.', 'error');
+    }
+  }
+
+  window.clearMedia = function () {
+    document.getElementById('previewImg').style.display  = 'none';
+    document.getElementById('previewImg').src            = '';
+    document.getElementById('previewPlaceholder').style.display = 'flex';
+    document.getElementById('fileInput').value           = '';
+    document.getElementById('uploadedMediaUrl').value    = '';
+    document.getElementById('uploadedMediaType').value   = '';
+    document.getElementById('uploadedPublicId').value    = '';
+    const dzt = document.getElementById('dropZoneText');
+    if (dzt) dzt.textContent = 'Drop your image or video here';
+  };
+
+  /* =========================
+     AVATAR CHANGE
+  ========================= */
+  window.handleAvatarChange = async function (e) {
+    const file = e.target.files[0];
+    if (!file || !_currentUser) return;
+    showToast('Uploading profile photo…', 'info');
+    try {
+      const result = await uploadToCloudinary(file);
+      const photoURL = result.secure_url;
+      await updateDoc(doc(_db, 'users', _currentUser.uid), { photoURL, updatedAt: serverTimestamp() });
+      if (_userProfile) _userProfile.photoURL = photoURL;
+      const initials = getInitials(document.getElementById('settDisplayName')?.value || 'U');
+      renderAvatar('topbarAvatar',      initials, photoURL);
+      renderAvatar('settProfileAvatar', initials, photoURL);
+      showToast('Profile photo updated.', 'success');
+    } catch (err) {
+      console.error('[Cloudinary] Avatar upload failed:', err);
+      showToast('Failed to update profile photo.', 'error');
+    }
+  };
+
+  /* =========================
+     PUBLISH FLOW — SUBSCRIPTION GATE
+  ========================= */
+  window.handlePublishNow = async function () {
+    if (!hasActiveSubscription()) {
+      showToast('Choose a plan to publish posts.', 'error');
+      showPage('billingPage');
+      return;
+    }
+    await savePost('published');
+  };
+
+  window.handleSaveDraft = async function () {
+    await savePost('draft');
+  };
+
+  /* =========================
+     SAVE POST TO FIRESTORE
+  ========================= */
+  window.savePost = async function (status = 'draft', scheduleDate = null) {
+    if (!_currentUser) { showToast('You must be signed in.', 'error'); return; }
+
+    const title        = document.getElementById('postTitle')?.value.trim();
+    const caption      = document.getElementById('postCaption')?.value.trim();
+    const aiHashtags   = document.getElementById('outputHashtags')?.innerText.trim() || '';
+    const customHt     = document.getElementById('customHashtags')?.value.trim() || '';
+    const hashtags     = [aiHashtags, customHt].filter(Boolean).join(' ');
+    const cta          = document.getElementById('outputCTA')?.innerText.trim() || '';
+    const mediaUrl     = document.getElementById('uploadedMediaUrl')?.value || null;
+    const mediaType    = document.getElementById('uploadedMediaType')?.value || null;
+    const publicId     = document.getElementById('uploadedPublicId')?.value || null;
+    const platforms    = [...document.querySelectorAll('.platform-checkbox:checked')].map(c => c.value);
+    const editingId    = document.getElementById('editingPostId')?.value || null;
+
+    if (!title) { showToast('Please enter a project title.', 'error'); return; }
+
+    const btn = document.getElementById('btnPublishNow');
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving…'; }
+
+    const postData = {
+      title, caption, hashtags, cta,
+      mediaUrl, mediaType, publicId,
+      platforms,
+      owner:    _currentUser.uid,
+      status,
+      scheduledFor: (status === 'scheduled' && scheduleDate) ? Timestamp.fromDate(scheduleDate) : null,
+      updatedAt: serverTimestamp(),
+    };
+
+    try {
+      let postId;
+      if (editingId) {
+        // UPDATE existing post
+        await updateDoc(doc(_db, 'posts', editingId), postData);
+        postId = editingId;
+        showToast(
+          status === 'published' ? 'Post updated and published.' :
+          status === 'scheduled' ? 'Schedule updated.' : 'Draft updated.', 'success');
+      } else {
+        // NEW post
+        postData.createdAt = serverTimestamp();
+        const ref = await addDoc(collection(_db, 'posts'), postData);
+        postId = ref.id;
+        showToast(
+          status === 'published' ? 'Post published.' :
+          status === 'scheduled' ? `Post scheduled for ${scheduleDate ? formatDateTime(scheduleDate) : '--'}.` : 'Draft saved.', 'success');
+      }
+
+      // Activity log
+      const actType = status === 'published' ? 'published' : status === 'scheduled' ? 'scheduled' : 'draft';
+      const actTitle = status === 'published' ? 'Post published' : status === 'scheduled' ? 'Post scheduled' : 'Draft saved';
+      await addActivity(_currentUser.uid, actType, actTitle, title, {
+        postId,
+        scheduledFor: (status === 'scheduled' && scheduleDate) ? Timestamp.fromDate(scheduleDate) : null,
+      });
+
+      // If published via Zernio
+      if (status === 'published') {
+        await publishViaZernio(postId, postData);
+      }
+
+      // Reset form
+      clearCreateFormAfterSave();
+    } catch (err) {
+      console.error('[Firestore] savePost error:', err);
+      showToast('Failed to save post. Please try again.', 'error');
+    } finally {
+      if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Publish Now'; }
+    }
+  };
+
+  /* =========================
+     ZERNIO — PUBLISH (backend proxy)
+     Routes through /api/zernio/publish so the key stays server-side.
+  ========================= */
+  async function publishViaZernio(postId, postData) {
+    const selectedPlatforms = postData.platforms || [];
+    if (selectedPlatforms.length === 0) { showToast('No platforms selected — post saved only.', 'info'); return; }
+    const profileId = _currentUser?.uid;
+    const body = {
+      profileId,
+      content:   [postData.caption, postData.hashtags, postData.cta].filter(Boolean).join('\n\n'),
+      platforms: selectedPlatforms,
+    };
+    if (postData.mediaUrl) body.mediaUrls = [postData.mediaUrl];
+    try {
+      const res  = await fetch('/api/zernio/publish', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      if (res.ok && (data.status === 'success' || data.success)) {
+        await updateDoc(doc(_db, 'posts', postId), {
+          status: 'published',
+          publishedAt: serverTimestamp(),
+          zernioPostIds: data.postIds || data.ids || {},
+          zernioResponse: data,
+        });
+        await addNotification(_currentUser.uid, `Post "${postData.title}" published successfully to ${selectedPlatforms.join(', ')}.`);
+      } else {
+        console.warn('[Zernio] Publish error:', data);
+        await updateDoc(doc(_db, 'posts', postId), {
+          status: 'failed',
+          failedAt: serverTimestamp(),
+          failureReason: data.message || data.error || 'Zernio error',
+        });
+        await addNotification(_currentUser.uid, `Post "${postData.title}" failed to publish. Check your connections.`);
+        showToast('Post saved but publishing failed. Check your connected accounts.', 'error');
+      }
+    } catch (err) {
+      console.error('[Zernio] Network error:', err);
+      showToast('Unable to reach publishing service. Post saved as draft.', 'error');
+      await updateDoc(doc(_db, 'posts', postId), { status: 'failed', failedAt: serverTimestamp(), failureReason: err.message });
+    }
+  }
+
+  /* =========================
+     RETRY FAILED POST
+  ========================= */
+  window.retryFailedPost = async function (postId) {
+    if (!_currentUser || !postId) return;
+    const snap = await getDoc(doc(_db, 'posts', postId));
+    if (!snap.exists()) { showToast('Post not found.', 'error'); return; }
+    const postData = snap.data();
+    showToast('Retrying publish…', 'info');
+    await updateDoc(doc(_db, 'posts', postId), { status: 'published', failedAt: null, failureReason: null });
+    await publishViaZernio(postId, postData);
+  };
+
+  /* =========================
+     CHECK + AUTO-PUBLISH SCHEDULED POSTS
+  ========================= */
+  async function checkScheduledPosts(uid) {
+    const now = new Date();
+    const dueScheduled = _allPosts.filter(p =>
+      p.status === 'scheduled' &&
+      p.scheduledFor?.toDate &&
+      p.scheduledFor.toDate() <= now
+    );
+    for (const p of dueScheduled) {
+      try {
+        showToast(`Publishing scheduled post: "${p.title}"`, 'info');
+        await updateDoc(doc(_db, 'posts', p.id), { status: 'publishing', updatedAt: serverTimestamp() });
+        await publishViaZernio(p.id, p);
+        await addNotification(uid, `Scheduled post "${p.title}" has been published.`);
+        await addActivity(uid, 'published', 'Post published', p.title, { postId: p.id });
+      } catch(e) {
+        console.error('[Scheduler] Failed to auto-publish post:', p.id, e);
+      }
+    }
+  }
+
+  /* =========================
+     OPEN POST FOR EDIT
+  ========================= */
+  window.openPostForEdit = async function (postId) {
+    if (!postId || !_currentUser) return;
+    try {
+      const snap = await getDoc(doc(_db, 'posts', postId));
+      if (!snap.exists()) { showToast('Post not found.', 'error'); return; }
+      const p = snap.data();
+      showPage('createPage');
+      // Populate form
+      document.getElementById('editingPostId').value   = postId;
+      document.getElementById('postTitle').value       = p.title || '';
+      document.getElementById('postCaption').value     = p.caption || '';
+      document.getElementById('customHashtags').value  = p.hashtags || '';
+      // Restore output fields
+      const cta = document.getElementById('outputCTA');
+      if (cta && p.cta) cta.innerText = p.cta;
+      // Restore platforms
+      document.querySelectorAll('.platform-checkbox').forEach(cb => {
+        cb.checked = (p.platforms || []).includes(cb.value);
+      });
+      // Restore media
+      if (p.mediaUrl) {
+        document.getElementById('uploadedMediaUrl').value  = p.mediaUrl;
+        document.getElementById('uploadedMediaType').value = p.mediaType || 'image';
+        document.getElementById('uploadedPublicId').value  = p.publicId || '';
+        if (p.mediaType === 'image' || !p.mediaType) {
+          const img = document.getElementById('previewImg');
+          img.src = p.mediaUrl; img.style.display = 'block';
+          document.getElementById('previewPlaceholder').style.display = 'none';
+        }
+      }
+      // Show editing banner
+      const banner = document.getElementById('editingBanner');
+      if (banner) { banner.style.display = 'flex'; document.getElementById('editingPostTitle').textContent = p.title; }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err) {
+      console.error('[Firestore] openPostForEdit error:', err);
+      showToast('Failed to load post for editing.', 'error');
+    }
+  };
+
+  /* =========================
+     CLEAR CREATE FORM
+  ========================= */
+  function clearCreateFormAfterSave() {
+    document.getElementById('postTitle').value       = '';
+    document.getElementById('postCaption').value     = '';
+    document.getElementById('customHashtags').value  = '';
+    document.getElementById('editingPostId').value   = '';
+    document.querySelectorAll('.platform-checkbox').forEach(cb => cb.checked = false);
+    document.querySelectorAll('[id^="output"]').forEach(el => { el.innerText = ''; });
+    clearMedia();
+    const banner = document.getElementById('editingBanner');
+    if (banner) banner.style.display = 'none';
+    _selectedScheduleDate = null;
+  }
+
+  window.clearCreateForm = function () {
+    clearCreateFormAfterSave();
+    showToast('Form cleared.', 'info');
+  };
+
+  /* =========================
+     SCHEDULE MODAL
+  ========================= */
+  window.openScheduleModal = function () {
+    if (!hasActiveSubscription()) {
+      showToast('Choose a plan to schedule posts.', 'error');
+      showPage('billingPage');
+      return;
+    }
+    const title = document.getElementById('postTitle')?.value.trim();
+    if (!title) { showToast('Please enter a project title first.', 'error'); return; }
+
+    const modal = document.getElementById('scheduleModal');
+    modal.classList.add('open');
+    const now = new Date();
+    now.setMinutes(now.getMinutes() + 5);
+    now.setSeconds(0);
+    const yyyy = now.getFullYear();
+    const mm   = String(now.getMonth() + 1).padStart(2, '0');
+    const dd   = String(now.getDate()).padStart(2, '0');
+    const hh   = String(now.getHours()).padStart(2, '0');
+    const min  = String(now.getMinutes()).padStart(2, '0');
+    document.getElementById('scheduleDate').value = `${yyyy}-${mm}-${dd}`;
+    document.getElementById('scheduleTime').value = `${hh}:${min}`;
+    // Pre-fill timezone from user profile
+    const tz = _userProfile?.timezone || 'Africa/Lagos';
+    setSelectValue('scheduleTz', tz);
+  };
+
+  window.closeScheduleModal = function () {
+    document.getElementById('scheduleModal').classList.remove('open');
+  };
+
+  window.confirmSchedulePost = async function () {
+    const dateVal = document.getElementById('scheduleDate').value;
+    const timeVal = document.getElementById('scheduleTime').value;
+    if (!dateVal || !timeVal) { showToast('Please choose a date and time.', 'error'); return; }
+    const combined = new Date(`${dateVal}T${timeVal}`);
+    if (isNaN(combined.getTime())) { showToast('Invalid date/time.', 'error'); return; }
+    if (combined <= new Date()) { showToast('Please select a future date and time.', 'error'); return; }
+    _selectedScheduleDate = combined;
+    closeScheduleModal();
+    await savePost('scheduled', _selectedScheduleDate);
+  };
+
+  /* =========================
+     ZERNIO — CONNECT PLATFORM (official OAuth flow)
+     Step 1: backend calls GET /v1/connect/{platform}?profileId&redirect_url → authUrl
+     Step 2: open authUrl in popup
+     Step 3: Zernio redirects to /api/zernio/callback which postMessages back
+     Step 4: for Facebook/LinkedIn/Pinterest show selection picker
+     Step 5: store result in Firestore and update UI
+  ========================= */
+
+  // Platforms that require a secondary selection step after OAuth
+  const SELECTION_PLATFORMS = ['facebook', 'linkedin', 'pinterest'];
+
+  // Listen for the OAuth callback postMessage from the popup
+  window.addEventListener('message', async (event) => {
+    if (!event.data || event.data.type !== 'zernio-oauth-complete') return;
+    const { _pendingOAuthPlatform } = window;
+    if (!_pendingOAuthPlatform) return;
+    window._pendingOAuthPlatform = null;
+    if (SELECTION_PLATFORMS.includes(_pendingOAuthPlatform)) {
+      await showSelectionModal(_pendingOAuthPlatform);
+    } else {
+      await refreshPlatformStatus(_pendingOAuthPlatform);
+    }
+  });
+
+  window.connectPlatform = async function (platform) {
+    if (!_currentUser) return;
+    showToast(`Opening ${capitalise(platform)} authentication…`, 'info');
+    try {
+      const profileId = _currentUser.uid;
+      const res = await fetch(`/api/zernio/connect/${encodeURIComponent(platform)}?profileId=${encodeURIComponent(profileId)}`);
+      const data = await res.json();
+      if (!res.ok || !data.authUrl) {
+        showToast(data.error || `Unable to get authorization URL for ${capitalise(platform)}.`, 'error');
+        return;
+      }
+      // Store platform so the message listener knows what to finalize
+      window._pendingOAuthPlatform = platform;
+      const popup = window.open(data.authUrl, 'zernio-auth', 'width=600,height=700');
+      // Fallback poll in case postMessage is unavailable
+      if (popup) {
+        const poll = setInterval(() => {
+          if (popup.closed) {
+            clearInterval(poll);
+            if (window._pendingOAuthPlatform) {
+              window._pendingOAuthPlatform = null;
+              if (SELECTION_PLATFORMS.includes(platform)) {
+                showSelectionModal(platform);
+              } else {
+                refreshPlatformStatus(platform);
+              }
+            }
+          }
+        }, 1500);
+      }
+    } catch (err) {
+      console.error('[Zernio] connectPlatform error:', err);
+      showToast(`Unable to connect ${capitalise(platform)}. Check server logs.`, 'error');
+    }
+  };
+
+  /* --- Platform selection modal (Facebook pages / LinkedIn orgs / Pinterest boards) --- */
+  async function showSelectionModal(platform) {
+    const modal     = document.getElementById('zernioSelectionModal');
+    const titleEl   = document.getElementById('zernioSelectionTitle');
+    const listEl    = document.getElementById('zernioSelectionList');
+    const profileId = _currentUser.uid;
+
+    if (!modal || !titleEl || !listEl) { await refreshPlatformStatus(platform); return; }
+
+    const endpointMap = {
+      facebook:  `/api/zernio/facebook/pages?profileId=${encodeURIComponent(profileId)}`,
+      linkedin:  `/api/zernio/linkedin/orgs?profileId=${encodeURIComponent(profileId)}`,
+      pinterest: `/api/zernio/pinterest/boards?profileId=${encodeURIComponent(profileId)}`,
+    };
+    const labelMap = { facebook: 'Facebook Page', linkedin: 'LinkedIn Organization', pinterest: 'Pinterest Board' };
+
+    titleEl.textContent = `Select a ${labelMap[platform] || 'account'}`;
+    listEl.innerHTML = '<p style="color:var(--text-3);font-size:13px">Loading…</p>';
+    modal.style.display = 'flex';
+    modal.dataset.platform = platform;
+
+    try {
+      const res  = await fetch(endpointMap[platform]);
+      const data = await res.json();
+      const items = data.pages || data.organizations || data.boards || data.items || [];
+      if (!items.length) {
+        listEl.innerHTML = '<p style="color:var(--text-3);font-size:13px">No items found. Make sure your account has at least one page/organization/board.</p>';
+        return;
+      }
+      listEl.innerHTML = items.map(item => `
+        <button class="btn btn-secondary" style="width:100%;text-align:left;margin-bottom:8px"
+          onclick="selectZernioItem('${platform}','${item.id || item.pageId || item.boardId}','${(item.name || item.title || '').replace(/'/g,"\\'")}')">
+          ${item.name || item.title || item.id}
+        </button>`).join('');
+    } catch (err) {
+      listEl.innerHTML = '<p style="color:var(--danger);font-size:13px">Failed to load options. Please try again.</p>';
+    }
+  }
+
+  window.closeSelectionModal = function () {
+    const modal = document.getElementById('zernioSelectionModal');
+    if (modal) modal.style.display = 'none';
+  };
+
+  window.selectZernioItem = async function (platform, itemId, itemName) {
+    closeSelectionModal();
+    const profileId = _currentUser.uid;
+    const selectEndpoints = {
+      facebook:  { url: '/api/zernio/facebook/select',  body: { profileId, pageId: itemId } },
+      linkedin:  { url: '/api/zernio/linkedin/select',  body: { profileId, organizationId: itemId } },
+      pinterest: { url: '/api/zernio/pinterest/select', body: { profileId, boardId: itemId } },
+    };
+    const ep = selectEndpoints[platform];
+    if (!ep) { await refreshPlatformStatus(platform); return; }
+    try {
+      showToast(`Connecting to "${itemName}"…`, 'info');
+      const res = await fetch(ep.url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(ep.body),
+      });
+      const data = await res.json();
+      if (!res.ok) { showToast(data.error || 'Selection failed. Please try again.', 'error'); return; }
+    } catch (err) { console.error('[Zernio] selectZernioItem error:', err); }
+    await refreshPlatformStatus(platform);
+  };
+
+  async function refreshPlatformStatus(platform) {
+    if (!_currentUser) return;
+    try {
+      const profileId = _currentUser.uid;
+      const res  = await fetch(`/api/zernio/accounts?profileId=${encodeURIComponent(profileId)}`);
+      const data = await res.json();
+      const linked = (data.accounts || []).map(a => (a.platform || a).toLowerCase());
+      const isConnected = linked.includes(platform);
+      const accountData = {
+        connected: isConnected,
+        connectedAt: isConnected ? new Date().toISOString() : null,
+      };
+      await updateDoc(doc(_db, 'users', _currentUser.uid), {
+        [`connectedAccounts.${platform}`]: accountData,
+        updatedAt: serverTimestamp(),
+      });
+      if (_userProfile) {
+        if (!_userProfile.connectedAccounts) _userProfile.connectedAccounts = {};
+        _userProfile.connectedAccounts[platform] = accountData;
+      }
+      renderPlatformStatus(platform, accountData);
+      const connCount = Object.values(_userProfile?.connectedAccounts || {}).filter(a => a?.connected).length;
+      renderStatValue('statConnected', 'statConnectedLoading', connCount.toString());
+      if (isConnected) {
+        showToast(`${capitalise(platform)} connected successfully.`, 'success');
+        await addActivity(_currentUser.uid, 'connected', 'Account connected', `${capitalise(platform)} connected`);
+        await addNotification(_currentUser.uid, `${capitalise(platform)} account connected to PortPilot.`);
+      } else {
+        showToast(`${capitalise(platform)} not connected. Please try again.`, 'error');
+      }
+    } catch(err) { console.error('[Zernio] refreshPlatformStatus error:', err); }
+  }
+
+  async function disconnectSinglePlatform(platform) {
+    if (!_currentUser) return;
+    try {
+      await updateDoc(doc(_db, 'users', _currentUser.uid), {
+        [`connectedAccounts.${platform}`]: { connected: false },
+        updatedAt: serverTimestamp(),
+      });
+      if (_userProfile?.connectedAccounts) _userProfile.connectedAccounts[platform] = { connected: false };
+      const connCount = Object.values(_userProfile?.connectedAccounts || {}).filter(a => a?.connected).length;
+      renderStatValue('statConnected', 'statConnectedLoading', connCount.toString());
+      renderPlatformStatus(platform, { connected: false });
+      showToast(`${capitalise(platform)} disconnected.`, 'success');
+    } catch (err) {
+      console.error(`[Firestore] disconnectSinglePlatform(${platform}) error:`, err);
+      showToast(`Failed to disconnect ${capitalise(platform)}.`, 'error');
+    }
+  }
+
+  window.disconnectFacebook  = () => disconnectSinglePlatform('facebook');
+  window.disconnectInstagram = () => disconnectSinglePlatform('instagram');
+  window.disconnectLinkedin  = () => disconnectSinglePlatform('linkedin');
+  window.disconnectPinterest = () => disconnectSinglePlatform('pinterest');
+  window.disconnectTwitter   = () => disconnectSinglePlatform('twitter');
+
+  /* =========================
+     OPENAI — CORE CALLER (backend proxy)
+     Routes through /api/ai/generate so the key stays server-side.
+  ========================= */
+  async function callOpenAI(systemRole, userPrompt) {
+    const res = await fetch('/api/ai/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ systemRole, userPrompt }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || `HTTP ${res.status}`);
+    }
+    return data.result;
+  }
+
+  function setAILoading(btnId, loading) {
+    const span = document.getElementById(btnId);
+    if (!span) return;
+    span.textContent = loading ? 'Generating...' : 'Send';
+    const btn = span.parentElement;
+    if (btn) btn.disabled = loading;
+  }
+
+  /* =========================
+     OPENAI — GENERATE TITLE
+  ========================= */
+  window.generateTitle = async function () {
+    const userPrompt = document.getElementById('inputTitle')?.value.trim();
+    if (!userPrompt) { showToast('Please enter a prompt.', 'error'); return; }
+    setAILoading('btnTitleText', true);
+    try {
+      const result = await callOpenAI(
+        'You are a professional social media content writer. Return ONLY one professional post title — no bullet points, no numbering, no explanation.',
+        userPrompt
+      );
+      const clean = result.split('\n')[0].replace(/^["*•\-\d\.]+\s*/, '').trim();
+      const el = document.getElementById('outputTitle');
+      if (el) el.innerText = clean;
+      const titleField = document.getElementById('postTitle');
+      if (titleField && !titleField.value) titleField.value = clean;
+      showToast('Title generated.', 'success');
+      closeAllPrompts();
+    } catch (err) {
+      console.error('[OpenAI] generateTitle error:', err);
+      showToast(err.message.includes('API key') ? err.message : 'Unable to generate content. Please try again.', 'error');
+    } finally { setAILoading('btnTitleText', false); }
+  };
+
+  /* =========================
+     OPENAI — GENERATE CAPTION
+  ========================= */
+  window.generateCaption = async function () {
+    const userPrompt = document.getElementById('inputCaption')?.value.trim();
+    if (!userPrompt) { showToast('Please enter a prompt.', 'error'); return; }
+    setAILoading('btnCaptionText', true);
+    try {
+      const result = await callOpenAI(
+        'You are a professional social media content writer. Return ONLY one engaging social media caption — no options, no bullet points, no numbering.',
+        userPrompt
+      );
+      const el = document.getElementById('outputCaption');
+      if (el) el.innerText = result;
+      showToast('Caption generated.', 'success');
+      closeAllPrompts();
+    } catch (err) {
+      console.error('[OpenAI] generateCaption error:', err);
+      showToast(err.message.includes('API key') ? err.message : 'Unable to generate content. Please try again.', 'error');
+    } finally { setAILoading('btnCaptionText', false); }
+  };
+
+  /* =========================
+     OPENAI — GENERATE HASHTAGS
+  ========================= */
+  window.generateHashtags = async function () {
+    const userPrompt = document.getElementById('inputHashtags')?.value.trim();
+    if (!userPrompt) { showToast('Please enter a prompt.', 'error'); return; }
+    setAILoading('btnHashtagsText', true);
+    try {
+      const result = await callOpenAI(
+        'You are a social media hashtag specialist. Return EXACTLY 10 relevant hashtags, one per line, starting each with #. Nothing else — no explanations, no numbering.',
+        userPrompt
+      );
+      const tags = result.split(/\n/).map(t => t.trim()).filter(t => t.startsWith('#')).slice(0, 10).join('\n');
+      const el = document.getElementById('outputHashtags');
+      if (el) el.innerText = tags;
+      showToast('Hashtags generated.', 'success');
+      closeAllPrompts();
+    } catch (err) {
+      console.error('[OpenAI] generateHashtags error:', err);
+      showToast(err.message.includes('API key') ? err.message : 'Unable to generate content. Please try again.', 'error');
+    } finally { setAILoading('btnHashtagsText', false); }
+  };
+
+  /* =========================
+     OPENAI — GENERATE CTA
+  ========================= */
+  window.generateCTA = async function () {
+    const userPrompt = document.getElementById('inputCTA')?.value.trim();
+    if (!userPrompt) { showToast('Please enter a prompt.', 'error'); return; }
+    setAILoading('btnCTAText', true);
+    try {
+      const result = await callOpenAI(
+        'You are a conversion copywriter. Return ONLY one powerful call-to-action sentence. No bullet points, no alternatives, no explanation.',
+        userPrompt
+      );
+      const clean = result.split('\n')[0].trim();
+      const el = document.getElementById('outputCTA');
+      if (el) el.innerText = clean;
+      showToast('CTA generated.', 'success');
+      closeAllPrompts();
+    } catch (err) {
+      console.error('[OpenAI] generateCTA error:', err);
+      showToast(err.message.includes('API key') ? err.message : 'Unable to generate content. Please try again.', 'error');
+    } finally { setAILoading('btnCTAText', false); }
+  };
+
+  /* =========================
+     OPENAI — IMPROVE CAPTION
+  ========================= */
+  window.improveCaption = async function () {
+    const instruction = document.getElementById('inputImprove')?.value.trim();
+    if (!instruction) { showToast('Please describe what to improve.', 'error'); return; }
+    const existing = document.getElementById('postCaption')?.value.trim() || document.getElementById('outputCaption')?.innerText.trim();
+    if (!existing) { showToast('Please write a caption first.', 'error'); return; }
+    setAILoading('btnImproveText', true);
+    try {
+      const result = await callOpenAI(
+        'You are a professional social media editor. Improve the provided caption according to the user instruction. Return ONLY the improved caption — no explanation, no alternatives.',
+        `Caption: "${existing}"\n\nInstruction: ${instruction}`
+      );
+      const el = document.getElementById('outputCaption');
+      if (el) el.innerText = result;
+      showToast('Caption improved.', 'success');
+      closeAllPrompts();
+    } catch (err) {
+      console.error('[OpenAI] improveCaption error:', err);
+      showToast(err.message.includes('API key') ? err.message : 'Unable to generate content. Please try again.', 'error');
+    } finally { setAILoading('btnImproveText', false); }
+  };
+
+  /* =========================
+     OPENAI — REWRITE CAPTION
+  ========================= */
+  window.rewriteCaption = async function () {
+    const instruction = document.getElementById('inputRewrite')?.value.trim();
+    if (!instruction) { showToast('Please describe how to rewrite it.', 'error'); return; }
+    const existing = document.getElementById('postCaption')?.value.trim() || document.getElementById('outputCaption')?.innerText.trim();
+    if (!existing) { showToast('Please write a caption first.', 'error'); return; }
+    setAILoading('btnRewriteText', true);
+    try {
+      const result = await callOpenAI(
+        'You are a professional social media copywriter. Rewrite the provided caption according to the user instruction. Return ONLY the rewritten caption — no explanation, no alternatives.',
+        `Caption: "${existing}"\n\nRewrite instruction: ${instruction}`
+      );
+      const el = document.getElementById('outputCaption');
+      if (el) el.innerText = result;
+      showToast('Caption rewritten.', 'success');
+      closeAllPrompts();
+    } catch (err) {
+      console.error('[OpenAI] rewriteCaption error:', err);
+      showToast(err.message.includes('API key') ? err.message : 'Unable to generate content. Please try again.', 'error');
+    } finally { setAILoading('btnRewriteText', false); }
+  };
+
+  /* =========================
+     OPENAI — THUMBNAIL PROMPT
+  ========================= */
+  window.generateThumbnailPrompt = async function () {
+    const userPrompt = document.getElementById('inputThumbnail')?.value.trim();
+    if (!userPrompt) { showToast('Please enter a prompt.', 'error'); return; }
+    setAILoading('btnThumbnailText', true);
+    try {
+      const result = await callOpenAI(
+        'You are an AI image prompt specialist. Generate one concise image generation prompt suitable for Midjourney or DALL-E. Return ONLY the prompt — no explanation, no preamble.',
+        userPrompt
+      );
+      const el = document.getElementById('outputThumbnail');
+      if (el) el.innerText = result;
+      showToast('Thumbnail prompt generated.', 'success');
+      closeAllPrompts();
+    } catch (err) {
+      console.error('[OpenAI] generateThumbnailPrompt error:', err);
+      showToast(err.message.includes('API key') ? err.message : 'Unable to generate content. Please try again.', 'error');
+    } finally { setAILoading('btnThumbnailText', false); }
+  };
+
+  /* =========================
+     AI PROMPT BOX TOGGLE
+  ========================= */
+  window.toggleAIPrompt = function (id) {
+    const boxes = document.querySelectorAll('.ai-prompt-box');
+    const target = document.getElementById(id);
+    const isOpen = target?.classList.contains('open');
+    boxes.forEach(b => b.classList.remove('open'));
+    if (!isOpen) target?.classList.add('open');
+  };
+
+  window.closeAllPrompts = function () {
+    document.querySelectorAll('.ai-prompt-box').forEach(b => b.classList.remove('open'));
+  };
+
+  /* =========================
+     COPY + APPLY OUTPUT
+  ========================= */
+  window.copyOutput = function (id) {
+    const el = document.getElementById(id);
+    const text = el?.innerText.trim();
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = el.closest('.ai-output-card')?.querySelector('button');
+      const orig = btn?.innerHTML;
+      if (btn) btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied';
+      setTimeout(() => { if (btn && orig) btn.innerHTML = orig; }, 1400);
+    });
+  };
+
+  window.applyOutputToField = function (outputId, fieldId) {
+    const text  = document.getElementById(outputId)?.innerText.trim();
+    const field = document.getElementById(fieldId);
+    if (!text || !field) return;
+    field.value = text;
+  };
+
+  /* =========================
+     FLUTTERWAVE — PAYMENT
+  ========================= */
+  window.openPaymentModal = function (plan) {
+    if (!_currentUser) { showToast('You must be signed in.', 'error'); return; }
+    _currentPaymentPlan = plan;
+    const info = PLAN_PRICES[plan];
+    if (!info) return;
+    setTextContent('modalPlanName',  info.label);
+    setTextContent('modalPlanPrice', `$${info.usd}`);
+    setTextContent('modalPlanNgn',   `≈ NGN ${info.ngn.toLocaleString()} / 30 days`);
+    const featuresEl = document.getElementById('modalPlanFeatures');
+    if (featuresEl) {
+      featuresEl.innerHTML = (PLAN_FEATURES[plan] || []).map(f =>
+        `<div class="payment-feature"><i class="fa-solid fa-check"></i> ${escHtml(f)}</div>`
+      ).join('');
+    }
+    document.getElementById('paymentModal').classList.add('open');
+  };
+
+  window.closePaymentModal = function () {
+    document.getElementById('paymentModal').classList.remove('open');
+    _currentPaymentPlan = null;
+  };
+
+  window.proceedToFlutterwave = function () {
+    if (!FLW_PUBLIC_KEY) {
+      showToast('Flutterwave is not configured yet. Add your public key to FLW_PUBLIC_KEY.', 'info');
+      return;
+    }
+    const plan  = _currentPaymentPlan;
+    const info  = PLAN_PRICES[plan];
+    if (!info) return;
+    const btn = document.getElementById('btnProceedPayment');
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading...'; }
+    // Load Flutterwave inline script if not already loaded
+    if (!window.FlutterwaveCheckout) {
+      const script = document.createElement('script');
+      script.src = 'https://checkout.flutterwave.com/v3.js';
+      script.onload = () => launchFlutterwaveCheckout(plan, info);
+      script.onerror = () => { showToast('Failed to load payment processor.', 'error'); if(btn){ btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-lock"></i> Proceed to Payment'; } };
+      document.head.appendChild(script);
+    } else {
+      launchFlutterwaveCheckout(plan, info);
+    }
+  };
+
+  function launchFlutterwaveCheckout(plan, info) {
+    const btn = document.getElementById('btnProceedPayment');
+    const email = _currentUser?.email || _userProfile?.email || '';
+    const name  = _userProfile?.displayName || `${_userProfile?.firstName || ''} ${_userProfile?.lastName || ''}`.trim() || 'PortPilot User';
+    const txRef = `PP-${plan}-${_currentUser.uid}-${Date.now()}`;
+
+    FlutterwaveCheckout({
+      public_key: FLW_PUBLIC_KEY,
+      tx_ref: txRef,
+      amount: info.ngn,
+      currency: 'NGN',
+      payment_options: 'card,ussd,bank_transfer',
+      customer: { email, name },
+      meta: { uid: _currentUser.uid, plan },
+      customizations: {
+        title: 'PortPilot',
+        description: `${info.label} — 30 days`,
+        logo: '',
+      },
+      callback: async (response) => {
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-lock"></i> Proceed to Payment'; }
+        if (response.status === 'successful') {
+          await verifyAndActivateSubscription(txRef, plan, response);
+        } else {
+          showToast('Payment was not completed.', 'error');
+          closePaymentModal();
+        }
+      },
+      onclose: () => {
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-lock"></i> Proceed to Payment'; }
+        showToast('Payment window closed.', 'info');
+      },
+    });
+  }
+
+  async function verifyAndActivateSubscription(txRef, plan, flwResponse) {
+    showToast('Verifying payment…', 'info');
+    try {
+      // NOTE: In production, verify server-side via your backend.
+      // Frontend verification only for MVP demonstration.
+      // When backend is ready, POST to /api/flutterwave/verify with txRef and transaction_id.
+      const info    = PLAN_PRICES[plan];
+      const now     = new Date();
+      const expiry  = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+      const subData = {
+        plan, status: 'active',
+        startDate: Timestamp.fromDate(now),
+        expiryDate: Timestamp.fromDate(expiry),
+        txRef,
+        transactionId: flwResponse.transaction_id || '',
+        amount: flwResponse.amount || info.ngn,
+        currency: flwResponse.currency || 'NGN',
+        verifiedAt: serverTimestamp(),
+      };
+      await updateDoc(doc(_db, 'users', _currentUser.uid), {
+        subscription: subData,
+        updatedAt: serverTimestamp(),
+      });
+      if (_userProfile) _userProfile.subscription = { ...subData };
+      // Log invoice
+      await addDoc(collection(_db, 'users', _currentUser.uid, 'invoices'), {
+        plan, amount: subData.amount, currency: subData.currency,
+        txRef, transactionId: subData.transactionId,
+        status: 'paid', createdAt: serverTimestamp(),
+        expiryDate: Timestamp.fromDate(expiry),
+      });
+      await addNotification(_currentUser.uid, `Payment successful! ${info.label} activated. Expires ${formatDate(expiry)}.`);
+      await addActivity(_currentUser.uid, 'subscription', 'Subscription activated', `${info.label} — expires ${formatDate(expiry)}`);
+      applyProfileToUI(_userProfile);
+      checkSubscriptionStatus(_userProfile);
+      loadInvoices(_currentUser.uid);
+      closePaymentModal();
+      showToast(`${info.label} activated! Welcome to PortPilot.`, 'success');
+    } catch (err) {
+      console.error('[Flutterwave] verifyAndActivate error:', err);
+      showToast('Payment received but activation failed. Please contact support.', 'error');
+    }
+  }
+
+  async function loadInvoices(uid) {
+    try {
+      const snap = await getDocs(query(collection(_db, 'users', uid, 'invoices'), orderBy('createdAt', 'desc'), limit(10)));
+      const el = document.getElementById('invoiceList');
+      if (!el) return;
+      if (snap.empty) { el.innerHTML = `<div class="invoice-row"><span class="text-muted text-sm">No payments yet.</span></div>`; return; }
+      el.innerHTML = snap.docs.map(d => {
+        const inv = d.data();
+        const date = inv.createdAt?.toDate ? formatDate(inv.createdAt.toDate()) : '--';
+        const amt  = `${inv.currency === 'NGN' ? '₦' : '$'}${(inv.amount || 0).toLocaleString()}`;
+        return `<div class="invoice-row">
+          <div><div style="font-size:13.5px;font-weight:500">${escHtml(inv.plan ? capitalise(inv.plan) + ' Plan' : 'Subscription')}</div><div class="text-xs text-muted">${date}</div></div>
+          <div style="text-align:right"><div style="font-weight:600">${amt}</div><div class="text-xs" style="color:var(--success)">Paid</div></div>
+        </div>`;
+      }).join('');
+    } catch(e) { console.error('[Firestore] loadInvoices error:', e); }
+  }
+
+  /* =========================
+     ANALYTICS — CHARTS (simple)
+  ========================= */
+  function renderPostsOverTime(posts) {
+    const el = document.getElementById('postsOverTimeChart');
+    if (!el) return;
+    const published = posts.filter(p => p.status === 'published' && p.publishedAt);
+    if (published.length === 0) {
+      el.innerHTML = '<i class="fa-solid fa-chart-line"></i><p>No published posts yet.</p>';
+      el.className = 'chart-placeholder';
+      return;
+    }
+    // Group by date
+    const dateMap = {};
+    published.forEach(p => {
+      const d = p.publishedAt?.toDate ? p.publishedAt.toDate() : new Date(p.publishedAt);
+      const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+      dateMap[key] = (dateMap[key] || 0) + 1;
+    });
+    const dates  = Object.keys(dateMap).sort();
+    const max    = Math.max(...Object.values(dateMap));
+    el.className = '';
+    el.innerHTML = `<div style="padding:12px 0">
+      <div style="display:flex;align-items:flex-end;gap:8px;height:180px;padding:0 8px">
+        ${dates.map(d => {
+          const count = dateMap[d];
+          const pct   = Math.round((count / max) * 100);
+          const label = d.slice(5); // MM-DD
+          return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+            <div style="font-size:11px;color:var(--text-3)">${count}</div>
+            <div style="width:100%;background:var(--primary);border-radius:4px 4px 0 0;height:${pct}%;min-height:4px;transition:height .3s"></div>
+            <div style="font-size:10px;color:var(--text-3);white-space:nowrap">${label}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }
+
+  function renderPlatformBreakdown(posts) {
+    const el = document.getElementById('platformBreakdownChart');
+    if (!el) return;
+    const published = posts.filter(p => p.status === 'published');
+    if (published.length === 0) {
+      el.innerHTML = '<i class="fa-solid fa-chart-pie"></i><p>No published posts yet.</p>';
+      el.className = 'chart-placeholder';
+      return;
+    }
+    const counts = {};
+    published.forEach(p => (p.platforms || []).forEach(pl => { counts[pl] = (counts[pl] || 0) + 1; }));
+    const colors = { facebook:'#1877f2', instagram:'#e1306c', linkedin:'#0a66c2', pinterest:'#e60023', twitter:'#000000' };
+    const icons  = { facebook:'fa-brands fa-facebook-f', instagram:'fa-brands fa-instagram', linkedin:'fa-brands fa-linkedin-in', pinterest:'fa-brands fa-pinterest-p', twitter:'fa-brands fa-x-twitter' };
+    const total  = Object.values(counts).reduce((a,b)=>a+b,0);
+    el.className = '';
+    el.innerHTML = `<div style="padding:12px">
+      ${Object.entries(counts).map(([pl, count]) => `
+        <div class="flex items-center gap-12 mb-12">
+          <div style="width:32px;height:32px;border-radius:8px;background:${colors[pl] || 'var(--primary)'}20;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <i class="${icons[pl] || 'fa-solid fa-share-nodes'}" style="color:${colors[pl] || 'var(--primary)'}"></i>
+          </div>
+          <div style="flex:1">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+              <span style="font-size:13px;font-weight:500">${capitalise(pl)}</span>
+              <span style="font-size:12px;color:var(--text-3)">${count} post${count!==1?'s':''}</span>
+            </div>
+            <div style="height:6px;background:var(--surface-2);border-radius:3px;overflow:hidden">
+              <div style="height:100%;background:${colors[pl]||'var(--primary)'};border-radius:3px;width:${Math.round(count/total*100)}%"></div>
+            </div>
+          </div>
+        </div>`).join('')}
+    </div>`;
+  }
+
+  /* =========================
+     ANALYTICS — POST LIST + FILTERS
+  ========================= */
+  function renderAnalyticsPostsList(posts, filterStatus = 'all') {
+    const el = document.getElementById('analyticsPostsList');
+    if (!el) return;
+    const filtered = filterStatus === 'all' ? posts : posts.filter(p => p.status === filterStatus);
+    if (filtered.length === 0) {
+      el.innerHTML = `<div class="empty-state"><i class="fa-regular fa-file-alt"></i><p>No ${filterStatus === 'all' ? '' : filterStatus + ' '}posts yet.</p></div>`;
+      return;
+    }
+    const statusColors = { published:'var(--success)', scheduled:'var(--warning)', draft:'var(--text-3)', failed:'var(--danger)', publishing:'var(--primary)' };
+    const statusBg     = { published:'var(--success-light)', scheduled:'var(--warning-light)', draft:'var(--surface-2)', failed:'var(--danger-light)', publishing:'var(--primary-light)' };
+    el.innerHTML = filtered.slice(0, 20).map(p => {
+      const date = p.publishedAt?.toDate ? formatDate(p.publishedAt.toDate()) : p.scheduledFor?.toDate ? `Scheduled: ${formatDateTime(p.scheduledFor.toDate())}` : p.updatedAt?.toDate ? formatDate(p.updatedAt.toDate()) : '--';
+      const retry = p.status === 'failed' ? `<button class="btn btn-sm btn-danger" onclick="retryFailedPost('${p.id}');event.stopPropagation()" style="margin-left:8px"><i class="fa-solid fa-rotate-right"></i> Retry</button>` : '';
+      return `<div class="invoice-row" style="cursor:pointer" onclick="openPostForEdit('${p.id}')">
+        <div class="flex items-center gap-12">
+          ${p.mediaUrl ? `<img src="${escHtml(p.mediaUrl)}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;flex-shrink:0" />` : `<div style="width:40px;height:40px;background:var(--surface-2);border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center"><i class="fa-regular fa-image" style="color:var(--text-3)"></i></div>`}
+          <div>
+            <div style="font-size:13.5px;font-weight:500">${escHtml(p.title || 'Untitled')}</div>
+            <div class="text-xs text-muted">${date} · ${(p.platforms||[]).join(', ')||'No platform'}</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-8">
+          <span style="font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:20px;background:${statusBg[p.status]||'var(--surface-2)'};color:${statusColors[p.status]||'var(--text-3)'}">${capitalise(p.status || 'draft')}</span>
+          ${retry}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  window.filterActivity = function (status) {
+    renderAnalyticsPostsList(_allPosts, status);
+    document.querySelectorAll('[id^="filter"]').forEach(b => { b.style.fontWeight=''; b.style.color=''; });
+    const active = document.getElementById(`filter${capitalise(status)}`);
+    if (active) { active.style.fontWeight = '700'; active.style.color = 'var(--primary)'; }
+  };
+
+  window.refreshAnalytics = function () {
+    renderPostsOverTime(_allPosts);
+    renderPlatformBreakdown(_allPosts);
+    renderAnalyticsPostsList(_allPosts, 'all');
+  };
+
+  /* =========================
+     SEARCH
+  ========================= */
+  let _searchTimeout = null;
+  window.handleSearch = function (value) {
+    clearTimeout(_searchTimeout);
+    if (!value.trim()) { closeSearch(); return; }
+    _searchTimeout = setTimeout(() => performSearch(value.trim().toLowerCase()), 250);
+  };
+
+  function performSearch(query) {
+    const overlay = document.getElementById('searchResultsOverlay');
+    const panel   = document.getElementById('searchResultsPanel');
+    if (!overlay || !panel) return;
+    const results = _allPosts.filter(p =>
+      (p.title || '').toLowerCase().includes(query) ||
+      (p.caption || '').toLowerCase().includes(query) ||
+      (p.hashtags || '').toLowerCase().includes(query)
+    ).slice(0, 10);
+    if (results.length === 0) {
+      panel.innerHTML = `<div style="padding:14px 24px;font-size:13px;color:var(--text-3)">No results for "<strong>${escHtml(query)}</strong>"</div>`;
+    } else {
+      const statusColors = { published:'var(--success)', scheduled:'var(--warning)', draft:'var(--text-3)', failed:'var(--danger)' };
+      panel.innerHTML = results.map(p => `
+        <div class="search-result-item" onclick="openPostForEdit('${p.id}'); closeSearch()">
+          <div class="search-result-icon" style="background:${statusColors[p.status]||'var(--surface-2)'}20">
+            <i class="fa-regular fa-file-alt" style="color:${statusColors[p.status]||'var(--text-3)'}"></i>
+          </div>
+          <div>
+            <div class="search-result-title">${escHtml(p.title || 'Untitled')}</div>
+            <div class="search-result-meta">${capitalise(p.status||'draft')} · ${(p.platforms||[]).join(', ')||'No platform'}</div>
+          </div>
+        </div>`).join('');
+    }
+    overlay.classList.add('open');
+  }
+
+  window.closeSearch = function (e) {
+    if (e && e.target !== document.getElementById('searchResultsOverlay')) return;
+    document.getElementById('searchResultsOverlay')?.classList.remove('open');
+    document.getElementById('globalSearch').value = '';
+  };
+
+  /* =========================
+     PROFILE SETTINGS
+  ========================= */
+  window.saveProfile = async function () {
+    if (!_currentUser) return;
+    const data = {
+      firstName:   document.getElementById('settFirstName')?.value.trim()   || '',
+      lastName:    document.getElementById('settLastName')?.value.trim()    || '',
+      displayName: document.getElementById('settDisplayName')?.value.trim() || '',
+      bio:         document.getElementById('settBio')?.value.trim()         || '',
+      company:     document.getElementById('settCompany')?.value.trim()     || '',
+      website:     document.getElementById('settWebsite')?.value.trim()     || '',
+      updatedAt:   serverTimestamp(),
+    };
+    await persistUserData(data, 'Profile saved.');
+    if (_userProfile) Object.assign(_userProfile, data);
+    applyProfileToUI({ ..._userProfile, ...data });
+  };
+
+  window.saveAccount = async function () {
+    if (!_currentUser) return;
+    const data = {
+      username:  document.getElementById('settUsername')?.value.trim()  || '',
+      country:   document.getElementById('settCountry')?.value.trim()   || '',
+      timezone:  document.getElementById('settTimezone')?.value         || 'UTC',
+      updatedAt: serverTimestamp(),
+    };
+    await persistUserData(data, 'Account settings saved.');
+  };
+
+  window.saveNotifPrefs = async function () {
+    if (!_currentUser) return;
+    const data = {
+      notifPrefs: {
+        postPublished:       document.getElementById('notifPostPublished')?.checked      ?? true,
+        postFailed:          document.getElementById('notifPostFailed')?.checked         ?? true,
+        accountDisconnected: document.getElementById('notifAccountDisconnected')?.checked ?? true,
+        weeklyDigest:        document.getElementById('notifWeeklyDigest')?.checked       ?? false,
+        productUpdates:      document.getElementById('notifProductUpdates')?.checked     ?? false,
+        marketing:           document.getElementById('notifMarketing')?.checked          ?? false,
+      },
+      updatedAt: serverTimestamp(),
+    };
+    await persistUserData(data, 'Notification preferences saved.');
+  };
+
+  window.saveLanguagePrefs = async function () {
+    if (!_currentUser) return;
+    const data = {
+      language:       document.getElementById('settLanguage')?.value       || 'en-US',
+      aiLanguage:     document.getElementById('settAiLanguage')?.value     || 'same',
+      firstDayOfWeek: document.getElementById('settFirstDayOfWeek')?.value || 'sunday',
+      updatedAt:      serverTimestamp(),
+    };
+    await persistUserData(data, 'Language preferences saved.');
+  };
+
+  window.changePassword = async function () {
+    if (!_currentUser) return;
+    const currentPwd = document.getElementById('settCurrentPwd')?.value;
+    const newPwd     = document.getElementById('settNewPwd')?.value;
+    const confirmPwd = document.getElementById('settConfirmPwd')?.value;
+    if (!currentPwd || !newPwd || !confirmPwd) { showToast('Please fill in all password fields.', 'error'); return; }
+    if (newPwd !== confirmPwd) { showToast('New passwords do not match.', 'error'); return; }
+    if (newPwd.length < 8)    { showToast('Password must be at least 8 characters.', 'error'); return; }
+    try {
+      const credential = EmailAuthProvider.credential(_currentUser.email, currentPwd);
+      await reauthenticateWithCredential(_currentUser, credential);
+      await updatePassword(_currentUser, newPwd);
+      document.getElementById('settCurrentPwd').value = '';
+      document.getElementById('settNewPwd').value     = '';
+      document.getElementById('settConfirmPwd').value = '';
+      showToast('Password updated successfully.', 'success');
+    } catch (err) {
+      console.error('[Auth] changePassword error:', err);
+      showToast(err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential' ? 'Current password is incorrect.' : 'Failed to update password.', 'error');
+    }
+  };
+
+  /* =========================
+     SIGN OUT
+  ========================= */
+  window.handleSignOut = async function () {
+    if (!_auth) return;
+    try {
+      _unsubscribers.forEach(fn => fn());
+      _unsubscribers = [];
+      if (_countdownInterval) clearInterval(_countdownInterval);
+      await signOut(_auth);
+      window.location.href = 'onboarding.html';
+    } catch (err) {
+      console.error('[Auth] signOut error:', err);
+      showToast('Sign out failed. Please try again.', 'error');
+    }
+  };
+
+  /* =========================
+     DANGER ZONE
+  ========================= */
+  window.disconnectAllAccounts = async function () {
+    if (!_currentUser) return;
+    if (!confirm('This will remove all connected social media accounts. This cannot be undone.')) return;
+    try {
+      await updateDoc(doc(_db, 'users', _currentUser.uid), { connectedAccounts: {}, updatedAt: serverTimestamp() });
+      if (_userProfile) _userProfile.connectedAccounts = {};
+      ['facebook','instagram','linkedin','pinterest','twitter'].forEach(p => renderPlatformStatus(p, null));
+      renderStatValue('statConnected', 'statConnectedLoading', '0');
+      showToast('All accounts disconnected.', 'success');
+    } catch (err) {
+      console.error('[Firestore] disconnectAllAccounts error:', err);
+      showToast('Failed to disconnect accounts.', 'error');
+    }
+  };
+
+  window.deleteAllPosts = async function () {
+    if (!_currentUser) return;
+    if (!confirm('This will permanently delete all your posts. This cannot be undone.')) return;
+    try {
+      const q    = query(collection(_db, 'posts'), where('owner', '==', _currentUser.uid));
+      const snap = await getDocs(q);
+      const batch = writeBatch(_db);
+      snap.docs.forEach(d => batch.delete(d.ref));
+      await batch.commit();
+      showToast('All posts deleted.', 'success');
+    } catch (err) {
+      console.error('[Firestore] deleteAllPosts error:', err);
+      showToast('Failed to delete posts.', 'error');
+    }
+  };
+
+  window.deleteAccount = async function () {
+    if (!_currentUser) return;
+    if (!confirm('This will permanently delete your account and all associated data. This CANNOT be undone.')) return;
+    showToast('Account deletion requires contacting support. Please email support@portpilot.app.', 'info');
+  };
+
+  /* =========================
+     SUPPORT TICKET
+  ========================= */
+  window.submitSupportTicket = async function () {
+    const subject = document.getElementById('supportSubject')?.value;
+    const email   = document.getElementById('supportEmail')?.value.trim();
+    const message = document.getElementById('supportMessage')?.value.trim();
+    if (!subject || subject === '-- Select a topic --') { showToast('Please select a subject.', 'error'); return; }
+    if (!email)   { showToast('Please enter your email.', 'error'); return; }
+    if (!message) { showToast('Please enter a message.', 'error'); return; }
+    try {
+      await addDoc(collection(_db, 'supportTickets'), { subject, email, message, uid: _currentUser?.uid || null, createdAt: serverTimestamp(), status: 'open' });
+      document.getElementById('supportSubject').value  = '-- Select a topic --';
+      document.getElementById('supportMessage').value  = '';
+      showToast("Support ticket submitted. We'll reply to your email.", 'success');
+    } catch (err) {
+      console.error('[Firestore] submitSupportTicket error:', err);
+      showToast('Failed to submit ticket. Please try again.', 'error');
+    }
+  };
+
+  /* =========================
+     PERSIST USER DATA
+  ========================= */
+  async function persistUserData(data, successMsg) {
+    if (!_currentUser || !_db) return;
+    try {
+      await updateDoc(doc(_db, 'users', _currentUser.uid), data);
+      if (_userProfile) Object.assign(_userProfile, data);
+      showToast(successMsg, 'success');
+    } catch (err) {
+      try {
+        await setDoc(doc(_db, 'users', _currentUser.uid), data, { merge: true });
+        if (_userProfile) Object.assign(_userProfile, data);
+        showToast(successMsg, 'success');
+      } catch (err2) {
+        console.error('[Firestore] persistUserData error:', err2);
+        showToast('Failed to save. Please try again.', 'error');
+      }
+    }
+  }
+
+  /* =========================
+     UI HELPERS
+  ========================= */
+  function renderAvatar(elId, initials, photoURL) {
+    const el = document.getElementById(elId);
+    if (!el) return;
+    if (photoURL) el.innerHTML = `<img src="${escHtml(photoURL)}" alt="Profile" />`;
+    else el.textContent = initials;
+  }
+
+  function renderStatValue(valueId, loadingId, value) {
+    const valEl  = document.getElementById(valueId);
+    const loadEl = document.getElementById(loadingId);
+    if (valEl)  { valEl.textContent = value; valEl.style.display = 'block'; }
+    if (loadEl) loadEl.style.display = 'none';
+  }
+
+  function renderPlatformStatus(platform, accountData) {
+    const statusEl = document.getElementById(`status${capitalise(platform)}`);
+    const btnEl    = document.getElementById(`btn${capitalise(platform)}`);
+    const descEl   = document.getElementById(`platformDesc${capitalise(platform)}`);
+    if (!statusEl) return;
+    const isConnected = accountData?.connected === true;
+    statusEl.className   = `status-dot ${isConnected ? 'connected' : 'disconnected'}`;
+    statusEl.textContent = isConnected ? 'Connected' : 'Not Connected';
+    if (descEl && accountData?.connectedAt && isConnected) {
+      const d = new Date(accountData.connectedAt);
+      descEl.textContent = `Connected ${formatDate(d)}`;
+    }
+    if (btnEl) {
+      btnEl.innerHTML = isConnected
+        ? `<i class="fa-solid fa-plug-circle-minus"></i> Disconnect`
+        : `<i class="fa-solid fa-plug"></i> Connect`;
+      btnEl.onclick = isConnected
+        ? () => window[`disconnect${capitalise(platform)}`]?.()
+        : () => connectPlatform(platform);
+    }
+  }
+
+  function setTextContent(id, value) { const el = document.getElementById(id); if (el) el.textContent = value; }
+  function setInputValue(id, value)  { const el = document.getElementById(id); if (el) el.value = value; }
+  function setSelectValue(id, value) { const el = document.getElementById(id); if (!el) return; for (const opt of el.options) { if (opt.value === value) { opt.selected = true; break; } } }
+  function setCheckbox(id, checked)  { const el = document.getElementById(id); if (el) el.checked = checked; }
+  function getInitials(name) { if (!name) return 'U'; const p = name.trim().split(/\s+/); return p.length >= 2 ? (p[0][0] + p[p.length-1][0]).toUpperCase() : name.slice(0,2).toUpperCase(); }
+  function capitalise(str) { if (!str) return ''; return str.charAt(0).toUpperCase() + str.slice(1); }
+
+  function escHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function relativeTime(date) {
+    const delta = Math.floor((Date.now() - date.getTime()) / 1000);
+    if (delta < 60)    return 'just now';
+    if (delta < 3600)  return `${Math.floor(delta / 60)}m ago`;
+    if (delta < 86400) return `${Math.floor(delta / 3600)}h ago`;
+    return `${Math.floor(delta / 86400)}d ago`;
+  }
+
+  function formatDate(date) {
+    if (!date) return '--';
+    return date.toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' });
+  }
+
+  function formatDateTime(date) {
+    if (!date) return '--';
+    return date.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) +
+      ' ' + date.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' });
+  }
+
+  function activityIconClass(type) {
+    return { published:'fa-solid fa-paper-plane', draft:'fa-regular fa-floppy-disk', scheduled:'fa-regular fa-clock', connected:'fa-solid fa-link', subscription:'fa-solid fa-star', failed:'fa-solid fa-triangle-exclamation' }[type] || 'fa-solid fa-circle-info';
+  }
+  function activityIconBg(type) {
+    return { published:'var(--success-light)', draft:'var(--surface-2)', scheduled:'var(--warning-light)', connected:'var(--primary-light)', subscription:'var(--warning-light)', failed:'var(--danger-light)' }[type] || 'var(--surface-2)';
+  }
+  function activityIconColor(type) {
+    return { published:'var(--success)', draft:'var(--text-3)', scheduled:'var(--warning)', connected:'var(--primary)', subscription:'var(--warning)', failed:'var(--danger)' }[type] || 'var(--text-3)';
+  }
+
+  /* =========================
+     TOAST
+  ========================= */
+  function showToast(message, type = 'info') {
+    document.querySelectorAll('.toast').forEach(t => t.remove());
+    const icons = { success:'fa-check-circle', error:'fa-circle-xmark', info:'fa-circle-info' };
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `<i class="fa-solid ${icons[type] || icons.info}"></i> ${escHtml(message)}`;
+    document.body.appendChild(toast);
+    setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity .3s'; }, 3200);
+    setTimeout(() => toast.remove(), 3600);
+  }
+  window.showToast = showToast;
+
+  /* =========================
+     PAGE ROUTER
+  ========================= */
+  const pages    = document.querySelectorAll('.page');
+  const navItems = document.querySelectorAll('.nav-item[data-page]');
+
+  window.showPage = function (pageId) {
+    pages.forEach(p => p.classList.remove('active'));
+    navItems.forEach(n => n.classList.remove('active'));
+    const target = document.getElementById(pageId);
+    if (target) target.classList.add('active');
+    document.querySelector(`.nav-item[data-page="${pageId}"]`)?.classList.add('active');
+    window.closeSidebar();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  navItems.forEach(item => item.addEventListener('click', () => window.showPage(item.dataset.page)));
+
+  /* =========================
+     SIDEBAR
+  ========================= */
+  window.toggleSidebar = function () { document.getElementById('sidebar').classList.toggle('mobile-open'); document.getElementById('sidebarOverlay').classList.toggle('open'); };
+  window.closeSidebar  = function () { document.getElementById('sidebar').classList.remove('mobile-open'); document.getElementById('sidebarOverlay').classList.remove('open'); };
+
+  /* =========================
+     DROPDOWNS
+  ========================= */
+  window.toggleNotif = function (e) {
+    e.stopPropagation();
+    document.getElementById('profileDropdown').classList.remove('open');
+    document.getElementById('notifDropdown').classList.toggle('open');
+  };
+  window.toggleProfile = function (e) {
+    e.stopPropagation();
+    document.getElementById('notifDropdown').classList.remove('open');
+    document.getElementById('profileDropdown').classList.toggle('open');
+  };
+  document.addEventListener('click', () => {
+    document.getElementById('notifDropdown')?.classList.remove('open');
+    document.getElementById('profileDropdown')?.classList.remove('open');
+  });
+
+  /* =========================
+     SETTINGS PANEL ROUTER
+  ========================= */
+  document.querySelectorAll('.settings-nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.settings-nav-item').forEach(i => i.classList.remove('active'));
+      document.querySelectorAll('.settings-panel').forEach(p => p.classList.remove('active'));
+      item.classList.add('active');
+      document.getElementById(item.dataset.panel)?.classList.add('active');
+    });
+  });
+
+  /* =========================
+     FAQ ACCORDION
+  ========================= */
+  window.toggleFaq = function (questionEl) {
+    const item    = questionEl.closest('.faq-item');
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  };
+
+</script>
+
+<!-- Zernio account selection modal (Facebook pages / LinkedIn orgs / Pinterest boards) -->
+<div id="zernioSelectionModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9000;align-items:center;justify-content:center">
+  <div style="background:var(--surface);border-radius:var(--radius);padding:28px;width:420px;max-width:90vw;max-height:80vh;overflow-y:auto;box-shadow:var(--shadow-md)">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+      <h3 id="zernioSelectionTitle" style="font-size:15px;font-weight:700;color:var(--text)">Select account</h3>
+      <button onclick="closeSelectionModal()" style="background:none;border:none;cursor:pointer;font-size:18px;color:var(--text-3);line-height:1">&times;</button>
+    </div>
+    <div id="zernioSelectionList"></div>
+  </div>
+</div>
+</body>
+</html>
